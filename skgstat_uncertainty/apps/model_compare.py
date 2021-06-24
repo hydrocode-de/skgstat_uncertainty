@@ -25,7 +25,7 @@ def variogram_compare_chart(vario_func: Callable, bins: np.ndarray, error_bounds
     # line up the data
     used_models = [p for p in all_models if p['id'] not in excluded_ids]
     excl_models = [p for p in all_models if p['id'] in excluded_ids]
-    
+
     # order
     if as_columns:
         rows = (1, 1)
@@ -52,7 +52,13 @@ def variogram_compare_chart(vario_func: Callable, bins: np.ndarray, error_bounds
             # evaluate
             x, y = vario_func(model)
             fig.add_trace(
-                go.Scatter(x=x, y=y, mode='lines', line=dict(width=1.2, color='darkgreen'), name=f"{model['model'].capitalize()} model")
+                go.Scatter(
+                    x=x,
+                    y=y,
+                    mode='lines',
+                    line=dict(width=1.2, color='darkgreen'),
+                    name=f"<ID={model['id']}> {model['model'].capitalize()} model"),
+                row=row, col=col
             )
         
         # some layout
