@@ -120,16 +120,22 @@ def st_app(project: Project = None) -> Project:
     help='Always include models completely within error bounds'
     )
 
+    evalf = st.sidebar.selectbox(
+        'Evaluation function',
+        options=['RMSE', 'cv'],
+        help="The variogram models can be evaluated by their experimental variogram fit (RMSE) or a kriging cross-validation MAE (cv)"
+    )
+
     std_level = st.sidebar.number_input(
         'Include models within times standard deviation',
-        min_value=0.5,
+        min_value=0.1,
         max_value=10.,
         step=0.5,
         value=1.5,
         help="Automatic quality control: Any model's RMSE deviating more than this times standard deviation from the sample target RMSE will be excluded."
     )
     target = st.sidebar.selectbox(
-        'Sample RMSE target',
+        f'Sample {evalf.upper()} target',
         options=['min','mean', 'max'],
         help="Specify to which statistical property of all models the individual models' RMSE should be compared. Usually, min."
     )
@@ -137,9 +143,11 @@ def st_app(project: Project = None) -> Project:
     # set new settings
     project.filter_include_fit = include_fits
     project.std_level = std_level
+    project.std_target = target
+    project.model_evalf = evalf
 
     # prefilter
-    project.prefilter_models(target=target)
+    project.prefilter_models()
     prefiltered_models = project.prefiltered_models
     pre_filtered_ids = [p['id'] for p in prefiltered_models]
 
