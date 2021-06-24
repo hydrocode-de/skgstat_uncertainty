@@ -106,9 +106,6 @@ def st_app(project: Project = None) -> Project:
     # update
     project.sigma = sigma
 
-    # get total count
-    total_count = project.model_params_count()
-
     # get the models
     all_models = project.load_model_params(sigma=sigma)
 
@@ -196,20 +193,10 @@ def st_app(project: Project = None) -> Project:
     # show the models
     st.dataframe(all_models_df.style.apply(lambda r: [f"background: {'#ac1900' if r.id in excluded_models else '#003300'}" for c in r], axis=1))
     
-    # add the copy latex button
+    # add export options
     latex_expander = st.beta_expander('EXPORT OPTIONS', False)
-    all_models_df['excluded'] = [p['id'] in excluded_models for p in all_models]
-    opts, area = latex_expander.beta_columns((1, 9))
-    fmt = opts.radio('Format', options=['LaTeX', 'CSV', 'JSON'])
-    
-    # create output
-    if fmt == 'LaTeX':
-        area.code(all_models_df.to_latex(index=None))
-    elif fmt == 'CSV':
-        area.code(all_models_df.to_csv(index=None))
-    elif fmt == 'JSON':
-        #area.json(all_models_df.to_dict(orient='records'))
-        area.code(all_models_df.to_json(orient='records', indent=4))
+    all_models_df['excluded'] = [p['id'] in excluded_models for p in all_models]    
+    components.table_export_options(all_models_df, container=latex_expander, key='exporter1')
     
     # Kriging
     st.sidebar.markdown('## Kriging')
@@ -219,13 +206,9 @@ def st_app(project: Project = None) -> Project:
     The {len(used_models)} models listed above are now used to interpolate
     the observations using each of the selected models for Kriging. 
 
-    The application caches kriging results, but you can force a re-calculation.
+    The application caches kriging results.
     As kriging can take some time, you need to activate that step manually.
     """)
-    # force_kriging = st.sidebar.checkbox(
-    #     'Force re-calculation interpolations',
-    #     value = False
-    # )
 
     run_kriging = st.sidebar.checkbox(
         'Activate kriging',
@@ -297,13 +280,18 @@ def st_app(project: Project = None) -> Project:
         'Select confidence interval',
         min_value=0,
         max_value=100,
-        value=(10, 90),
+        value=(0, 100),
         step=5,
         help=f'{len(all_fields)} values per pixel are estimated. Set their confidence bounds'
     )
 
     # get the confidence_interval
-    lower, upper, fields_mean, fields_std, field_count = project.kriged_field_conf_interval(lower=lo, higher=hi)
+    # cache the confidence interval function
+    @st.cache
+    def get_conf_interval(lo, hi, func):
+        return func(lo, hi)
+    lower, upper, fields_mean, fields_std, field_count = get_conf_interval(lo, hi, project.kriged_field_conf_interval)
+    # lower, upper, fields_mean, fields_std, field_count = project.kriged_field_conf_interval(lower=lo, higher=hi)
     
     # build the container
     left, right = st.beta_columns(2)
@@ -340,12 +328,15 @@ def st_app(project: Project = None) -> Project:
     exp_right.plotly_chart(std_chart, use_container_width=True)
 
     # histogram
-    hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), name='Interpolation'))
+    hist_container = more_plots.empty()
+    hist_cum = more_plots.checkbox('Cummulative Distribution Function', value=False)
+    
+    hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
     original = project.original_field
     
     # add original if preset
     if original is not None:
-        hist_interp.add_trace(go.Histogram(x=original.flatten(), name='Original field'))
+        hist_interp.add_trace(go.Histogram(x=original.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Original field'))
 
     hist_interp.update_layout(
         title='Histogram%s' % ('s' if original is not None else ''),
@@ -355,7 +346,8 @@ def st_app(project: Project = None) -> Project:
         legend=dict(orientation='h', yanchor='bottom', y=1.05)
     )
     hist_interp.update_traces(opacity=.6)
-    more_plots.plotly_chart(hist_interp, use_container_width=True)
+    # more_plots.plotly_chart(hist_interp, use_container_width=True)
+    hist_container.plotly_chart(hist_interp, use_container_width=True)
 
     if save_results:
         variogram_compare.write_image(project.result_base_name % 'model_compare.pdf')
@@ -379,6 +371,10 @@ def st_app(project: Project = None) -> Project:
     single_info = pd.DataFrame(project.kriged_fields_info(lower, upper))
     single_info.set_index('id', inplace=True)
     st.table(single_info)
+
+    # add export options
+    result_expander = st.beta_expander('OPTIONS', False)
+    components.table_export_options(single_info, container=result_expander, key='exporter2')
 
     return project
 

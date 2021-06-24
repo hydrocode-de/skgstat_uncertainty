@@ -4,4 +4,3 @@ sympy
 streamlit
 fire
 kaleido
-pyperclip

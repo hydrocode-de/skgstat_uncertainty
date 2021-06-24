@@ -1,10 +1,8 @@
 import streamlit as st
 import pandas as pd
-from string import ascii_letters
-from random import choice
 
 
-def table_export_options(df: pd.DataFrame, export_formats=['LaTeX', 'CSV', 'JSON', 'Markdown', 'HTML'], container=None):
+def table_export_options(df: pd.DataFrame, export_formats=['LaTeX', 'CSV', 'JSON', 'Markdown', 'HTML'], container=None, key=None):
     # if no container set, create one
     if container is None:
         container = st
@@ -21,7 +19,7 @@ def table_export_options(df: pd.DataFrame, export_formats=['LaTeX', 'CSV', 'JSON
     if len(export_formats) == 1:
         fmt = export_formats[0]
     else:
-        fmt = options.radio('Format', options=export_formats, key=''.join([choice(ascii_letters) for _ in range(25)]))
+        fmt = options.radio('Format', options=export_formats, key=key)
     
     # handle export
     if fmt.lower() == 'latex':
