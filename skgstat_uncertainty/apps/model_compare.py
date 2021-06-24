@@ -1,4 +1,4 @@
-from typing import Callable
+from typing import Callable, Tuple
 import streamlit as st
 import pandas as pd
 import numpy as np
@@ -70,6 +70,49 @@ def variogram_compare_chart(vario_func: Callable, bins: np.ndarray, error_bounds
     # return
     return fig
 
+
+@st.cache(allow_output_mutation=True)
+def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, lo: int, hi: int, n_fields: int) -> Tuple[go.Figure]:
+    # create the columns
+    left, right = st.beta_columns(2)
+
+    # define only one layout
+    layout = dict(
+        yaxis=dict(scaleanchor='x'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showgrid=False,
+        yaxis_showgrid=False
+    )
+    
+    # build the charts
+    # confidence interval
+    conf_chart = go.Figure(go.Heatmap(z = upper - lower, colorscale='Hot'))
+    conf_chart.update_layout(**layout, title=f'{lo}% - {hi}% confidence interval range')
+
+    # mean
+    mean_chart = go.Figure(go.Heatmap(z=mean, colorscale='Earth'))
+    mean_chart.update_layout(**layout, title=f'Mean of {n_fields} fields')
+
+    return conf_chart, mean_chart
+
+@st.cache
+def more_result_charts(mean: np.ndarray, original: np.ndarray = None, hist_cum=False) -> go.Figure:
+    fig = go.Figure(go.Histogram(x=mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
+
+    if original is not None:
+        fig.add_trace(go.Histogram(x=original.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Original field'))
+
+    fig.update_layout(
+        title='Histogram%s' % ('s' if original is not None else ''),
+        barmode='overlay',
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        legend=dict(orientation='h', yanchor='bottom', y=1.05)
+    )
+    fig.update_traces(opacity=.6)
+
+    return fig
 
 # define the main app
 def st_app(project: Project = None) -> Project:
@@ -291,7 +334,6 @@ def st_app(project: Project = None) -> Project:
     def get_conf_interval(lo, hi, func):
         return func(lo, hi)
     lower, upper, fields_mean, fields_std, field_count = get_conf_interval(lo, hi, project.kriged_field_conf_interval)
-    # lower, upper, fields_mean, fields_std, field_count = project.kriged_field_conf_interval(lower=lo, higher=hi)
     
     # build the container
     left, right = st.beta_columns(2)
@@ -306,54 +348,50 @@ def st_app(project: Project = None) -> Project:
         xaxis_showgrid=False,
         yaxis_showgrid=False
     )
-    # build the charts
-    # confidence interval
-    conf_chart = go.Figure(go.Heatmap(z = upper - lower, colorscale='Hot'))
-    conf_chart.update_layout(**layout, title=f'{lo}% - {hi}% confidence interval range')
+    # # build the main charts 
+    conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields))
     left.plotly_chart(conf_chart, use_container_width=True)
-
-    # mean
-    mean_chart = go.Figure(go.Heatmap(z=fields_mean, colorscale='Earth'))
-    mean_chart.update_layout(**layout, title=f'Mean of {len(all_fields)} fields')
     right.plotly_chart(mean_chart, use_container_width=True)
 
     # count
-    count_chart = go.Figure(go.Heatmap(z = field_count, colorscale='Jet'))
-    count_chart.update_layout(**layout, title=f'Count per pixel of {len(all_fields)} fields')
-    exp_left.plotly_chart(count_chart, use_container_width=True)
+    # count_chart = go.Figure(go.Heatmap(z = field_count, colorscale='Jet'))
+    # count_chart.update_layout(**layout, title=f'Count per pixel of {len(all_fields)} fields')
+    # exp_left.plotly_chart(count_chart, use_container_width=True)
 
-    # std
-    std_chart = go.Figure(go.Heatmap(z=fields_std, colorscale='Cividis'))
-    std_chart.update_layout(**layout, title=f'Std. of {len(all_fields)} fields')
-    exp_right.plotly_chart(std_chart, use_container_width=True)
+    # # std
+    # std_chart = go.Figure(go.Heatmap(z=fields_std, colorscale='Cividis'))
+    # std_chart.update_layout(**layout, title=f'Std. of {len(all_fields)} fields')
+    # exp_right.plotly_chart(std_chart, use_container_width=True)
 
     # histogram
     hist_container = more_plots.empty()
     hist_cum = more_plots.checkbox('Cummulative Distribution Function', value=False)
     
-    hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
+    # hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
     original = project.original_field
     
     # add original if preset
-    if original is not None:
-        hist_interp.add_trace(go.Histogram(x=original.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Original field'))
+    # if original is not None:
+    #     hist_interp.add_trace(go.Histogram(x=original.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Original field'))
 
-    hist_interp.update_layout(
-        title='Histogram%s' % ('s' if original is not None else ''),
-        barmode='overlay',
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        legend=dict(orientation='h', yanchor='bottom', y=1.05)
-    )
-    hist_interp.update_traces(opacity=.6)
+    # hist_interp.update_layout(
+    #     title='Histogram%s' % ('s' if original is not None else ''),
+    #     barmode='overlay',
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     legend=dict(orientation='h', yanchor='bottom', y=1.05)
+    # )
+    # hist_interp.update_traces(opacity=.6)
     # more_plots.plotly_chart(hist_interp, use_container_width=True)
+    
+    hist_interp = more_result_charts(fields_mean, original, hist_cum)
     hist_container.plotly_chart(hist_interp, use_container_width=True)
 
     if save_results:
         variogram_compare.write_image(project.result_base_name % 'model_compare.pdf')
         conf_chart.write_image(project.result_base_name % f'kriging_{lo}_{hi}_conf_interval.pdf')
         mean_chart.write_image(project.result_base_name % f'kriging_{lo}_{hi}_interpolation.pdf')
-        std_chart.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_interp_std.pdf')
+        # std_chart.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_interp_std.pdf')
         hist_interp.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_historgrams.pdf')
         with open(project.result_base_name % 'all_models.tex', 'w') as fs:
             all_models_df['used'] = ['no' if _id in excluded_models else 'yes' for _id in all_models_df.id]
