@@ -241,10 +241,11 @@ def st_app(project: Project = None) -> Project:
     elif run_kriging:
         # show a message
         with st.spinner(f'Kriging is running...'):
-            progress_bar = st.progress(0.0)
-
             # go for all uncached models
             missing_fields = project.uncached_fields
+
+            progress_bar = st.progress(0.0)
+            progress_text = st.text(f"0/{len(missing_fields)}  -   0%")
 
             t1 = time()
             for i, missing in enumerate(missing_fields):
@@ -259,7 +260,17 @@ def st_app(project: Project = None) -> Project:
 
                 # update progress bar
                 progress_bar.progress((i + 1) / len(missing_fields))
+                progress_text.text(f"{i + 1}/{len(missing_fields)}  -  {round((i + 1) / len(missing_fields) * 100)}%")
+
             t2 = time()
+        
+        # reload the cache
+        project.load_kriging_cache()
+        
+        # remove progressbar
+        progress_bar.empty()
+        progress_text.empty()
+
         st.success(f"Kriging finished after {round(t2 - t1, 0)} seconds. [{round((t2 - t1) / len(missing_fields), 1)} / interpolation]")
     else:
         st.info(f"""

@@ -214,7 +214,7 @@ class Project:
     @property
     def kriged_model_fields(self) -> dict:
         if self._cached_model_fields is None:
-            self._load_kriging_cache()
+            self.load_kriging_cache()
         return self._cached_model_fields
 
     @property
@@ -257,10 +257,20 @@ class Project:
         else:
             self._filtered_models = []
 
-    def _load_kriging_cache(self):
-        self._cached_model_fields = dict()
+    def load_kriging_cache(self, force_reload=False):
+        # create cache 
+        if self._cached_model_fields is None or force_reload:
+            self._cached_model_fields = dict()
+        
+        # go for all prefiltered models
         for param in self.prefiltered_models:
             md5 = param['md5']
+            
+            # if exists, skipped
+            if md5 in self._cached_model_fields:
+                continue
+
+            # load
             try:
                 field = self.load_single_kriging_field(md5)
                 if field is None:
