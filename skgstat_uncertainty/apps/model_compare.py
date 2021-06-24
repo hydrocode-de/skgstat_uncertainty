@@ -158,6 +158,8 @@ def st_app(project: Project = None) -> Project:
         default=[p['id'] for p in all_models if p['id'] not in pre_filtered_ids],
         help='Models outside the given standard deviation are automatically excluded'
     )
+    # update project
+    project.excluded_model_ids = excluded_models
     
     # finally exclude non-used models
     used_models = [p for p in prefiltered_models if p['id'] not in excluded_models]
@@ -266,7 +268,7 @@ def st_app(project: Project = None) -> Project:
         
         # reload the cache
         project.load_kriging_cache()
-        
+
         # remove progressbar
         progress_bar.empty()
         progress_text.empty()

@@ -212,6 +212,17 @@ class Project:
         return self._filtered_models
 
     @property
+    def excluded_model_ids(self):
+        return self._exclude_model_ids
+    
+    @excluded_model_ids.setter
+    def excluded_model_ids(self, new_list):
+        self._exclude_model_ids = new_list
+
+        # prefilter the kriged filed list
+        self.load_kriging_cache(force_reload=True)
+
+    @property
     def kriged_model_fields(self) -> dict:
         if self._cached_model_fields is None:
             self.load_kriging_cache()
@@ -257,7 +268,7 @@ class Project:
         else:
             self._filtered_models = []
 
-    def load_kriging_cache(self, force_reload=False):
+    def load_kriging_cache(self, force_reload=False, check_excuded=True):
         # create cache 
         if self._cached_model_fields is None or force_reload:
             self._cached_model_fields = dict()
@@ -268,6 +279,10 @@ class Project:
             
             # if exists, skipped
             if md5 in self._cached_model_fields:
+                continue
+
+            # if model params are excluded, skip
+            if param['id'] in self.excluded_model_ids and check_excuded:
                 continue
 
             # load
