@@ -604,7 +604,7 @@ class Project:
 
     def create_model_params(self, model_name: str, range: float, sill: float, nugget=0, shape=None, cross_validate=False) -> dict:
         # laod the variogram
-        vario = self.vario
+        vario = self.vario.clone()
         
         # get x
         x = np.linspace(0, vario.maxlag, 100)
@@ -642,6 +642,12 @@ class Project:
 
         # make a cross validation, this can take some time
         if cross_validate:
+            # update the variogram copy
+            vario._kwargs.update(dict(fit_range=range, fit_sill=sill, fit_nugget=nugget, fit_shape=shape))
+            vario.model = model_name
+            vario.fit_method = 'manual'
+            
+            # perform cross-validation
             cv = vario.cross_validate(metric='mae')
             params['cv'] = cv
 

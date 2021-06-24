@@ -137,46 +137,20 @@ def st_app(project: Project = None) -> Project:
     """ % sigma)
     st.plotly_chart(fig, use_container_width=True)
 
-    # add a button to save the Parameters
-    save_requested = st.button('SAVE MODEL', key='save1')
-    save_requested_sidebar = st.sidebar.button('SAVE MODEL', key='save2')
-
     # if not stopped load all models at current specs to get some statistics
     all_mods = project.load_model_params(sigma=sigma, model_name=model_name)
     compare_fit = np.mean([p['fit'] for p in all_mods])
     compare_rmse = np.mean([p['rmse'] for p in all_mods])
 
-    # handle model saving
-    if save_requested or save_requested_sidebar:
-        try:
-            with st.spinner('Cross-validating and hashing...'):
-                parameters = project.create_model_params(model_name, r, sill, nugget, shape, cross_validate=True)
-                project.save_model_params(parameters)
-                st.success(f"Model parameters saved!\nMD5-checksum: {parameters.get('md5')}")
-            # st.stop()
-        except AttributeError:
-            st.warning('These parameters are already saved to the project')
-            # st.stop()
-    else:
-        st.info(f"The project has {len(all_mods)} {model_name.capitalize()} models for {sigma}/{256} uncertainty level. Adjsut the parameters in the sidebar to find more good models.")
-
     # output the parameters as json
-    st.markdown(r"""
+    success_container = st.empty()
+    detail_expander = st.beta_expander('DETAILS', False)
+    left, right = detail_expander.beta_columns((3, 7))
+    left.markdown(r"""
     ### Current parameterization
     """)
-    left, right = st.beta_columns((4, 6))
     left.json(parameters)
 
-    # load all models to compare fit and RMSE
-    # wrap in function to cache it
-    # @st.cache
-    # def get_performance(s, n):
-    #     all_mods = project.load_model_params(sigma=s, model_name=n)
-    #     fit = np.mean([p['fit'] for p in all_mods])
-    #     rmse  =np.mean([p['rmse'] for p in all_mods])
-    #     return fit, rmse
-    
-    # compare_fit, compare_rmse = get_performance(sigma, model_name)
 
     # show fit as plot
     fit_chart = go.Figure()
@@ -197,9 +171,28 @@ def st_app(project: Project = None) -> Project:
         title='RMSE'
     ))
     fit_chart.update_layout(
-        margin=dict(t=0, b=0, l=30, r=30)
+        margin=dict(t=5, b=5, l=30, r=30)
     )
     right.plotly_chart(fit_chart, use_container_width=True)
+
+    # add a button to save the Parameters
+    save_requested = left.button('SAVE MODEL', key='save1')
+    save_requested_sidebar = st.sidebar.button('SAVE MODEL', key='save2')
+
+    # handle model saving
+    if save_requested or save_requested_sidebar:
+        try:
+            with st.spinner('Cross-validating and hashing...'):
+                parameters = project.create_model_params(model_name, r, sill, nugget, shape, cross_validate=True)
+                project.save_model_params(parameters)
+                success_container.success(f"Model parameters saved!\nMD5-checksum: {parameters.get('md5')}")
+
+        except AttributeError:
+            st.warning('These parameters are already saved to the project')
+
+    else:
+        st.info(f"The project has {len(all_mods)} {model_name.capitalize()} models for {sigma}/{256} uncertainty level. Adjsut the parameters in the sidebar to find more good models.")
+
 
     return project
 
