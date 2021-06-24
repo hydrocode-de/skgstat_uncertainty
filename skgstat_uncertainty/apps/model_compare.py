@@ -5,6 +5,7 @@ import numpy as np
 from time import time
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
+import pyperclip
 
 from skgstat_uncertainty.core import Project
 from skgstat_uncertainty import components
@@ -184,6 +185,21 @@ def st_app(project: Project = None) -> Project:
     
     # show the models
     st.dataframe(all_models_df.style.apply(lambda r: [f"background: {'#ac1900' if r.id in excluded_models else '#003300'}" for c in r], axis=1))
+    
+    # add the copy latex button
+    latex_expander = st.beta_expander('EXPORT OPTIONS', False)
+    all_models_df['excluded'] = [p['id'] in excluded_models for p in all_models]
+    opts, area = latex_expander.beta_columns((1, 9))
+    fmt = opts.radio('Format', options=['LaTeX', 'CSV', 'JSON'])
+    
+    # create output
+    if fmt == 'LaTeX':
+        area.code(all_models_df.to_latex(index=None))
+    elif fmt == 'CSV':
+        area.code(all_models_df.to_csv(index=None))
+    elif fmt == 'JSON':
+        #area.json(all_models_df.to_dict(orient='records'))
+        area.code(all_models_df.to_json(orient='records', indent=4))
     
     # Kriging
     st.sidebar.markdown('## Kriging')
