@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Optional, Union, Literal, List
 import os
 import io
 import glob
@@ -17,12 +17,14 @@ from skgstat_uncertainty import templates
 class Project:    
     def __init__(
         self, 
-        path = os.path.join(os.path.dirname(__file__), 'projects', 'Collection of Uncertain Pancakes'),
-        variogram = 'dc2d24c0a4603c57cf729f156ffa97c6',
-        sigma = 5,
-        std_level = 1.5,
-        filter_include_fit = True,
-        exclude_model_ids = [],
+        path: Optional[str] = os.path.join(os.path.dirname(__file__), 'projects', 'Collection of Uncertain Pancakes'),
+        variogram: Optional[str] = 'dc2d24c0a4603c57cf729f156ffa97c6',
+        sigma: Union[int, float] = 5,
+        std_level: float = 1.5,
+        std_target: Literal['min', 'max', 'mean'] = 'min',
+        model_evalf: Literal['rmse', 'cv'] = 'rmse',
+        filter_include_fit: bool = True,
+        exclude_model_ids: List[int] = [],
         n_iterations: int = 50000,
     ):
         """
@@ -43,6 +45,10 @@ class Project:
         # set the filter for model params
         self._filtered_models = None
         self._cached_model_fields = None
+
+        # set these after the fields and model caches are created
+        self.std_target = std_target
+        self.model_evalf = model_evalf
 
         # monte-carlo container
         self._mc_output_data = None
@@ -158,6 +164,36 @@ class Project:
         self._cached_model_fields = None
 
     @property
+    def std_target(self):
+        return self._std_target
+
+    @std_target.setter
+    def std_target(self, new_target):
+        if new_target.lower() not in ('min', 'max', 'mean'):
+            raise ValueError("new target has to be one of: ('min', 'max', 'mean')")
+        
+        self._std_target = new_target.lower()
+
+        # reset filter
+        self._filtered_models = None
+        self._cached_model_fields = None
+
+    @property
+    def model_evalf(self):
+        return self._model_evalf
+
+    @model_evalf.setter
+    def model_evalf(self, new_evalf):
+        if new_evalf.lower() not in ('rmse', 'cv'):
+            raise ValueError("new evaluation function has to be one of ('rmse', 'cv')")
+
+        self._model_evalf = new_evalf.lower()
+
+        # reset filter
+        self._filtered_models = None
+        self._cached_model_fields = None
+
+    @property
     def filter_include_fit(self):
         return self._filter_include_fit
     
@@ -194,7 +230,7 @@ class Project:
         cached = self.cached_fields
         return [p['md5'] for p in self.prefiltered_models]
 
-    def prefilter_models(self, target='mean'):
+    def prefilter_models(self):
         """
         Filter model parameters and fill filtered_model array.
         All saved models are filtered for being less than 
@@ -204,17 +240,20 @@ class Project:
         # get all models
         all_models = self.load_model_params(sigma=self.sigma)
 
+        # get the evalf to use
+        evalf = self.model_evalf
+
         if len(all_models) > 0:
             # calculate stats
-            rmse_std = np.std([p['rmse'] for p in all_models])
-            if target == 'max':
-                criterion = np.max([p['rmse'] for p in all_models])
-            elif target == 'min':
-                criterion = np.min([p['rmse'] for p in all_models])
+            rmse_std = np.std([p[evalf] for p in all_models])
+            if self.std_target == 'max':
+                criterion = np.max([p[evalf] for p in all_models])
+            elif self.std_target == 'min':
+                criterion = np.min([p[evalf] for p in all_models])
             else:
-                criterion = np.mean([p['rmse'] for p in all_models])
+                criterion = np.mean([p[evalf] for p in all_models])
 
-            self._filtered_models = [p for p in all_models if np.abs(criterion - p['rmse']) <= rmse_std * self.std_level or (self.filter_include_fit and p['fit'] >= self._filter_include_level)]
+            self._filtered_models = [p for p in all_models if np.abs(criterion - p[evalf]) <= rmse_std * self.std_level or (self.filter_include_fit and p['fit'] >= self._filter_include_level)]
         else:
             self._filtered_models = []
 
