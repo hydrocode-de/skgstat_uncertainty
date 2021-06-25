@@ -353,9 +353,10 @@ def st_app(project: Project = None) -> Project:
     # get the confidence_interval
     # cache the confidence interval function
     @st.cache
-    def get_conf_interval(lo, hi, func):
+    def get_conf_interval(lo, hi, func, excluded):
+        # this has to rerun if excluded changes
         return func(lo, hi)
-    lower, upper, fields_mean, fields_std, field_count = get_conf_interval(lo, hi, project.kriged_field_conf_interval)
+    lower, upper, fields_mean, fields_std, field_count = get_conf_interval(lo, hi, project.kriged_field_conf_interval, excluded_models)
     
     # build the container
     left, right = st.beta_columns(2)
