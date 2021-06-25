@@ -239,7 +239,7 @@ class Project:
     @property
     def uncached_fields(self) -> list:
         cached = self.cached_fields
-        return [p['md5'] for p in self.prefiltered_models]
+        return [p['md5'] for p in self.prefiltered_models if p['md5'] not in cached]
 
     def prefilter_models(self):
         """
