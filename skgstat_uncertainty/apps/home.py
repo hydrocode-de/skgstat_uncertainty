@@ -1,7 +1,7 @@
 import streamlit as st
 
-from skgstat_uncertainty.core import Project
-
+#from skgstat_uncertainty.core import Project
+from ..core import Project
 
 def st_app(project: Project):
     # st.title('Home')

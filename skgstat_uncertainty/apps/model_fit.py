@@ -2,9 +2,10 @@ import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
 
-from skgstat_uncertainty.core import Project
-from skgstat_uncertainty import components
-
+#from skgstat_uncertainty.core import Project
+#from skgstat_uncertainty import components
+from ..core import Project
+from .. import components
 
 def st_app(project: Project = None) -> Project:
     # Start the application

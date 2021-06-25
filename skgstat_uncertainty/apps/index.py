@@ -6,9 +6,10 @@ from typing import List
 import streamlit as st
 import base64
 
-from skgstat_uncertainty.core import Project
-from skgstat_uncertainty import  components
-
+#from skgstat_uncertainty.core import Project
+#from skgstat_uncertainty import  components
+from ..core import Project
+from .. import components
 
 def get_pages(file_names: List[str], chapters=False) -> List[dict]:
     basepath = os.path.dirname(__file__)
@@ -40,7 +41,8 @@ def get_pages(file_names: List[str], chapters=False) -> List[dict]:
                 title = f"Chapter {idx + 1} - {title}"
 
         # append
-        mod = importlib.import_module(base, 'skgstat_uncertainty.apps')
+        # mod = importlib.import_module(base, 'skgstat_uncertainty.apps')
+        mod = importlib.import_module(f'..{base}', __name__)
         app = getattr(mod, 'st_app')
         pages.append(dict(title=title, app=app))
 

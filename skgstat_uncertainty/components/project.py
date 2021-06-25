@@ -4,8 +4,8 @@ import os
 import io
 import base64
 
-from skgstat_uncertainty.core import Project
-
+# from skgstat_uncertainty.core import Project
+from ..core import Project
 
 def project_management(container=None) -> Project:
     """

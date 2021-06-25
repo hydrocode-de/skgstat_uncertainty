@@ -1,8 +1,10 @@
 import pandas as pd
 import streamlit as st
 
-from skgstat_uncertainty.core import Project
-from skgstat_uncertainty import components
+#from skgstat_uncertainty.core import Project
+#from skgstat_uncertainty import components
+from ..core import Project
+from .. import components
 
 
 def st_app(project: Project):

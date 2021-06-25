@@ -5,11 +5,11 @@ import numpy as np
 from time import time
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
-import pyperclip
 
-from skgstat_uncertainty.core import Project
-from skgstat_uncertainty import components
-
+#from skgstat_uncertainty.core import Project
+#from skgstat_uncertainty import components
+from ..core import Project
+from .. import components
 
 # cache some charts that will not change very often
 @st.cache
