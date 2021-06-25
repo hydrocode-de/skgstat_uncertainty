@@ -5,7 +5,6 @@ import skgstat as skg
 from time import time
 import numpy as np
 import pandas as pd
-import pyperclip
 
 #from skgstat_uncertainty.core import Project
 #from skgstat_uncertainty import components
@@ -286,9 +285,7 @@ def create_monte_carlo_app(project: Project, save_results=False) -> Project:
     # build the result table, containing this simulation
     result_table = project.monte_carlo_result_table()
     result_table_container.table(result_table)
-    clip = result_table_container.button('COPY LaTeX to clipboard')
-    if clip:
-        pyperclip.copy(result_table.to_latex(index=None))
+    components.table_export_options(result_table, container=result_table_container, key='mc_result1')
 
     # save if needed
     if save_results:
