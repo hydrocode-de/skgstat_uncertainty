@@ -114,6 +114,28 @@ def more_result_charts(mean: np.ndarray, original: np.ndarray = None, hist_cum=F
 
     return fig
 
+
+@st.cache
+def kriging_surface_chart(stack: np.ndarray, model_names: list) -> go.Figure:
+    fig = go.Figure()
+
+    # add all stacks
+    for i in range(stack.shape[2]):
+        fig.add_trace(
+            go.Surface(z=stack[:, :, i], showscale=False, opacity=0.3, colorscale='Earth', name=f'{model_names[i].capitalize()} interpolation')
+        )
+    
+    # update layour
+    fig.update_layout(
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        legend=dict(orientation='h', yanchor='bottom', y=1.05),
+        height=600
+    )
+
+    return fig
+
+
 # define the main app
 def st_app(project: Project = None) -> Project:
     # start the application
@@ -338,16 +360,16 @@ def st_app(project: Project = None) -> Project:
     # build the container
     left, right = st.beta_columns(2)
     more_plots = st.beta_expander('More charts...', expanded=False)
-    exp_left, exp_right = more_plots.beta_columns(2)
+    # exp_left, exp_right = more_plots.beta_columns(2)
 
     # define only one layout
-    layout = dict(
-        yaxis=dict(scaleanchor='x'),
-        paper_bgcolor='rgba(0,0,0,0)',
-        plot_bgcolor='rgba(0,0,0,0)',
-        xaxis_showgrid=False,
-        yaxis_showgrid=False
-    )
+    # layout = dict(
+    #     yaxis=dict(scaleanchor='x'),
+    #     paper_bgcolor='rgba(0,0,0,0)',
+    #     plot_bgcolor='rgba(0,0,0,0)',
+    #     xaxis_showgrid=False,
+    #     yaxis_showgrid=False
+    # )
     # # build the main charts 
     conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields))
     left.plotly_chart(conf_chart, use_container_width=True)
@@ -366,6 +388,9 @@ def st_app(project: Project = None) -> Project:
     # histogram
     hist_container = more_plots.empty()
     hist_cum = more_plots.checkbox('Cummulative Distribution Function', value=False)
+    
+    # check if a 3D plot should be added
+    add_3d_plot = more_plots.checkbox('Inspect single fields? (may be slow)', value=False)
     
     # hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
     original = project.original_field
@@ -387,12 +412,21 @@ def st_app(project: Project = None) -> Project:
     hist_interp = more_result_charts(fields_mean, original, hist_cum)
     hist_container.plotly_chart(hist_interp, use_container_width=True)
 
+    # add the 3D plot if requested
+    if add_3d_plot:
+        surface_chart = kriging_surface_chart(project.kriged_field_stack, [p['model'] for p in used_models])
+        more_plots.plotly_chart(surface_chart, use_container_width=True)
+
+    # save results
     if save_results:
         variogram_compare.write_image(project.result_base_name % 'model_compare.pdf')
         conf_chart.write_image(project.result_base_name % f'kriging_{lo}_{hi}_conf_interval.pdf')
         mean_chart.write_image(project.result_base_name % f'kriging_{lo}_{hi}_interpolation.pdf')
         # std_chart.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_interp_std.pdf')
         hist_interp.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_historgrams.pdf')
+        if add_3d_plot:
+            surface_chart.write_image(project.result_base_name % '_kriging_surfaces.pdf')
+
         with open(project.result_base_name % 'all_models.tex', 'w') as fs:
             all_models_df['used'] = ['no' if _id in excluded_models else 'yes' for _id in all_models_df.id]
             fs.write(all_models_df.to_latex())
