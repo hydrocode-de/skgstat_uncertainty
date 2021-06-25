@@ -1,35 +1,69 @@
+import pandas as pd
 import streamlit as st
 
 from skgstat_uncertainty.core import Project
+from skgstat_uncertainty import components
+
 
 def st_app(project: Project):
     if project is None:
         project = Project()
 
     st.title('Data and results')
+    st.markdown('### Project files')
 
     # edit mode
     edit = st.sidebar.checkbox('edit')
-    readme_expander = st.beta_expander('README.md', expanded=False)
+    export = st.sidebar.checkbox('show export options', value=True)
     
+    # README
+    readme_expander = st.beta_expander('README.md', expanded=True)
     # read the README
     with open(project.path + '/README.md') as f:
         readme = f.read()
     
+    # handle edit
     if edit:
-        edit_form = readme_expander.form('readme-edit')
-        new_readme = edit_form.text_area('README', value=readme, height=350)
-        saved = edit_form.form_submit_button('Save changes')
+        readme_msg = readme_expander.empty()
+        readme_edit_form = readme_expander.form('readme-edit')
+        new_readme = readme_edit_form.text_area('README', value=readme, height=350)
+        readme_saved = readme_edit_form.form_submit_button('Save changes')
 
-        if saved:
+        if readme_saved:
             with open(project.path + '/README.md', 'w') as f:
                 f.write(new_readme)
+            readme_msg.success('File saved!')
     else:
         readme_expander.markdown(readme)
     
+    # get the bibtex
+    bib_expander = st.beta_expander('bibliography.bib', expanded=False)
+    bib_expander.markdown("If you use the data generated with this application, you **have to** cite at least the following publications:")
+    
+    # read
+    with open(project.path + '/bibliography.bib') as f:
+        bib = f.read()
+    
+    if edit:
+        bib_msg = bib_expander.empty()
+        bib_edit_form = bib_expander.form('bib-edit')
+        new_bib = bib_edit_form.text_area('BIBLIOGRAHY', value=bib, height=450)
+        bib_saved = bib_edit_form.form_submit_button('Save changes')
+
+        if bib_saved:
+            with open(project.path + '/bibliography.bib', 'w') as f:
+                f.write(new_bib)
+            bib_msg.success('File saved!')
+
+    bib_expander.code(bib, language='bibtex')
+
+
     st.markdown(f"""
+    ### Variograms
+
     The tables below list all cached intermediate data and results
-    that are stored in the Project `{project.name}`. 
+    that are stored in the Project `{project.name}`. Every base variogram
+    is contained in its own expander 
     """)
 
     # go for each variogram
@@ -66,12 +100,18 @@ def st_app(project: Project):
 
             expander.text(f"Table 2: Experimental variogram uncertainty levels simulated for {v_dict['name']}")
             expander.table(level_table)
+            if export:
+                components.table_export_options(pd.DataFrame(level_table), container=expander, key=f'levels{v_idx}')
         
             expander.text(f"Table 3: Theoretical variogram models fitted within experimental base data of {v_dict['name']}")
             expander.table(all_params)
+            if export:
+                components.table_export_options(pd.DataFrame(all_params), container=expander, key=f'params{v_idx}')
 
             expander.text(f"Table 4: ")
             expander.table(kriged_fields)
+            if export:
+                components.table_export_options(pd.DataFrame(kriged_fields), container=expander, key=f'kriged{v_idx}')
 
             # maybe remove this again
             expander.markdown('## Saved result files')
