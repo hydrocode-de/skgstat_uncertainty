@@ -23,12 +23,12 @@ def st_app(project: Project):
 
     ### SciKit-GStat on Github
 
-    Don't forget to check out `scikit-gstat` on Github:
-
-    
-    [![scikit-gstat on Github](https://github-readme-stats.vercel.app/api/pin?username=mmaelicke&repo=scikit-gstat&theme=dark)](https://github.com/mmaelicke/scikit-gstat)
-
+    The variogram estimation is done with SciKit-GStat. Kriging is done using `gstools`.
+    Don't forget to check out `scikit-gstat` and `gstools` on Github:
     """)
+    left, right = st.beta_columns(2)
+    left.markdown("[![scikit-gstat on Github](https://github-readme-stats.vercel.app/api/pin?username=mmaelicke&repo=scikit-gstat&theme=dark)](https://github.com/mmaelicke/scikit-gstat)")
+    right.markdown("[![gstools on Github](https://github-readme-stats.vercel.app/api/pin?username=geostat-framework&repo=gstools&theme=dark)](https://github.com/geostat-framework/gstools)")
 
     st.write("""
     <div style="display: flex; flex-direction: row; margin-top: 10rem;"><a href="https://hydrocode.de" target="_blank">
