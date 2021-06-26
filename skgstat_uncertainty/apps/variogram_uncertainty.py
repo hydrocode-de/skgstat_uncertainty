@@ -196,7 +196,8 @@ def create_monte_carlo_app(project: Project, save_results=False) -> Project:
         seed = None
 
     # add an empty container for the result table
-    result_table_container = st.beta_expander(f'Simulations saved at {N} iterations').empty()
+    result_table_expander = st.beta_expander(f'Simulations saved at {N} iterations')
+    result_table_container = result_table_expander.empty()
     result_table = project.monte_carlo_result_table()
     result_table_container.table(result_table)
 
@@ -285,7 +286,7 @@ def create_monte_carlo_app(project: Project, save_results=False) -> Project:
     # build the result table, containing this simulation
     result_table = project.monte_carlo_result_table()
     result_table_container.table(result_table)
-    components.table_export_options(result_table, container=result_table_container, key='mc_result1')
+    components.table_export_options(result_table, container=result_table_expander, key='mc_result1')
 
     # save if needed
     if save_results:
