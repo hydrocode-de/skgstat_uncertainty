@@ -5,3 +5,4 @@ streamlit
 plotly
 fire
 kaleido
+pygithub
