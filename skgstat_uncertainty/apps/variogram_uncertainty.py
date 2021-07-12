@@ -6,10 +6,10 @@ from time import time
 import numpy as np
 import pandas as pd
 
-#from skgstat_uncertainty.core import Project
-#from skgstat_uncertainty import components
-from ..core import Project
-from .. import components
+from skgstat_uncertainty.core import Project
+from skgstat_uncertainty import components
+#from ..core import Project
+#from .. import components
 
 
 def create_variogram_app(project: Project, save_results=False) -> Project:

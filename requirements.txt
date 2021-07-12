@@ -6,3 +6,4 @@ plotly
 fire
 kaleido
 tabulate
+skgstat_uncertainty
