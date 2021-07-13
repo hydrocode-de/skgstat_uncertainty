@@ -14,10 +14,7 @@ def get_pages(file_names: List[str], chapters=False) -> List[dict]:
 
     # compile the pattern
     pat = re.compile('st\.title\(\'(.+?)\'\)')
-    
-    # get files
-    fnames = ['variogram_uncertainty.py', 'model_fit.py', 'model_compare.py']
-    
+   
     # TODO replace by glob later
     for idx, fname in enumerate(file_names):
         base = os.path.splitext(os.path.basename(fname))[0]
