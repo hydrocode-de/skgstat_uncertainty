@@ -3,7 +3,7 @@ import streamlit as st
 from skgstat_uncertainty.core import Project
 # from ..core import Project
 
-def st_app(project: Project):
+def st_app(project: Project = None):
     # st.title('Home')
 
     st.title('SciKit-GStat uncertainty extension')
