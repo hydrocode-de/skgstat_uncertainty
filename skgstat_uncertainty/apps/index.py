@@ -35,9 +35,13 @@ def get_pages(file_names: List[str], chapters=False) -> List[dict]:
                 title = f"Chapter {idx + 1} - {title}"
 
         # append
-        mod = importlib.import_module(base, 'skgstat_uncertainty.apps')
+        #mod = importlib.import_module(base, 'skgstat_uncertainty.apps')
+        mod = importlib.import_module('skgstat_uncertainty.apps')
+        app = getattr(mod, base)
         # mod = importlib.import_module(f'..{base}', __name__)
-        app = getattr(mod, 'st_app')
+        # from skgstat_uncertainty import apps
+        # mod = getattr(apps, base)
+        # app = getattr(mod, 'st_app')
         pages.append(dict(title=title, app=app))
 
     return pages
