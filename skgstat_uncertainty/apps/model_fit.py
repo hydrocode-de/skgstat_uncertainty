@@ -36,7 +36,7 @@ def st_app(project: Project = None) -> Project:
         'Observation uncertainty',
         options=project.get_error_levels(),
         format_func=lambda k: sigma_levels[k],
-        index=2
+        index=2 if len(sigma_levels) >= 2 else 0
     )
     # sigma can possibly be None
     if sigma is None:
