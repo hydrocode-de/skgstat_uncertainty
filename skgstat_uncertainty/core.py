@@ -330,7 +330,7 @@ class Project:
             return store.get(md5)
         
     @H_cv.setter
-    def H_cv(self, new_field: np.ndarry):
+    def H_cv(self, new_field: np.ndarray):
         # get the curretn entropy settings hash
         md5 = self.entropy_hash + '_cv'
 
