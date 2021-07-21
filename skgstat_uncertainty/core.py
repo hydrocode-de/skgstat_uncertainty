@@ -1036,7 +1036,7 @@ class Project:
                     # get all dist along axis=2, but the current index
                     in_arr = dist.take(indices=[j for j in range(dist.shape[2]) if j != i], axis=2)
                     _cv = apply_along_axis_multi(in_arr, bins) / H_max
-                    H_cv[:, :, i] = (H - _cv) * 100
+                    H_cv[:, :, i] = (1 - (_cv / H)) * 100
             
             # update
             self.H_cv = H_cv
