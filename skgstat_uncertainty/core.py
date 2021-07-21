@@ -304,7 +304,10 @@ class Project:
             md5 = self.entropy_hash
 
             # load the store
-            store = np.load(self.fpath_entropy)
+            if os.path.exists(self.fpath_entropy):
+                store = np.load(self.fpath_entropy)
+            else:
+                store = dict()
             return store.get(md5)
     
     @H.setter
@@ -326,7 +329,10 @@ class Project:
             md5 = self.entropy_hash + '_cv'
 
             # load store
-            store = np.load(self.fpath_entropy)
+            if os.path.exists(self.fpath_entropy):
+                store = np.load(self.fpath_entropy)
+            else:
+                store = dict()
             return store.get(md5)
         
     @H_cv.setter
