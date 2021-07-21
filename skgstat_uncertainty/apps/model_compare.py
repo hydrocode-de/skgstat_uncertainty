@@ -116,6 +116,65 @@ def more_result_charts(mean: np.ndarray, original: np.ndarray = None, hist_cum=F
 
 
 @st.cache
+def entropy_chart(H: np.ndarray, colorscale='Darkmint', **kwargs) -> go.Figure:
+    # define only one layout
+    layout = dict(
+        yaxis=dict(scaleanchor='x'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showgrid=False,
+        yaxis_showgrid=False
+    )
+    layout.update(kwargs)
+    
+    fig = go.Figure(go.Heatmap(z=H, colorscale=colorscale))
+    
+    fig.update_layout(layout)
+    return fig
+
+@st.cache
+def entropy_cv_chart(cv: np.ndarray) -> go.Figure:
+    # define only one layout
+    layout = dict(
+        yaxis=dict(scaleanchor='x'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showgrid=False,
+        yaxis_showgrid=False
+    )
+
+    fig = go.Figure()
+
+    # create the slider steps
+    N = cv.shape[2]
+    steps = []
+
+    # add all cv field    
+    for i in range(N):
+        # add the trace
+        fig.add_trace(go.Heatmap(z=cv, colorscale='Purples', visible=i==0))
+
+        # create the slider step
+        step = dict(
+            method='update',
+            args=[{'visible': [False] * N}, {'title': f"Iterpolation {i} added Entropy"}]
+        )
+    
+        # make the ith field visible
+        step['args'][0]['visible'][i] = True
+        steps.append(step)
+    
+    # create the slider
+    sliders = [dict(active=0, steps=steps)]
+
+    # update layout
+    layout.update(sliders=sliders)
+    fig.update_layout(layout)
+
+    return fig
+        
+
+@st.cache
 def kriging_surface_chart(stack: np.ndarray, model_names: list) -> go.Figure:
     fig = go.Figure()
 
@@ -386,6 +445,28 @@ def st_app(project: Project = None) -> Project:
     # std_chart.update_layout(**layout, title=f'Std. of {len(all_fields)} fields')
     # exp_right.plotly_chart(std_chart, use_container_width=True)
 
+    # entropy charts
+    st.sidebar.markdown('## Interpolation Entropy')
+    calculate_entropy = st.sidebar.checkbox('Activate Entropy calculation', value=False, help="The calculation can take several minutes.")
+    H_cv = st.sidebar.checkbox('Cross-validate each field', value=False, help='Get per-interpolation entropy contributions (very costy)')
+
+    if H_cv:
+        cv_num = st.sidebar.slider('Select the field', min_value=1, max_value=len(used_models) + 1, value=1)
+    
+    if calculate_entropy:
+        with st.spinner('Calculating Entropy... (can take several minutes)'):
+            H, cv = project.kriged_field_stack_entropy(cross_validate=cv_num - 1 if H_cv else False)
+            H_chart = entropy_chart(H, title="Total cell-based interpolation Entropy")
+
+            if cv is None:
+                more_plots.plotly_chart(H_chart, use_container_width=True)
+            else:
+                H_left, H_right = more_plots.beta_columns(2)
+                H_left.plotly_chart(H_chart, use_container_width=True)
+
+                Hcv_chart = entropy_chart(cv, colorscale='Purples', title=f"Interpolation #{cv_num} Entropy contribution")
+                H_right.plotly_chart(Hcv_chart, use_container_width=True)
+
     # histogram
     hist_container = more_plots.empty()
     hist_cum = more_plots.checkbox('Cummulative Distribution Function', value=False)
@@ -425,6 +506,8 @@ def st_app(project: Project = None) -> Project:
         mean_chart.write_image(project.result_base_name % f'kriging_{lo}_{hi}_interpolation.pdf')
         # std_chart.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_interp_std.pdf')
         hist_interp.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_historgrams.pdf')
+        if calculate_entropy:
+            H_chart.write_image(project.result_base_name % 'kriging_entropy.pdf')
         if add_3d_plot:
             surface_chart.write_image(project.result_base_name % '_kriging_surfaces.pdf')
 
