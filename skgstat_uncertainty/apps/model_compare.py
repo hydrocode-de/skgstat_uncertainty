@@ -420,30 +420,11 @@ def st_app(project: Project = None) -> Project:
     # build the container
     left, right = st.beta_columns(2)
     more_plots = st.beta_expander('More charts...', expanded=False)
-    # exp_left, exp_right = more_plots.beta_columns(2)
 
-    # define only one layout
-    # layout = dict(
-    #     yaxis=dict(scaleanchor='x'),
-    #     paper_bgcolor='rgba(0,0,0,0)',
-    #     plot_bgcolor='rgba(0,0,0,0)',
-    #     xaxis_showgrid=False,
-    #     yaxis_showgrid=False
-    # )
     # # build the main charts 
     conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields))
     left.plotly_chart(conf_chart, use_container_width=True)
     right.plotly_chart(mean_chart, use_container_width=True)
-
-    # count
-    # count_chart = go.Figure(go.Heatmap(z = field_count, colorscale='Jet'))
-    # count_chart.update_layout(**layout, title=f'Count per pixel of {len(all_fields)} fields')
-    # exp_left.plotly_chart(count_chart, use_container_width=True)
-
-    # # std
-    # std_chart = go.Figure(go.Heatmap(z=fields_std, colorscale='Cividis'))
-    # std_chart.update_layout(**layout, title=f'Std. of {len(all_fields)} fields')
-    # exp_right.plotly_chart(std_chart, use_container_width=True)
 
     # entropy charts
     st.sidebar.markdown('## Interpolation Entropy')
@@ -451,11 +432,16 @@ def st_app(project: Project = None) -> Project:
     H_cv = st.sidebar.checkbox('Cross-validate each field', value=False, help='Get per-interpolation entropy contributions (very costy)')
 
     if H_cv:
-        cv_num = st.sidebar.slider('Select the field', min_value=1, max_value=len(used_models) + 1, value=1)
+        #cv_num = st.sidebar.slider('Select the field', min_value=1, max_value=len(used_models) + 1, value=1)
+        cv_num = st.sidebar.selectbox(
+            'Select the field',
+            options=[i for i in range(len(used_models))],
+            format_func=lambda i: f"#{used_models[i]['id']} - {used_models[i]['model']}"
+        )
     
     if calculate_entropy:
         with st.spinner('Calculating Entropy... (can take several minutes)'):
-            H, cv = project.kriged_field_stack_entropy(cross_validate=cv_num - 1 if H_cv else False)
+            H, cv = project.kriged_field_stack_entropy(cross_validate=cv_num if H_cv else None)
             H_chart = entropy_chart(H, title="Total cell-based interpolation Entropy")
 
             if cv is None:
@@ -464,7 +450,7 @@ def st_app(project: Project = None) -> Project:
                 H_left, H_right = more_plots.beta_columns(2)
                 H_left.plotly_chart(H_chart, use_container_width=True)
 
-                Hcv_chart = entropy_chart(cv, colorscale='Purples', title=f"Interpolation #{cv_num} Entropy contribution")
+                Hcv_chart = entropy_chart(cv, colorscale='Purples', title=f"Interpolation #{used_models[cv_num]['id']} Entropy contribution")
                 H_right.plotly_chart(Hcv_chart, use_container_width=True)
 
     # histogram
@@ -476,20 +462,6 @@ def st_app(project: Project = None) -> Project:
     
     # hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
     original = project.original_field
-    
-    # add original if preset
-    # if original is not None:
-    #     hist_interp.add_trace(go.Histogram(x=original.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Original field'))
-
-    # hist_interp.update_layout(
-    #     title='Histogram%s' % ('s' if original is not None else ''),
-    #     barmode='overlay',
-    #     paper_bgcolor='rgba(0,0,0,0)',
-    #     plot_bgcolor='rgba(0,0,0,0)',
-    #     legend=dict(orientation='h', yanchor='bottom', y=1.05)
-    # )
-    # hist_interp.update_traces(opacity=.6)
-    # more_plots.plotly_chart(hist_interp, use_container_width=True)
     
     hist_interp = more_result_charts(fields_mean, original, hist_cum)
     hist_container.plotly_chart(hist_interp, use_container_width=True)

@@ -987,38 +987,40 @@ class Project:
 
         return lower, higher, mean, std, count
 
-    def kriged_field_stack_entropy(self, cross_validate = False) -> Tuple[np.ndarray, np.ndarray]:        
+    def kriged_field_stack_entropy(self, cross_validate = None) -> Tuple[np.ndarray, np.ndarray]:        
+        # get the current stacj
         H = self.H
+        
+        # get the stack
+        fs = self.kriged_field_stack
+    
+        # get the original
+        original = self.truncated_original_field()
+
+        # if there is no original, return
+        if original is None:
+            return None 
+        
+        # create the container of the entropy fields
+        dist = np.ones(fs.shape) * np.nan
+
+        # get the absolute difference of each field to the original
+        for i in range(fs.shape[2]):
+            dist[:, :, i] = np.abs(original - fs[:, :, i])
+
+        # create the binning based on current sigma
+        bins = np.arange(np.min(dist), np.max(dist), self.sigma)
+
+        # calculate maximum entropy
+        H_max = - np.sum([1 / len(bins) * np.log2(1 / len(bins)) for _ in range(len(bins))])
+
         if H is None:
-            # get the stack
-            fs = self.kriged_field_stack
-
-            # get the original
-            original = self.truncated_original_field()
-
-            # if there is no original, return
-            if original is None:
-                return None 
-            
-            # create the container of the entropy fields
-            dist = np.ones(fs.shape) * np.nan
-
-            # get the absolute difference of each field to the original
-            for i in range(fs.shape[2]):
-                dist[:, :, i] = np.abs(original - fs[:, :, i])
-
-            # create the binning based on current sigma
-            bins = np.arange(np.min(dist), np.max(dist), self.sigma)
-
-            # calculate maximum entropy
-            H_max = - np.sum([1 / len(bins) * np.log2(1 / len(bins)) for _ in range(len(bins))])
-
             # for each pixel
             H = apply_along_axis_multi(dist, bins) / H_max
             self.H = H
 
         # cross validate
-        if cross_validate:
+        if cross_validate is not None:
             H_cv = self.H_cv
             if H_cv is None:
                 H_cv = np.ones(fs.shape) * np.nan
