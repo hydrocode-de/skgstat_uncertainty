@@ -1,11 +1,10 @@
-from typing import Callable, List
+from typing import Callable, List, Tuple
 import streamlit as st
 import numpy as np
-from skgstat import Variogram
 import plotly.graph_objects as go
 
 
-def detailed_kriged_plot(field_load_func: Callable[..., np.ndarray], params: List[dict], container=None, vario: Variogram = None):
+def detailed_kriged_plot(field_load_func: Callable[..., np.ndarray], params: List[dict], container=None, obs: Tuple[np.ndarray] = None):
     # get a streamlit instance if no container passed
     if container is None:
         container = st
@@ -38,11 +37,8 @@ def detailed_kriged_plot(field_load_func: Callable[..., np.ndarray], params: Lis
     cells = [container.beta_columns(cols) for _ in range(rows)]
 
     # extract observations if variogram was given
-    if vario is not None:
-        obs = vario.coordinates
-        obs_x = obs[:,0] - np.min(obs[:,0])
-        obs_y = obs[:,1] - np.min(obs[:,1])
-        vals = vario.values
+    if obs is not None:
+        obs_x , obs_y, vals = obs
 
     i = 0
 
@@ -57,7 +53,7 @@ def detailed_kriged_plot(field_load_func: Callable[..., np.ndarray], params: Lis
             fig = go.Figure(go.Heatmap(z=field.T, colorscale='Earth'))
             
             # add the observations
-            if vario is not None:
+            if obs is not None:
                 fig.add_trace(
                     go.Scatter(x=obs_x, y=obs_y, mode='markers', marker=dict(size=5, color='white'), text=[str(_) for _ in vals], name='Observations')
                 )

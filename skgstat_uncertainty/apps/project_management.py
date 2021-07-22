@@ -223,7 +223,8 @@ def st_app(project: Project):
                 components.detailed_kriged_plot(
                     field_load_func=project.load_single_kriging_field,
                     params=plot_kriged,
-                    container=expander
+                    container=expander,
+                    obs=project.vario_plot_obs
                 )
 
 

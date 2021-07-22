@@ -72,7 +72,7 @@ def variogram_compare_chart(vario_func: Callable, bins: np.ndarray, error_bounds
 
 
 @st.cache(allow_output_mutation=True)
-def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, lo: int, hi: int, n_fields: int) -> Tuple[go.Figure]:
+def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, lo: int, hi: int, n_fields: int, obs: Tuple[np.ndarray] = None) -> Tuple[go.Figure]:
     # define only one layout
     layout = dict(
         yaxis=dict(scaleanchor='x'),
@@ -81,6 +81,10 @@ def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, l
         xaxis_showgrid=False,
         yaxis_showgrid=False
     )
+
+    # check obs
+    if obs is not None:
+        obs_x, obs_y, vals = obs
     
     # build the charts
     # confidence interval
@@ -90,6 +94,18 @@ def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, l
     # mean
     mean_chart = go.Figure(go.Heatmap(z=mean.T, colorscale='Earth'))
     mean_chart.update_layout(**layout, title=f'Mean of {n_fields} fields')
+
+    if obs is not None:
+        obs_scatter = go.Scatter(
+            x=obs_x,
+            y=obs_y,
+            mode='markers',
+            marker=dict(color='white', size=4),
+            name='Observations',
+            text=[str(_) for _ in vals]
+        )
+        conf_chart.add_trace(obs_scatter)
+        mean_chart.add_trace(obs_scatter)
 
     return conf_chart, mean_chart
 
@@ -420,7 +436,7 @@ def st_app(project: Project = None) -> Project:
     more_plots = st.beta_expander('More charts...', expanded=False)
 
     # # build the main charts 
-    conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields))
+    conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields), obs=project.vario_plot_obs)
     left.plotly_chart(conf_chart, use_container_width=True)
     right.plotly_chart(mean_chart, use_container_width=True)
 
@@ -436,7 +452,7 @@ def st_app(project: Project = None) -> Project:
         field_load_func=project.load_single_kriging_field,
         params=used_kriged_info,
         container=kriged_expander,
-        vario=project.vario
+        obs=project.vario_plot_obs
     )
 
     # entropy charts
