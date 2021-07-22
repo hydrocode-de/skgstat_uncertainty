@@ -293,7 +293,7 @@ class Project:
         hashes = ''.join([self._vario, *model_hashes])
         
         # hash the settings as index
-        return hashlib.sha256(hashes.encode()).hexdigest()
+        return hashlib.md5(hashes.encode()).hexdigest()
     
     @property
     def H(self):
