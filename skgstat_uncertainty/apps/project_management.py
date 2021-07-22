@@ -1,10 +1,44 @@
+from typing import Callable, List, Dict
 import pandas as pd
 import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
 
 from skgstat_uncertainty.core import Project
 from skgstat_uncertainty import components
-#from ..core import Project
-#from .. import components
+
+
+@st.cache
+def variogram_model_plots(vario_func: Callable[..., tuple], bins: np.ndarray, error_bounds: np.ndarray, models: List[dict]) -> go.Figure:
+    # create the figure
+    fig = go.Figure()
+    
+    # add the error bounds
+    fig.add_trace(
+        go.Scatter(x=bins, y=error_bounds[:,0], mode='lines', line=dict(color='grey'), fill='none', name='lower bound')
+    )
+    fig.add_trace(
+        go.Scatter(x=bins, y=error_bounds[:,1], mode='lines', line=dict(color='grey'), fill='tonexty', name='upper bound')
+    )
+    
+    # apply the models
+    for model in models:
+        x, y = vario_func(model)
+
+        fig.add_trace(
+            go.Scatter(
+                x=x,
+                y=y,
+                mode='lines',
+                line=dict(width=1.25),
+                name=f"<ID={model['id']}> {model['model'].capitalize()} model",
+            )
+        )
+    
+    # update layout
+    fig.update_layout(legend=dict(orientation='h'))
+
+    return fig
 
 
 def st_app(project: Project):
@@ -17,6 +51,9 @@ def st_app(project: Project):
     # edit mode
     edit = st.sidebar.checkbox('edit')
     export = st.sidebar.checkbox('show export options', value=True)
+
+    # add plot controls
+    plot = st.sidebar.checkbox('Show result plots', value=False, help="It's recommended to only activate 'export' or 'plot'")
     
     # README
     readme_expander = st.beta_expander('README.md', expanded=True)
