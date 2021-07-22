@@ -8,8 +8,42 @@ from skgstat_uncertainty.core import Project
 from skgstat_uncertainty import components
 
 
-@st.cache
-def variogram_model_plots(vario_func: Callable[..., tuple], bins: np.ndarray, error_bounds: np.ndarray, models: List[dict]) -> go.Figure:
+#@st.cache
+def variogram_model_plots(vario_func: Callable[..., tuple], bins: np.ndarray, error_bounds: np.ndarray, models: List[dict], sigma: int = None, container=None):
+    if container is None:
+        container = st
+    
+    # filter models for sigma level
+    models = [m for m in models if m['sigma_obs'] == sigma]
+
+    # create the plotting area
+    opts, plot = container.beta_columns((3,7))
+
+    opts.markdown('Select one or more models to plot the model')
+    # create the options
+    used_idx = opts.multiselect(
+        'Add models to the Plot',
+        options=list(range(len(models))),
+        format_func=lambda i: f"<ID={models[i]['id']}> {models[i]['model'].capitalize()} model",
+        key=f'model_select_{sigma}'
+    )
+    
+    # filter by used index
+    used_models = [models[i] for i in range(len(models)) if i in used_idx]
+    
+    colors = []
+    for m in used_models:
+        col = opts.color_picker(
+            f"<ID={m['id']}> color",
+            value='#35D62E',
+            key=f"col_{sigma}_{m['id']}"
+        )
+        colors.append(col)
+
+
+    if len(used_models) == 0:
+        return
+
     # create the figure
     fig = go.Figure()
     
@@ -22,7 +56,7 @@ def variogram_model_plots(vario_func: Callable[..., tuple], bins: np.ndarray, er
     )
     
     # apply the models
-    for model in models:
+    for model, col in zip(used_models, colors):
         x, y = vario_func(model)
 
         fig.add_trace(
@@ -30,14 +64,18 @@ def variogram_model_plots(vario_func: Callable[..., tuple], bins: np.ndarray, er
                 x=x,
                 y=y,
                 mode='lines',
-                line=dict(width=1.25),
+                line=dict(width=1.25, color=col),
                 name=f"<ID={model['id']}> {model['model'].capitalize()} model",
             )
         )
     
     # update layout
-    fig.update_layout(legend=dict(orientation='h'))
+    fig.update_layout(
+        title=f"Variogram Models fitted at {sigma} uncertainty level",
+        legend=dict(orientation='h')
+    )
 
+    plot.plotly_chart(fig, use_container_width=True)
     return fig
 
 
@@ -130,6 +168,7 @@ def st_app(project: Project):
             # krigings
             kriged_fields = project.kriged_fields_info(25, 75)
 
+            expander.markdown('### Overview')
             expander.text(f"Table 1: Overview")
             expander.table([
                 {'Label': 'Uncertainty simulations', 'Amount': len(level_table)},
@@ -137,16 +176,42 @@ def st_app(project: Project):
                 {'Label': 'Kriged fields', 'Amount': len(kriged_fields)}
             ])
 
+            expander.markdown('### Monte-Carlo Simulations')
             expander.text(f"Table 2: Experimental variogram uncertainty levels simulated for {v_dict['name']}")
             expander.table(level_table)
             if export:
                 components.table_export_options(pd.DataFrame(level_table), container=expander, key=f'levels{v_idx}')
         
+            expander.markdown("### Theoretical Variogram models")
+            expander.markdown("""
+            \rSelect a Monte-Carlo Simulation from the Dropdown below to plot the different models
+            \rfitted to this simulation result, as listed in the Table below.
+            """)
+            # Variogram Plot
+            if plot:
+                sigma_lvls = project.get_error_levels(as_dict=True)
+                sigmas = expander.multiselect(
+                    'Simulation background data', 
+                    options=project.get_error_levels(),
+                    format_func=lambda l: sigma_lvls[l] 
+                )
+                
+                for sigma in sigmas:
+                    variogram_model_plots(
+                        vario_func=project.apply_variogram_model,
+                        bins=project.vario.bins,
+                        error_bounds=project.load_error_bounds(5),
+                        models=all_params,
+                        sigma=sigma,
+                        container=expander
+                    )
+
             expander.text(f"Table 3: Theoretical variogram models fitted within experimental base data of {v_dict['name']}")
             expander.table(all_params)
             if export:
                 components.table_export_options(pd.DataFrame(all_params), container=expander, key=f'params{v_idx}')
 
+            expander.markdown('### Kriging Results')
             expander.text(f"Table 4: ")
             expander.table(kriged_fields)
             if export:
