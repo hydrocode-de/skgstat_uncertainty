@@ -166,7 +166,7 @@ def st_app(project: Project):
             all_params = project.load_model_params()
 
             # krigings
-            kriged_fields = project.kriged_fields_info(25, 75)
+            kriged_fields = project.kriged_fields_info(0, 100)
 
             expander.markdown('### Overview')
             expander.text(f"Table 1: Overview")
@@ -183,12 +183,9 @@ def st_app(project: Project):
                 components.table_export_options(pd.DataFrame(level_table), container=expander, key=f'levels{v_idx}')
         
             expander.markdown("### Theoretical Variogram models")
-            expander.markdown("""
-            \rSelect a Monte-Carlo Simulation from the Dropdown below to plot the different models
-            \rfitted to this simulation result, as listed in the Table below.
-            """)
             # Variogram Plot
             if plot:
+                expander.markdown("Select a Monte-Carlo Simulation from the Dropdown below to plot the different models fitted to this simulation result, as listed in the Table below.")
                 sigma_lvls = project.get_error_levels(as_dict=True)
                 sigmas = expander.multiselect(
                     'Simulation background data', 
@@ -212,7 +209,25 @@ def st_app(project: Project):
                 components.table_export_options(pd.DataFrame(all_params), container=expander, key=f'params{v_idx}')
 
             expander.markdown('### Kriging Results')
-            expander.text(f"Table 4: ")
+            if plot:
+                expander.markdown('Select any of the kriged result fields to inspect the individual interpolations')
+
+                field_idx = expander.multiselect(
+                    'Select interpolation results',
+                    options=[i for i in range(len(kriged_fields))],
+                    format_func=lambda i: f"<ID={kriged_fields[i]['id']}> {kriged_fields[i]['model'].capitalize()} model"
+                )
+                # filter fileds
+                plot_kriged = [kriged_fields[i] for i in range(len(kriged_fields)) if i in field_idx]
+                
+                components.detailed_kriged_plot(
+                    field_load_func=project.load_single_kriging_field,
+                    params=plot_kriged,
+                    container=expander
+                )
+
+
+            expander.text(f"Table 4: Summary of all interpolations run based on the fitted theoretical models")
             expander.table(kriged_fields)
             if export:
                 components.table_export_options(pd.DataFrame(kriged_fields), container=expander, key=f'kriged{v_idx}')
