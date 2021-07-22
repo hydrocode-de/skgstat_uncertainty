@@ -1068,6 +1068,8 @@ class Project:
             d = {
                 'id': params.get('id'),
                 'model': params.get('model').capitalize(),
+                'model_md5': params.get('md5'),
+                'sigma_obs': params.get('sigma_obs', 'n.a.'),
                 'model fit': '%.1f %%' % params.get('fit'),
                 'model fit RMSE': '%.1f' % params.get('rmse'),
                 'cross-validate MAE': '%.1f' % params.get('cv'),
