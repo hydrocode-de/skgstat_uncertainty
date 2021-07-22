@@ -1,10 +1,82 @@
+from typing import Callable, List, Dict
 import pandas as pd
 import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
 
 from skgstat_uncertainty.core import Project
 from skgstat_uncertainty import components
-#from ..core import Project
-#from .. import components
+
+
+#@st.cache
+def variogram_model_plots(vario_func: Callable[..., tuple], bins: np.ndarray, error_bounds: np.ndarray, models: List[dict], sigma: int = None, container=None):
+    if container is None:
+        container = st
+    
+    # filter models for sigma level
+    models = [m for m in models if m['sigma_obs'] == sigma]
+
+    # create the plotting area
+    opts, plot = container.beta_columns((3,7))
+
+    opts.markdown('Select one or more models to plot the model')
+    # create the options
+    used_idx = opts.multiselect(
+        'Add models to the Plot',
+        options=list(range(len(models))),
+        format_func=lambda i: f"<ID={models[i]['id']}> {models[i]['model'].capitalize()} model",
+        key=f'model_select_{sigma}'
+    )
+    
+    # filter by used index
+    used_models = [models[i] for i in range(len(models)) if i in used_idx]
+    
+    colors = []
+    for m in used_models:
+        col = opts.color_picker(
+            f"<ID={m['id']}> color",
+            value='#35D62E',
+            key=f"col_{sigma}_{m['id']}"
+        )
+        colors.append(col)
+
+
+    if len(used_models) == 0:
+        return
+
+    # create the figure
+    fig = go.Figure()
+    
+    # add the error bounds
+    fig.add_trace(
+        go.Scatter(x=bins, y=error_bounds[:,0], mode='lines', line=dict(color='grey'), fill='none', name='lower bound')
+    )
+    fig.add_trace(
+        go.Scatter(x=bins, y=error_bounds[:,1], mode='lines', line=dict(color='grey'), fill='tonexty', name='upper bound')
+    )
+    
+    # apply the models
+    for model, col in zip(used_models, colors):
+        x, y = vario_func(model)
+
+        fig.add_trace(
+            go.Scatter(
+                x=x,
+                y=y,
+                mode='lines',
+                line=dict(width=1.25, color=col),
+                name=f"<ID={model['id']}> {model['model'].capitalize()} model",
+            )
+        )
+    
+    # update layout
+    fig.update_layout(
+        title=f"Variogram Models fitted at {sigma} uncertainty level",
+        legend=dict(orientation='h')
+    )
+
+    plot.plotly_chart(fig, use_container_width=True)
+    return fig
 
 
 def st_app(project: Project):
@@ -17,6 +89,9 @@ def st_app(project: Project):
     # edit mode
     edit = st.sidebar.checkbox('edit')
     export = st.sidebar.checkbox('show export options', value=True)
+
+    # add plot controls
+    plot = st.sidebar.checkbox('Show result plots', value=False, help="It's recommended to only activate 'export' or 'plot'")
     
     # README
     readme_expander = st.beta_expander('README.md', expanded=True)
@@ -91,8 +166,9 @@ def st_app(project: Project):
             all_params = project.load_model_params()
 
             # krigings
-            kriged_fields = project.kriged_fields_info(25, 75)
+            kriged_fields = project.kriged_fields_info(0, 100)
 
+            expander.markdown('### Overview')
             expander.text(f"Table 1: Overview")
             expander.table([
                 {'Label': 'Uncertainty simulations', 'Amount': len(level_table)},
@@ -100,17 +176,59 @@ def st_app(project: Project):
                 {'Label': 'Kriged fields', 'Amount': len(kriged_fields)}
             ])
 
+            expander.markdown('### Monte-Carlo Simulations')
             expander.text(f"Table 2: Experimental variogram uncertainty levels simulated for {v_dict['name']}")
             expander.table(level_table)
             if export:
                 components.table_export_options(pd.DataFrame(level_table), container=expander, key=f'levels{v_idx}')
         
+            expander.markdown("### Theoretical Variogram models")
+            # Variogram Plot
+            if plot:
+                expander.markdown("Select a Monte-Carlo Simulation from the Dropdown below to plot the different models fitted to this simulation result, as listed in the Table below.")
+                sigma_lvls = project.get_error_levels(as_dict=True)
+                sigmas = expander.multiselect(
+                    'Simulation background data', 
+                    options=project.get_error_levels(),
+                    format_func=lambda l: sigma_lvls[l] 
+                )
+                
+                for sigma in sigmas:
+                    variogram_model_plots(
+                        vario_func=project.apply_variogram_model,
+                        bins=project.vario.bins,
+                        error_bounds=project.load_error_bounds(5),
+                        models=all_params,
+                        sigma=sigma,
+                        container=expander
+                    )
+
             expander.text(f"Table 3: Theoretical variogram models fitted within experimental base data of {v_dict['name']}")
             expander.table(all_params)
             if export:
                 components.table_export_options(pd.DataFrame(all_params), container=expander, key=f'params{v_idx}')
 
-            expander.text(f"Table 4: ")
+            expander.markdown('### Kriging Results')
+            if plot:
+                expander.markdown('Select any of the kriged result fields to inspect the individual interpolations')
+
+                field_idx = expander.multiselect(
+                    'Select interpolation results',
+                    options=[i for i in range(len(kriged_fields))],
+                    format_func=lambda i: f"<ID={kriged_fields[i]['id']}> {kriged_fields[i]['model'].capitalize()} model"
+                )
+                # filter fileds
+                plot_kriged = [kriged_fields[i] for i in range(len(kriged_fields)) if i in field_idx]
+                
+                components.detailed_kriged_plot(
+                    field_load_func=project.load_single_kriging_field,
+                    params=plot_kriged,
+                    container=expander,
+                    obs=project.vario_plot_obs
+                )
+
+
+            expander.text(f"Table 4: Summary of all interpolations run based on the fitted theoretical models")
             expander.table(kriged_fields)
             if export:
                 components.table_export_options(pd.DataFrame(kriged_fields), container=expander, key=f'kriged{v_idx}')

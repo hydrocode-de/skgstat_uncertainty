@@ -72,10 +72,7 @@ def variogram_compare_chart(vario_func: Callable, bins: np.ndarray, error_bounds
 
 
 @st.cache(allow_output_mutation=True)
-def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, lo: int, hi: int, n_fields: int) -> Tuple[go.Figure]:
-    # create the columns
-    left, right = st.beta_columns(2)
-
+def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, lo: int, hi: int, n_fields: int, obs: Tuple[np.ndarray] = None) -> Tuple[go.Figure]:
     # define only one layout
     layout = dict(
         yaxis=dict(scaleanchor='x'),
@@ -84,15 +81,31 @@ def main_result_charts(mean: np.ndarray, upper: np.ndarray, lower: np.ndarray, l
         xaxis_showgrid=False,
         yaxis_showgrid=False
     )
+
+    # check obs
+    if obs is not None:
+        obs_x, obs_y, vals = obs
     
     # build the charts
     # confidence interval
-    conf_chart = go.Figure(go.Heatmap(z = upper - lower, colorscale='Hot'))
+    conf_chart = go.Figure(go.Heatmap(z = (upper - lower).T, colorscale='Hot'))
     conf_chart.update_layout(**layout, title=f'{lo}% - {hi}% confidence interval range')
 
     # mean
-    mean_chart = go.Figure(go.Heatmap(z=mean, colorscale='Earth'))
+    mean_chart = go.Figure(go.Heatmap(z=mean.T, colorscale='Earth'))
     mean_chart.update_layout(**layout, title=f'Mean of {n_fields} fields')
+
+    if obs is not None:
+        obs_scatter = go.Scatter(
+            x=obs_x,
+            y=obs_y,
+            mode='markers',
+            marker=dict(color='white', size=4),
+            name='Observations',
+            text=[str(_) for _ in vals]
+        )
+        conf_chart.add_trace(obs_scatter)
+        mean_chart.add_trace(obs_scatter)
 
     return conf_chart, mean_chart
 
@@ -127,7 +140,7 @@ def entropy_chart(H: np.ndarray, colorscale='Darkmint', **kwargs) -> go.Figure:
     )
     layout.update(kwargs)
     
-    fig = go.Figure(go.Heatmap(z=H, colorscale=colorscale))
+    fig = go.Figure(go.Heatmap(z=H.T, colorscale=colorscale))
     
     fig.update_layout(layout)
     return fig
@@ -152,7 +165,7 @@ def entropy_cv_chart(cv: np.ndarray) -> go.Figure:
     # add all cv field    
     for i in range(N):
         # add the trace
-        fig.add_trace(go.Heatmap(z=cv, colorscale='Purples', visible=i==0))
+        fig.add_trace(go.Heatmap(z=cv.T, colorscale='Purples', visible=i==0))
 
         # create the slider step
         step = dict(
@@ -181,7 +194,7 @@ def kriging_surface_chart(stack: np.ndarray, model_names: list) -> go.Figure:
     # add all stacks
     for i in range(stack.shape[2]):
         fig.add_trace(
-            go.Surface(z=stack[:, :, i], showscale=False, opacity=0.3, colorscale='Earth', name=f'{model_names[i].capitalize()} interpolation')
+            go.Surface(z=stack[:, :, i].T, showscale=False, opacity=0.3, colorscale='Earth', name=f'{model_names[i].capitalize()} interpolation')
         )
     
     # update layour
@@ -419,12 +432,28 @@ def st_app(project: Project = None) -> Project:
     
     # build the container
     left, right = st.beta_columns(2)
+    kriged_expander = st.beta_expander('SINGLE KRIGING FIELDS')
     more_plots = st.beta_expander('More charts...', expanded=False)
 
     # # build the main charts 
-    conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields))
+    conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields), obs=project.vario_plot_obs)
     left.plotly_chart(conf_chart, use_container_width=True)
     right.plotly_chart(mean_chart, use_container_width=True)
+
+    # container for detailed plots
+    kriged_info = [p for p in project.kriged_fields_info(lower, upper) if p['sigma_obs'] == sigma]
+    kriged_idx = kriged_expander.multiselect(
+        'Add single interpolation fields to the plot',
+        options=list(range(len(kriged_info))),
+        format_func=lambda i: f"<ID={kriged_info[i]['id']}> {kriged_info[i]['model'].capitalize()} model"
+    )
+    used_kriged_info = [kriged_info[i] for i in kriged_idx]
+    components.detailed_kriged_plot(
+        field_load_func=project.load_single_kriging_field,
+        params=used_kriged_info,
+        container=kriged_expander,
+        obs=project.vario_plot_obs
+    )
 
     # entropy charts
     st.sidebar.markdown('## Interpolation Entropy')
