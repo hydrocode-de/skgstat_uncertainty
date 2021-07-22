@@ -116,6 +116,65 @@ def more_result_charts(mean: np.ndarray, original: np.ndarray = None, hist_cum=F
 
 
 @st.cache
+def entropy_chart(H: np.ndarray, colorscale='Darkmint', **kwargs) -> go.Figure:
+    # define only one layout
+    layout = dict(
+        yaxis=dict(scaleanchor='x'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showgrid=False,
+        yaxis_showgrid=False
+    )
+    layout.update(kwargs)
+    
+    fig = go.Figure(go.Heatmap(z=H, colorscale=colorscale))
+    
+    fig.update_layout(layout)
+    return fig
+
+@st.cache
+def entropy_cv_chart(cv: np.ndarray) -> go.Figure:
+    # define only one layout
+    layout = dict(
+        yaxis=dict(scaleanchor='x'),
+        paper_bgcolor='rgba(0,0,0,0)',
+        plot_bgcolor='rgba(0,0,0,0)',
+        xaxis_showgrid=False,
+        yaxis_showgrid=False
+    )
+
+    fig = go.Figure()
+
+    # create the slider steps
+    N = cv.shape[2]
+    steps = []
+
+    # add all cv field    
+    for i in range(N):
+        # add the trace
+        fig.add_trace(go.Heatmap(z=cv, colorscale='Purples', visible=i==0))
+
+        # create the slider step
+        step = dict(
+            method='update',
+            args=[{'visible': [False] * N}, {'title': f"Iterpolation {i} added Entropy"}]
+        )
+    
+        # make the ith field visible
+        step['args'][0]['visible'][i] = True
+        steps.append(step)
+    
+    # create the slider
+    sliders = [dict(active=0, steps=steps)]
+
+    # update layout
+    layout.update(sliders=sliders)
+    fig.update_layout(layout)
+
+    return fig
+        
+
+@st.cache
 def kriging_surface_chart(stack: np.ndarray, model_names: list) -> go.Figure:
     fig = go.Figure()
 
@@ -361,30 +420,38 @@ def st_app(project: Project = None) -> Project:
     # build the container
     left, right = st.beta_columns(2)
     more_plots = st.beta_expander('More charts...', expanded=False)
-    # exp_left, exp_right = more_plots.beta_columns(2)
 
-    # define only one layout
-    # layout = dict(
-    #     yaxis=dict(scaleanchor='x'),
-    #     paper_bgcolor='rgba(0,0,0,0)',
-    #     plot_bgcolor='rgba(0,0,0,0)',
-    #     xaxis_showgrid=False,
-    #     yaxis_showgrid=False
-    # )
     # # build the main charts 
     conf_chart, mean_chart = main_result_charts(fields_mean, upper, lower, lo, hi, len(all_fields))
     left.plotly_chart(conf_chart, use_container_width=True)
     right.plotly_chart(mean_chart, use_container_width=True)
 
-    # count
-    # count_chart = go.Figure(go.Heatmap(z = field_count, colorscale='Jet'))
-    # count_chart.update_layout(**layout, title=f'Count per pixel of {len(all_fields)} fields')
-    # exp_left.plotly_chart(count_chart, use_container_width=True)
+    # entropy charts
+    st.sidebar.markdown('## Interpolation Entropy')
+    calculate_entropy = st.sidebar.checkbox('Activate Entropy calculation', value=False, help="The calculation can take several minutes.")
+    H_cv = st.sidebar.checkbox('Cross-validate each field', value=False, help='Get per-interpolation entropy contributions (very costy)')
 
-    # # std
-    # std_chart = go.Figure(go.Heatmap(z=fields_std, colorscale='Cividis'))
-    # std_chart.update_layout(**layout, title=f'Std. of {len(all_fields)} fields')
-    # exp_right.plotly_chart(std_chart, use_container_width=True)
+    if H_cv:
+        #cv_num = st.sidebar.slider('Select the field', min_value=1, max_value=len(used_models) + 1, value=1)
+        cv_num = st.sidebar.selectbox(
+            'Select the field',
+            options=[i for i in range(len(used_models))],
+            format_func=lambda i: f"#{used_models[i]['id']} - {used_models[i]['model']}"
+        )
+    
+    if calculate_entropy:
+        with st.spinner('Calculating Entropy... (can take several minutes)'):
+            H, cv = project.kriged_field_stack_entropy(cross_validate=cv_num if H_cv else None)
+            H_chart = entropy_chart(H, title="Total cell-based interpolation Entropy")
+
+            if cv is None:
+                more_plots.plotly_chart(H_chart, use_container_width=True)
+            else:
+                H_left, H_right = more_plots.beta_columns(2)
+                H_left.plotly_chart(H_chart, use_container_width=True)
+
+                Hcv_chart = entropy_chart(cv, colorscale='Purples', title=f"Interpolation #{used_models[cv_num]['id']} Entropy contribution")
+                H_right.plotly_chart(Hcv_chart, use_container_width=True)
 
     # histogram
     hist_container = more_plots.empty()
@@ -395,20 +462,6 @@ def st_app(project: Project = None) -> Project:
     
     # hist_interp = go.Figure(go.Histogram(x=fields_mean.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Interpolation'))
     original = project.original_field
-    
-    # add original if preset
-    # if original is not None:
-    #     hist_interp.add_trace(go.Histogram(x=original.flatten(), histnorm='probability density', cumulative_enabled=hist_cum, name='Original field'))
-
-    # hist_interp.update_layout(
-    #     title='Histogram%s' % ('s' if original is not None else ''),
-    #     barmode='overlay',
-    #     paper_bgcolor='rgba(0,0,0,0)',
-    #     plot_bgcolor='rgba(0,0,0,0)',
-    #     legend=dict(orientation='h', yanchor='bottom', y=1.05)
-    # )
-    # hist_interp.update_traces(opacity=.6)
-    # more_plots.plotly_chart(hist_interp, use_container_width=True)
     
     hist_interp = more_result_charts(fields_mean, original, hist_cum)
     hist_container.plotly_chart(hist_interp, use_container_width=True)
@@ -425,6 +478,8 @@ def st_app(project: Project = None) -> Project:
         mean_chart.write_image(project.result_base_name % f'kriging_{lo}_{hi}_interpolation.pdf')
         # std_chart.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_interp_std.pdf')
         hist_interp.write_image(project.result_base_name % f'_kriging_{lo}_{hi}_historgrams.pdf')
+        if calculate_entropy:
+            H_chart.write_image(project.result_base_name % 'kriging_entropy.pdf')
         if add_3d_plot:
             surface_chart.write_image(project.result_base_name % '_kriging_surfaces.pdf')
 

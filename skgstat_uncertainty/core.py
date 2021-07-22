@@ -1,4 +1,4 @@
-from typing import Optional, Union, Literal, List
+from typing import Optional, Union, Literal, List, Tuple
 import os
 import io
 import glob
@@ -6,13 +6,46 @@ import json
 import hashlib
 import tarfile
 from typing import List
+from numpy.lib.arraysetops import isin
 import skgstat as skg
 import numpy as np
 import pandas as pd
 from datetime import datetime as dt
+from numba import njit
+import multiprocessing
 
 from skgstat_uncertainty import templates
 #from . import templates
+
+
+@njit
+def entropy(x, bins):
+        # calculate p
+        count, _ = np.histogram(x, bins=bins)
+        p = count / np.sum(count) + 1e-15
+        
+        # calculate H
+        H = - np.sum(p * np.log2(p))
+
+        return H
+
+
+def unpack(args):
+    (func, bins, axis, arr) = args
+    return np.apply_along_axis(lambda x: func(x, bins), axis, arr)
+
+
+def apply_along_axis_multi(arr, bins) -> np.ndarray:
+    # create the chunks as unpack uses them - axis is hard-coded
+    chunks = [(entropy, bins, 2, sub, ) for sub in np.array_split(arr, multiprocessing.cpu_count())]
+
+    # create a pool and run
+    pool = multiprocessing.Pool()
+    chunk_results = pool.map(unpack, chunks)
+    pool.close()
+    pool.join()
+    return np.concatenate(chunk_results)
+
 
 class Project:    
     def __init__(
@@ -45,6 +78,10 @@ class Project:
         # set the filter for model params
         self._filtered_models = None
         self._cached_model_fields = None
+        
+        # entropy containers
+        self._H = None
+        self._H_cv = None
 
         # set these after the fields and model caches are created
         self.std_target = std_target
@@ -89,6 +126,10 @@ class Project:
     @property
     def fpath_model_fits(self):
         return os.path.join(self.data_path, 'model_fits.json')
+
+    @property
+    def fpath_entropy(self):
+        return os.path.join(self.data_path, f'{self._vario}_{self.n_iterations}_entropy.npz')
 
     @property
     def initialized(self):
@@ -138,6 +179,8 @@ class Project:
         # reset cache
         self._filtered_models = None
         self._cached_model_fields = None
+        self._H = None
+        self._H_cv = None
     
     @property
     def sigma(self):
@@ -150,6 +193,8 @@ class Project:
         # reset cache
         self._filtered_models = None
         self._cached_model_fields = None
+        self._H = None
+        self._H_cv = None
 
     @property
     def std_level(self):
@@ -241,6 +286,65 @@ class Project:
         cached = self.cached_fields
         return [p['md5'] for p in self.prefiltered_models if p['md5'] not in cached]
 
+    @property
+    def entropy_hash(self):
+        # grab the current settings
+        model_hashes = [p['md5'] for p in self._filtered_models if p['id'] not in self._exclude_model_ids]
+        hashes = ''.join([self._vario, *model_hashes])
+        
+        # hash the settings as index
+        return hashlib.sha256(hashes.encode()).hexdigest()
+    
+    @property
+    def H(self):
+        if self._H is not None:
+            return self._H
+        else:
+            # get the current hash
+            md5 = self.entropy_hash
+
+            # load the store
+            if os.path.exists(self.fpath_entropy):
+                store = np.load(self.fpath_entropy)
+            else:
+                store = dict()
+            return store.get(md5)
+    
+    @H.setter
+    def H(self, new_field):
+        # get the current entropy settings hash
+        md5 = self.entropy_hash
+
+        # save
+        if new_field is not None:
+            np.savez(self.fpath_entropy, **{md5: new_field})
+        self._H = new_field
+
+    @property
+    def H_cv(self):
+        if self._H_cv is not None:
+            return self._H_cv
+        else:
+            # get current hash
+            md5 = self.entropy_hash + '_cv'
+
+            # load store
+            if os.path.exists(self.fpath_entropy):
+                store = np.load(self.fpath_entropy)
+            else:
+                store = dict()
+            return store.get(md5)
+        
+    @H_cv.setter
+    def H_cv(self, new_field: np.ndarray):
+        # get the curretn entropy settings hash
+        md5 = self.entropy_hash + '_cv'
+
+        # save
+        if new_field is not None:
+            np.savez(self.fpath_entropy, **{md5: new_field})
+        self._H_cv = new_field
+
     def prefilter_models(self):
         """
         Filter model parameters and fill filtered_model array.
@@ -267,11 +371,17 @@ class Project:
             self._filtered_models = [p for p in all_models if np.abs(criterion - p[evalf]) <= rmse_std * self.std_level or (self.filter_include_fit and p['fit'] >= self._filter_include_level)]
         else:
             self._filtered_models = []
+        
+        # empty the entropy cache
+        self._H = None
+        self._H_cv = None
 
     def load_kriging_cache(self, force_reload=False, check_excuded=True):
         # create cache 
         if self._cached_model_fields is None or force_reload:
             self._cached_model_fields = dict()
+            self._H = None
+            self._H_cv = None
         
         # go for all prefiltered models
         for param in self.prefiltered_models:
@@ -292,6 +402,11 @@ class Project:
                     raise KeyError
                 else:
                     self._cached_model_fields[md5] = field
+
+                    # a new field was added to the cache, so the entropy cache has to be emptied
+                    self._H = None
+                    self._H_cv = None
+
             except KeyError:
                 continue
 
@@ -871,7 +986,71 @@ class Project:
         count = np.count_nonzero(stack, axis=2)
 
         return lower, higher, mean, std, count
+
+    def kriged_field_stack_entropy(self, cross_validate = None) -> Tuple[np.ndarray, np.ndarray]:        
+        # get the current stacj
+        H = self.H
         
+        # get the stack
+        fs = self.kriged_field_stack
+    
+        # get the original
+        original = self.truncated_original_field()
+
+        # if there is no original, return
+        if original is None:
+            return None 
+        
+        # create the container of the entropy fields
+        dist = np.ones(fs.shape) * np.nan
+
+        # get the absolute difference of each field to the original
+        for i in range(fs.shape[2]):
+            dist[:, :, i] = np.abs(original - fs[:, :, i])
+
+        # create the binning based on current sigma
+        bins = np.arange(np.min(dist), np.max(dist), self.sigma)
+
+        # calculate maximum entropy
+        H_max = - np.sum([1 / len(bins) * np.log2(1 / len(bins)) for _ in range(len(bins))])
+
+        if H is None:
+            # for each pixel
+            H = apply_along_axis_multi(dist, bins) / H_max
+            self.H = H
+
+        # cross validate
+        if cross_validate is not None:
+            H_cv = self.H_cv
+            if H_cv is None:
+                H_cv = np.ones(fs.shape) * np.nan
+
+            # go for the fields
+            for i in range(fs.shape[2]):
+                # do not calculate if not needed
+                if isinstance(cross_validate, int) and cross_validate != i:
+                    continue
+                
+                # check cache
+                if np.isnan(H_cv[:, :, i]).any():
+                    # get all dist along axis=2, but the current index
+                    in_arr = dist.take(indices=[j for j in range(dist.shape[2]) if j != i], axis=2)
+                    _cv = apply_along_axis_multi(in_arr, bins) / H_max
+                    H_cv[:, :, i] = (1 - (_cv / H)) * 100
+            
+            # update
+            self.H_cv = H_cv
+
+            # fill
+            if isinstance(cross_validate, int):
+                cv = H_cv[:, :, cross_validate]
+            else:
+                cv = H_cv
+        else:
+            cv = None
+
+        return H, cv
+
     def kriged_fields_info(self, lower: int, higher: int) -> List[dict]:
         # result container
         single_fields = []
@@ -891,6 +1070,7 @@ class Project:
                 'model': params.get('model').capitalize(),
                 'model fit': '%.1f %%' % params.get('fit'),
                 'model fit RMSE': '%.1f' % params.get('rmse'),
+                'cross-validate MAE': '%.1f' % params.get('cv'),
                 'in interval': '%.1f %%' % (np.sum((field >= lower) & (field <= higher).astype(int)) / (np.multiply(*field.shape)) * 100),
                 'value range': '[%d, %d]' % (int(np.min(field)), int(np.max(field)))
             }
