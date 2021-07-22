@@ -181,6 +181,18 @@ class Project:
         self._cached_model_fields = None
         self._H = None
         self._H_cv = None
+
+    @property
+    def vario_plot_obs(self):
+        coords = self.vario.coordinates
+
+        # extract x and y coordinates
+        # move to minimum interpolated cell coordinate (ll)
+        obs_x = coords[:, 0] - np.min(coords[:, 0])
+        obs_y = coords[:, 1] - np.min(coords[:, 1])
+        vals = self.vario.values
+
+        return obs_x, obs_y, vals
     
     @property
     def sigma(self):
