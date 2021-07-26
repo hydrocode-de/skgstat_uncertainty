@@ -470,8 +470,11 @@ def st_app(project: Project = None) -> Project:
     
     if calculate_entropy:
         with st.spinner('Calculating Entropy... (can take several minutes)'):
-            H, cv = project.kriged_field_stack_entropy(cross_validate=cv_num if H_cv else None)
+            H, cv, H_max = project.kriged_field_stack_entropy(cross_validate=cv_num if H_cv else None)
             H_chart = entropy_chart(H, title="Total cell-based interpolation Entropy")
+
+            # print out maximum entropy
+            more_plots.markdown(f"The shown entropy maps are normalized by the maximum entropy of `{round(H_max, 2)} bit`")
 
             if cv is None:
                 more_plots.plotly_chart(H_chart, use_container_width=True)

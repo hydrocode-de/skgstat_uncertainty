@@ -1000,7 +1000,7 @@ class Project:
         return lower, higher, mean, std, count
 
     def kriged_field_stack_entropy(self, cross_validate = None) -> Tuple[np.ndarray, np.ndarray]:        
-        # get the current stacj
+        # get the current stack
         H = self.H
         
         # get the stack
@@ -1061,7 +1061,7 @@ class Project:
         else:
             cv = None
 
-        return H, cv
+        return H, cv, H_max
 
     def kriged_fields_info(self, lower: int, higher: int) -> List[dict]:
         # result container
