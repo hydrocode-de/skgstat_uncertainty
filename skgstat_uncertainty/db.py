@@ -29,8 +29,8 @@ def _get_sqlite_engine(**kwargs):
 
     return engine
 
-def get_session(uri: str, mode: str = 'session', **kwargs) -> Session:
-    if uri.startswith('sqlite'):
+def get_session(uri: str = None, mode: str = 'session', **kwargs) -> Session:
+    if uri is None:
         engine = _get_sqlite_engine(**kwargs)
     else:
         engine = create_engine(uri)

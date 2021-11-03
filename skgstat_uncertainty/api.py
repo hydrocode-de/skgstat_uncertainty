@@ -13,7 +13,7 @@ class API:
             self.session = get_session(self._kwargs['uri'], mode='session')
         else:
             # open a database session
-            self.session = get_session(uri='sqlite', mode='session', **{k: v for k, v in self._kwargs.items() if k in ('db_name', 'data_path')})
+            self.session = get_session(uri=None, mode='session', **{k: v for k, v in self._kwargs.items() if k in ('db_name', 'data_path')})
 
     def get_upload_names(self, data_type: Union[List[str], str] = None):
         # get base query
