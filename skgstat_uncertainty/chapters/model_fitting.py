@@ -63,7 +63,7 @@ def apply_model(vario: VarioParams, interval: VarioConfInterval, figure: go.Figu
     nugget, sill = st.sidebar.slider('Nugget and sill', min_value=0.0, max_value=2 * max_bound, value=[0.0, 0.98 * max_bound])
     _range = st.sidebar.slider('Effective Range', min_value=0.0, max_value=float(np.max(variogram.bins)), value=max_bin)
     if model == 'stable':
-        _s = st.sidebar.slider('Shape Parameter', min_value=0.0, max_value=10.0, value=1.0)
+        _s = st.sidebar.slider('Shape Parameter', min_value=0.05, max_value=2.0, value=0.5)
     elif model == 'matern':
         _s = st.sidebar.slider('Smoothness Parameter', min_value=0.2, max_value=10.0, value=2.0)
     else:
