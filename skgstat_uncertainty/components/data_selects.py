@@ -89,7 +89,7 @@ def data_selector(api: API, stop_with: str = '', data_type='sample', container=s
 
     # get the different data names - only for samples
     DATA_NAMES = api.get_upload_names(data_type=data_type)
-    data_id = expander.selectbox('Sample dataset', options=list(DATA_NAMES.keys()), format_func=lambda k: DATA_NAMES.get(k))
+    data_id = expander.selectbox('Sample dataset', options=list(DATA_NAMES.keys()), format_func=lambda k: f'{DATA_NAMES.get(k)} <{k}>')
     dataset = api.get_upload_data(id=data_id)
     
     # check if that is all we need
@@ -97,25 +97,25 @@ def data_selector(api: API, stop_with: str = '', data_type='sample', container=s
         return dataset
 
     # filter variograms by data_id
-    variograms = api.filter_vario_params(data_id=data_id)
+    variograms = {v.id: v for v in api.filter_vario_params(data_id=data_id)}
     if len(variograms) == 0:
         expander.warning(f"There are no variograms estimated for dataset '{DATA_NAMES.get(data_id)}'")
         st.stop()
-    vario_id = expander.selectbox('Variogram', options=[v.id for v in variograms], format_func=lambda k: [v for v in variograms if v.id==k][0].name)
-    vario = [v for v in variograms if v.id == vario_id][0]
+    vario_id = expander.selectbox('Variogram', options=list(variograms.keys()), format_func=lambda k: f'{variograms.get(k).name} <{variograms.get(k).name}>')
+    vario = variograms.get(vario_id)
 
     if stop_with == 'params':
         return dataset, vario
 
     # load the intervals
-    intervals = vario.conf_intervals
+    intervals = {cv.id: cv for cv in vario.conf_intervals}
 
     if len(intervals) == 0:
         expander.warning(f"No confidence intervals are estimated for variogram '{vario.name}'")
         st.stop()
 
-    conf_id = expander.selectbox('Confidence Interval', options=[c.id for c in intervals], format_func=lambda k: [c for c in intervals if c.id==k][0].name)
-    interval: VarioConfInterval = [c for c in intervals if c.id == conf_id][0]
+    conf_id = expander.selectbox('Confidence Interval', options=list(intervals.keys()), format_func=lambda k: f'{intervals.get(k).name} <{intervals.get(k).id}>')
+    interval: VarioConfInterval = intervals[conf_id]
 
     return dataset, vario, interval
 
