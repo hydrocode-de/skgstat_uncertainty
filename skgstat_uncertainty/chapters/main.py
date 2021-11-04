@@ -1,6 +1,7 @@
 import streamlit as st
 
 from skgstat_uncertainty.api import API
+from skgstat_uncertainty.db import DATAPATH, DBNAME
 from skgstat_uncertainty.chapters.data_manage import main_app as data_manager
 from skgstat_uncertainty.chapters.variogram import main_app as variogram_app
 from skgstat_uncertainty.chapters.model_fitting import main_app as fitting_app
@@ -25,7 +26,7 @@ def navigation(container = st) -> str:
     return page
 
 
-def main_app(db_name='data.db'):
+def main_app(data_path=DATAPATH, db_name=DBNAME):
     st.set_page_config('SciKit-GStat Uncertainty', layout='wide')
     navigation_expander = st.sidebar.expander('Navigation', expanded=True)
 
@@ -33,7 +34,7 @@ def main_app(db_name='data.db'):
     page_name = navigation(navigation_expander)
 
     # DEV decide if there are pages, that do not need a API
-    api = API(db_name=db_name)
+    api = API(data_path=data_path, db_name=db_name)
 
     if page_name == 'data':
         data_manager(api=api)
