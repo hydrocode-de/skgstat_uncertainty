@@ -151,7 +151,7 @@ def apply_kriging(models: List[VarioModel], dataset: DataUpload, vario: VarioPar
         _x, _y = np.array(opts['call_args']['ext_drift']).shape
     elif dataset.data.get('field_id', False):
         parent_dataset = api.get_upload_data(id=dataset.data.get('field_id'))
-        parent_filed = parent_dataset.data['field']
+        parent_field = parent_dataset.data['field']
         _x, _y = np.array(parent_field).shape
     else:
         c = vario.variogram.coordinates
