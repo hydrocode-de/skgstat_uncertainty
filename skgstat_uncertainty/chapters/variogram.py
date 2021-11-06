@@ -88,7 +88,13 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
         values = dataset.data['v']
 
         # all set -> estimate the variogram
-        V = Variogram(coords, values, estimator=estimator, bin_func=bin_func, n_lags=n_lags, maxlag=maxlag)
+        try:
+            V = Variogram(coords, values, estimator=estimator, bin_func=bin_func, n_lags=n_lags, maxlag=maxlag)
+        except Exception as e:
+            st.info('Sorry. The chosen parameters did not result in a valid variogram. See below for the actual error')
+            err_expander = st.expander('ERROR DETAILS')
+            err_expander.exception(e)
+            st.stop()
     else:
         # create a variogram loading selector
         vario_id = st.selectbox('Load Variogram', options=list(available_vario_names.keys()), format_func=lambda k: available_vario_names.get(k))
