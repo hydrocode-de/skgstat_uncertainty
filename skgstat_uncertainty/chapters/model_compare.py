@@ -14,7 +14,7 @@ from skgstat_uncertainty.components.utils import variomodel_to_dict
 
 def measure_plot(models: List[VarioModel], container=st, option_container=st.sidebar) -> str:
     # get the models as list
-    data = variomodel_to_dict(models)
+    data = variomodel_to_dict(models, add_measures=True)
 
     # get the column layout
     opts, fig_area = container.columns((3, 6))

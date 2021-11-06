@@ -8,7 +8,7 @@ from .utils import variomodel_to_dict
 
 def model_table(models: List[VarioModel], variant='table', excluded_models=[], container=st, table_anchor=None):
     # get the models as list
-    data = variomodel_to_dict(models)
+    data = variomodel_to_dict(models, add_measures=True)
 
     if table_anchor is None:
         table_anchor = container.empty()
