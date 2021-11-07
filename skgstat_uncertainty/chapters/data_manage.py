@@ -14,53 +14,6 @@ ACT = {
     'upload': 'Uplaod new dataset',
     'sample': 'Sample an existing dataset'
 }
-def upload_handler(api: API) -> DataUpload:
-    st.markdown("""Upload data to the application. The following MIME types are supported:
-    
-    \r* _csv_: A csv file containing the headers 'x' and 'y' for coordinates and 'v' for values
-    \r* _asc_, _txt_: a space delimeted file of a 2D field (rows x cols)
-
-    """)    
-
-    # create the upload handler    
-    uploaded_file = st.file_uploader('Choose the data', ['csv', 'asc', 'txt'])
-
-    # if no file uploaded stop the application
-    if uploaded_file is None:
-        st.stop()
-    
-    # get the mime type
-    data_name, mime = os.path.splitext(uploaded_file.name)
-
-    if mime == '.csv':
-        data = pd.read_csv(uploaded_file)
-                
-        if not 'x' in data.columns and 'y' in data.columns and 'v' in data.columns:
-            st.error('CSV files need to specify the columns x and y for coordinates and v for values.')
-            st.stop()
-
-        # save data
-        dataset = api.set_upload_data(
-            data_name,
-            'sample',
-            x=data.x.values.tolist(),
-            y=data.y.values.tolist(),
-            v=data.z.values.tolist()
-        )
-    elif mime == '.asc' or mime == '.txt':
-        data = np.loadtxt(uploaded_file)
-
-        # save the data
-        dataset = api.set_upload_data(
-            data_name,
-            'field',
-            field=data.tolist()
-        )
-    else:
-        st.error(f'File of type {mime} not supported.')
-        st.stop()
-
-    return dataset
 
 
 def sample_dense_data(dataset: DataUpload, api: API):
@@ -178,7 +131,7 @@ def main_app(api: API):
 
     if action == 'upload':
         # upload handler
-        dataset = upload_handler(api=api)
+        dataset = components.upload_handler(api=api, can_select=False)
 
         # add auxiliary upload
         components.upload_auxiliary_data(dataset=dataset, api=api)

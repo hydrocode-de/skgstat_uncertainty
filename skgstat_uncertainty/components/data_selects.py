@@ -6,12 +6,12 @@ import numpy as np
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload, VarioParams, VarioConfInterval
 
-def upload_handler(api: API, container=st) -> DataUpload:
+def upload_handler(api: API, can_select=True, container=st) -> DataUpload:
     # get all existing upload names
     all_names = api.get_upload_names(data_type=['field', 'sample'])
 
     # check if there is already data available
-    if len(all_names) > 0:
+    if len(all_names) > 0 and can_select:
         do_upload = container.checkbox('Upload new data anyway', value=False)
 
         # if no upload wanted, choose existing data
