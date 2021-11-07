@@ -1,12 +1,13 @@
 from typing import Union, Tuple
 import streamlit as st
 import os
+import json
 import numpy as np
 
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload, VarioParams, VarioConfInterval
 
-def upload_handler(api: API, can_select=True, container=st) -> DataUpload:
+def upload_handler(api: API, can_select=True, upload_mime=['csv', 'asc', 'txt', 'json'], container=st) -> DataUpload:
     # get all existing upload names
     all_names = api.get_upload_names(data_type=['field', 'sample'])
 
@@ -29,15 +30,20 @@ def upload_handler(api: API, can_select=True, container=st) -> DataUpload:
 
     # if uploading is required -> upload and restart
     if do_upload:
-        container.markdown("""Upload data to the application. The following MIME types are supported:
-        
-        \r* _csv_: A csv file containing the headers 'x' and 'y' for coordinates and 'v' for values
-        \r* _asc_, _txt_: a space delimeted file of a 2D field (rows x cols)
+        msg = "Upload data to the application. The following MIME types are supported:\n\n"
+        if 'csv' in upload_mime:
+            msg += "\r* _csv_: A csv file containing the headers 'x' and 'y' for coordinates and 'v' for values\n"
+        if 'asc' or 'txt' in upload_mime:
+            msg += "\r* _asc_, _txt_: a space delimeted file of a 2D field (rows x cols)\n"
+        if 'json' in upload_mime:
+            msg += "\r* _json_: JSON file of a raw database dump - __experimental__."
+        msg += "\n\n"
 
-        """)
-        # TODO: upload options here - csv, png, asc etc
+        # display message
+        container.markdown(msg)
+
         uploaded_file = container.file_uploader(
-            'Choose the data', ['csv', 'asc', 'txt'])
+            'Choose the data', upload_mime)
 
         if uploaded_file is not None:
             data_name, mime = os.path.splitext(uploaded_file.name)
@@ -58,6 +64,7 @@ def upload_handler(api: API, can_select=True, container=st) -> DataUpload:
                     y=data.y.values.tolist(),
                     v=data.z.values.tolist()
                 )
+            
             elif mime == '.asc' or mime == '.txt':
                 data = np.loadtxt(uploaded_file)
 
@@ -67,6 +74,25 @@ def upload_handler(api: API, can_select=True, container=st) -> DataUpload:
                     'field',
                     field=data.tolist()
                 )
+            
+            elif mime == '.json':
+                data = json.load(uploaded_file)
+
+                # check type
+                if 'x' in data and 'y' in data and 'v' in data:
+                    type_ = 'sample'
+                elif 'field' in data:
+                    type_ = 'field'
+                else:
+                    type_ = 'generic'
+
+                # save the data
+                dataset = api.set_upload_data(
+                    data_name,
+                    type_,
+                    **data
+                )
+
             else:
                 container.error(f'File of type {mime} not supported.')
                 st.stop()

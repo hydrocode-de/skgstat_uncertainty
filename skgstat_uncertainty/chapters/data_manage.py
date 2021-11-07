@@ -12,7 +12,8 @@ from skgstat_uncertainty.processor import sampling
 
 ACT = {
     'upload': 'Uplaod new dataset',
-    'sample': 'Sample an existing dataset'
+    'sample': 'Sample an existing dataset',
+    'list': 'List existing dataset'
 }
 
 
@@ -121,6 +122,10 @@ def sample_dense_data(dataset: DataUpload, api: API):
     st.stop()
 
 
+def list_datasets(api: API):
+    st.warning("Not yet implemented")
+
+
 def main_app(api: API):
     st.title('Data Upload manager')
     st.markdown("Use this chapter to upload new datasets and create new samples.")
@@ -137,14 +142,23 @@ def main_app(api: API):
         components.upload_auxiliary_data(dataset=dataset, api=api)
 
         # plot the uploaded data
-        fig = go.Figure(go.Heatmap(z=dataset.data['field']))
-        fig.update_layout(
-            height=750,
-            yaxis=dict(scaleanchor='x'), 
-            plot_bgcolor='rgba(0,0,0,0)'
-        )
-        st.plotly_chart(fig, use_container_width=True)
+        if 'field' in dataset.data:
+            fig = go.Figure(go.Heatmap(z=dataset.data['field']))
+            fig.update_layout(
+                height=750,
+                yaxis=dict(scaleanchor='x'), 
+                plot_bgcolor='rgba(0,0,0,0)'
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        else:
+            st.warning(f"Preview plot for Samples still missing.")
+        
+            # check if this dataset has origin information
+        if 'origin' in dataset.data:
+            origin = dataset.data['origin']
 
+            oexp = st.expander('DATASET INFO', expanded=True)
+            oexp.markdown(f'## Origin information\n{origin}')
 
     elif action == 'sample':
         # create the data select
@@ -152,10 +166,9 @@ def main_app(api: API):
 
         # dev only 
         sample_dense_data(dataset=dataset, api=api)
-
-    st.success('Finished!')
-
-
+    
+    elif action == 'list':
+        list_datasets(api=api)
 
 
 if __name__=='__main__':
