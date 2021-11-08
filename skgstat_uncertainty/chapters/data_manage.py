@@ -122,8 +122,24 @@ def sample_dense_data(dataset: DataUpload, api: API):
     st.stop()
 
 
-def list_datasets(api: API):
-    st.warning("Not yet implemented")
+def list_datasets(api: API, container=st):
+    # select a dataset
+    all_names = api.get_upload_names()
+    data_id = container.selectbox('DATASET', options=list(all_names.keys()), format_func=lambda k: all_names.get(k))
+    dataset = api.get_upload_data(id=data_id)
+
+    # preview data
+    container.title(f"{dataset.data_type.upper()} dataset")
+    components.dataset_plot(dataset)
+
+    # some basic stats
+    stats = [
+        {'Stat': 'Estimated experimental variograms', 'Value': len(dataset.variograms)},
+        {'Stat': 'Total number of fitted models', 'Value': np.sum([[len(cv.models) for cv in v.conf_intervals] for v in dataset.variograms])}
+    ]
+
+    container.markdown('## Related data')
+    container.table(stats)
 
 
 def main_app(api: API):
@@ -140,18 +156,8 @@ def main_app(api: API):
 
         # add auxiliary upload
         components.upload_auxiliary_data(dataset=dataset, api=api)
-
-        # plot the uploaded data
-        if 'field' in dataset.data:
-            fig = go.Figure(go.Heatmap(z=dataset.data['field']))
-            fig.update_layout(
-                height=750,
-                yaxis=dict(scaleanchor='x'), 
-                plot_bgcolor='rgba(0,0,0,0)'
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        else:
-            st.warning(f"Preview plot for Samples still missing.")
+        st.markdown('### Preview')
+        components.dataset_plot(dataset=dataset)
         
             # check if this dataset has origin information
         if 'origin' in dataset.data:
