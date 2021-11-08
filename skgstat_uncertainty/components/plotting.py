@@ -6,7 +6,7 @@ from random import choice
 from string import ascii_letters
 import base64
 
-from skgstat_uncertainty.models import VarioModelResult
+from skgstat_uncertainty.models import VarioModelResult, DataUpload
 
 
 def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: List[int] = [], container=st, key='', disable_download=True):
@@ -109,3 +109,33 @@ def figure_download_link(figure: go.Figure, filename: str = None) -> str:
 
     # create the anchor tag
     return f"""<a href="data:application/pdf;base64,{b64.decode()}" download="{filename}">Download {filename}</a>"""
+
+
+def dataset_plot(dataset: DataUpload, container=st) -> None:
+    # switch the figure type
+    if dataset.data_type == 'field' or dataset.data_type == 'auxiliary':
+        fig = go.Figure(
+            go.Heatmap(z=dataset.data['field'])
+        )
+
+        fig.update_layout(
+            height=750,
+            yaxis=dict(scaleanchor='x'), 
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+
+        container.plotly_chart(fig, use_container_width=True)
+    elif dataset.data_type == 'sample':
+        fig = go.Figure(
+            go.Scatter(x=dataset.data['x'], y=dataset.data['y'], mode='markers', marker=dict(size=8, symbol='cross', color=dataset.data['v']))
+        )
+
+        fig.update_layout(
+            height=750,
+            yaxis=dict(scaleanchor='x'), 
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
+
+        container.plotly_chart(fig, use_container_width=True)
+    else:
+        container.json(dataset.data)
