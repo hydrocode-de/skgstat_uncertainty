@@ -130,13 +130,22 @@ def list_datasets(api: API, container=st):
 
     # preview data
     container.title(f"{dataset.data_type.upper()} dataset")
-    components.dataset_plot(dataset)
+
+    if 'origin' in dataset.data:
+        container.markdown(dataset.data['origin'])
+
+    # create a preview plot
+    components.dataset_plot(dataset, disable_download=False)
 
     # some basic stats
     stats = [
         {'Stat': 'Estimated experimental variograms', 'Value': len(dataset.variograms)},
-        {'Stat': 'Total number of fitted models', 'Value': np.sum([[len(cv.models) for cv in v.conf_intervals] for v in dataset.variograms])}
+        {'Stat': 'Total number of fitted models', 'Value': np.sum([[len(cv.models) for cv in v.conf_intervals] for v in dataset.variograms])},
     ]
+
+    # check if there is a parent field
+    if 'field_id' in dataset.data:
+        stats.append({'Stat': 'Parent field id', 'Value': dataset.data['field_id']})
 
     container.markdown('## Related data')
     container.table(stats)

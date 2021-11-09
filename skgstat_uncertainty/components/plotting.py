@@ -6,7 +6,7 @@ from random import choice
 from string import ascii_letters
 import base64
 
-from skgstat_uncertainty.models import VarioModelResult, DataUpload
+from skgstat_uncertainty.models import VarioModel, VarioModelResult, DataUpload
 
 
 def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: List[int] = [], container=st, key='', disable_download=True):
@@ -111,7 +111,7 @@ def figure_download_link(figure: go.Figure, filename: str = None) -> str:
     return f"""<a href="data:application/pdf;base64,{b64.decode()}" download="{filename}">Download {filename}</a>"""
 
 
-def dataset_plot(dataset: DataUpload, container=st) -> None:
+def dataset_plot(dataset: DataUpload, disable_download=True, key='', container=st) -> None:
     # switch the figure type
     if dataset.data_type == 'field' or dataset.data_type == 'auxiliary':
         fig = go.Figure(
@@ -139,3 +139,10 @@ def dataset_plot(dataset: DataUpload, container=st) -> None:
         container.plotly_chart(fig, use_container_width=True)
     else:
         container.json(dataset.data)
+        return
+    
+    # if this is run, an actual plot was created
+    if not disable_download:
+        do_download = container.button('DOWNLOAD', key=f'download_{key}')
+        if do_download:
+            container.write(figure_download_link(fig), unsafe_allow_html=True)
