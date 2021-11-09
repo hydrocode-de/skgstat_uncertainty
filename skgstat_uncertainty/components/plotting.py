@@ -6,7 +6,7 @@ from random import choice
 from string import ascii_letters
 import base64
 
-from skgstat_uncertainty.models import VarioModel, VarioModelResult, DataUpload
+from skgstat_uncertainty.models import VarioParams, VarioConfInterval, VarioModel, VarioModelResult, DataUpload
 
 
 def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: List[int] = [], container=st, key='', disable_download=True):
@@ -16,10 +16,16 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
         'single_sigma': 'Single model kriging error',
         'violin': 'Model violin plot'
     }
+    
+    # add field specific plotting options
     if len(kriging_fields) - len(excluded_models) >= 2:
+        # add multi plots
         TARGET['multi_field'] = 'Kriging estimation uncertainty bounds'
         TARGET['multi_sigma'] = 'Kriging error uncertainty bounds'
     
+        # add model plots
+        TARGET['model'] = 'Single model function'
+
     # Colorscales
     CS = ['Blackbody', 'Bluered', 'Blues','Cividis', 'Earth', 'Electric', 'Greens', 'Greys', 'Hot', 'Jet', 'Picnic','Portl', 'Rainbow', 'RdBu', 'Reds', 'Viridis', 'YlGnBu', 'YlOrRd']
 
@@ -79,6 +85,34 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
         fig.update_layout(
             title=TARGET.get(target),
             yaxis=dict(scaleanchor='x')
+        )
+
+    # SINGLE MODEL
+    elif target == 'model':
+        MODS = {res.model.id: f'{res.model.model_type.capitalize()} model <ID={res.model.id}>' for res in kriging_fields}
+        mod_id = header[1].selectbox('Model result', options=list(MODS.keys()), format_func=lambda k: MODS.get(k), key=f'model{key}')
+        
+        # load the data to display
+        model: VarioModel = [res.model for res in kriging_fields if res.model.id==mod_id].pop()
+
+        # load conf interval
+        interval = model.confidence_interval
+
+        # load vario
+        vario = model.confidence_interval.variogram
+
+        # create the base graph
+        fig = base_conf_graph(vario=vario, interval=interval, fig=fig)
+
+        # build the model
+        V = model.variogram
+        x = np.linspace(0, V.bins[-1], 100)
+        y = V.fitted_model(x)
+
+        # add the trace
+        fig.add_trace(go.Scatter(x=x, y=y, mode='lines', line=dict(color='green', width=3), name=f"{model.model_type.capitalize()} model <ID={model.id}>"))
+        fig.update_layout(
+            legend=dict(orientation='h')
         )
 
     # change the size for just any figure
@@ -146,3 +180,31 @@ def dataset_plot(dataset: DataUpload, disable_download=True, key='', container=s
         do_download = container.button('DOWNLOAD', key=f'download_{key}')
         if do_download:
             container.write(figure_download_link(fig), unsafe_allow_html=True)
+
+
+def base_conf_graph(vario: VarioParams, interval: VarioConfInterval, fig: go.Figure = None) -> go.Figure:
+    # load the interval
+    bounds = interval.spec['interval']
+    quartiles = interval.spec.get('quartiles', ['?', '?'])
+
+    # load the bins
+    x = vario.variogram.bins
+
+    # create the figure
+    if fig is None:
+        fig = go.Figure()
+
+    # create the plot
+    fig.add_trace(
+        go.Scatter(x=x, y=[b[0] for b in bounds], mode='lines', line_color='grey', fill=None, name=f'{quartiles[0]}% - percentile')
+    )
+    fig.add_trace(
+        go.Scatter(x=x, y=[b[1] for b in bounds], mode='lines', line_color='grey', fill='tonexty', name=f'{quartiles[1]}% - percentile')
+    )
+    fig.update_layout(
+        legend=dict(orientation='h'),
+        xaxis=dict(title='Lag', showgrid=False),
+        yaxis=dict(title=f"{vario.variogram.estimator.__name__.capitalize()} semi-variance", showgrid=False),
+    )
+
+    return fig

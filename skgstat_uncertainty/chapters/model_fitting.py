@@ -23,33 +23,6 @@ MODELS = {
 }
 
 
-def base_graph(vario: VarioParams, interval: VarioConfInterval) -> go.Figure:
-    # load the interval
-    bounds = interval.spec['interval']
-    quartiles = interval.spec.get('quartiles', ['?', '?'])
-
-    # load the bins
-    x = vario.variogram.bins
-
-    # create the figure
-    fig = go.Figure()
-
-    # create the plot
-    fig.add_trace(
-        go.Scatter(x=x, y=[b[0] for b in bounds], mode='lines', line_color='grey', fill=None, name=f'{quartiles[0]}% - percentile')
-    )
-    fig.add_trace(
-        go.Scatter(x=x, y=[b[1] for b in bounds], mode='lines', line_color='grey', fill='tonexty', name=f'{quartiles[1]}% - percentile')
-    )
-    fig.update_layout(
-        legend=dict(orientation='h'),
-        xaxis=dict(title='Lag', showgrid=False),
-        yaxis=dict(title=f"{vario.variogram.estimator.__name__.capitalize()} semi-variance", showgrid=False),
-    )
-
-    return fig
-
-
 def apply_model(vario: VarioParams, interval: VarioConfInterval, figure: go.Figure, other_models: List[VarioModel] = []) -> Tuple[go.Figure, dict]:
     # create the controls in the sidebar
     st.sidebar.title('Fitting Parameters')
@@ -238,7 +211,7 @@ def main_app(api: API) -> None:
         prior_models = []
 
     # create the base figure and show
-    fig = base_graph(vario=vario, interval=interval)
+    fig = components.base_conf_graph(vario=vario, interval=interval)
 
     # if still active apply fitting
     fig, params = apply_model(vario=vario, interval=interval, figure=fig, other_models=prior_models)
