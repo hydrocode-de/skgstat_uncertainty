@@ -125,6 +125,10 @@ def sample_dense_data(dataset: DataUpload, api: API):
 def list_datasets(api: API, container=st):
     # select a dataset
     all_names = api.get_upload_names()
+    if len(all_names) == 0:
+        container.warning('This database has no datasets. Please upload something.')
+        st.stop()
+    
     data_id = container.selectbox('DATASET', options=list(all_names.keys()), format_func=lambda k: all_names.get(k))
     dataset = api.get_upload_data(id=data_id)
 

@@ -115,6 +115,10 @@ def data_selector(api: API, stop_with: str = '', data_type='sample', container=s
 
     # get the different data names - only for samples
     DATA_NAMES = api.get_upload_names(data_type=data_type)
+    
+    if len(DATA_NAMES) == 0:
+        expander.markdown('No data available.')
+        st.stop()
     data_id = expander.selectbox('Sample dataset', options=list(DATA_NAMES.keys()), format_func=lambda k: f'{DATA_NAMES.get(k)} <{k}>')
     dataset = api.get_upload_data(id=data_id)
     
