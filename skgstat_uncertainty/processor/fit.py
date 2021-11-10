@@ -58,3 +58,32 @@ def cv(vario: VarioParams, params: dict) -> float:
     _cv = variogram.cross_validate()
 
     return _cv
+
+
+def aic(vario: VarioParams, params: dict) -> float:
+    # build the variogram instance
+    variogram = vario.variogram
+
+    # set the model
+    variogram.model = params['model']
+
+    # apply the parameters
+    variogram.fit(
+        method='manual',
+        range=params.get('range'),
+        sill=params.get('sill'),
+        nugget=params.get('nugget'),
+        shape=params.get('shape')
+    )
+
+    # predict
+    y = variogram.fitted_model(variogram.bins)
+
+    # get the number of parameters
+    k = 2 if nugget < 1e-3 else 3 if shape is None else 4
+    
+    # calcualte AIC
+    residuals = np.nansum(np.power(y - variogram.experimental, 2))
+    aic = 2 * k - 2 * np.log(residuals)
+
+    return aic
