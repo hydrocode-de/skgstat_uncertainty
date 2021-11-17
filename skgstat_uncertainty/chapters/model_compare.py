@@ -93,6 +93,12 @@ def measure_plot(models: List[VarioModel], container=st, option_container=st.sid
 
     # plot and return the measure
     fig_area.plotly_chart(fig, use_container_width=True)
+
+    # handle figure download
+    do_download = fig_area.button('DOWNLOAD', key='download_measure_plot')
+    if do_download:
+        download_link = components.figure_download_link(fig)
+        fig_area.write(download_link, unsafe_allow_html=True)
     
     return measure
 
