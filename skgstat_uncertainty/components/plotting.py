@@ -5,6 +5,7 @@ import plotly.graph_objects as go
 from random import choice
 from string import ascii_letters
 import base64
+from skinfo.metrics import entropy
 
 from skgstat_uncertainty.models import VarioParams, VarioConfInterval, VarioModel, VarioModelResult, DataUpload
 
@@ -69,19 +70,24 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
             fig.add_trace(go.Violin(x=data, name=f"{res.model.model_type.capitalize()} model <ID={res.model.id}>"))
         fig.update_layout(legend=dict(orientation='h'))
     
-    # UNCERTAINTY
-    elif target.startswith('multi_'):
-        cm = header[1].selectbox('Colorscale', options=CS, index=15, key=f'colorselect_{key}')
-        ident = target.split('_')[1]
+    # UNCERTAINTY AND ENTROPY
+    elif target.startswith('multi_') or target.startswith('entropy_'):
+        mode, ident = target.split('_')
+        cm = header[1].selectbox('Colorscale', options=CS, index=15 if mode=='multi' else 2, key=f'colorselect_{key}')
 
         # stack the stuff together
         fields = np.stack([res.content[ident] for res in kriging_fields if res.model.id not in excluded_models], axis=2)
 
         # calcualte the bounds width
-        bwidth = np.max(fields, axis=2) - np.min(fields, axis=2)
+        if mode == 'multi':
+            _result = np.max(fields, axis=2) - np.min(fields, axis=2)
+        else:
+            # calculate the bins by Scott's rule
+            bins = np.histogram_bin_edges(fields.flatten(), bins='scott')
+            _result = np.apply_along_axis(entropy, 2, fields, bins=bins, normalize=True)
 
         # build the figure
-        fig.add_trace(go.Heatmap(z=bwidth, colorscale=cm))
+        fig.add_trace(go.Heatmap(z=_result, colorscale=cm))
         fig.update_layout(
             title=TARGET.get(target),
             yaxis=dict(scaleanchor='x')
