@@ -131,7 +131,7 @@ def data_selector(api: API, stop_with: str = '', data_type='sample', container=s
     if len(variograms) == 0:
         expander.warning(f"There are no variograms estimated for dataset '{DATA_NAMES.get(data_id)}'")
         st.stop()
-    vario_id = expander.selectbox('Variogram', options=list(variograms.keys()), format_func=lambda k: f'{variograms.get(k).name} <{variograms.get(k).name}>')
+    vario_id = expander.selectbox('Variogram', options=list(variograms.keys()), format_func=lambda k: f'{variograms.get(k).name} <{variograms.get(k).id}>')
     vario = variograms.get(vario_id)
 
     if stop_with == 'params':
