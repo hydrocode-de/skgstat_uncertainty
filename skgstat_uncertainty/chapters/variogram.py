@@ -97,7 +97,7 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
             st.stop()
     else:
         # create a variogram loading selector
-        vario_id = st.selectbox('Load Variogram', options=list(available_vario_names.keys()), format_func=lambda k: available_vario_names.get(k))
+        vario_id = st.selectbox('Load Variogram', options=list(available_vario_names.keys()), format_func=lambda k: f"{available_vario_names.get(k)} <ID={k}>")
         
         vparam = api.get_vario_params(id=vario_id)
         V = vparam.variogram
@@ -197,7 +197,7 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
         x=V.bins,
         y=V.experimental,
         mode="markers",
-        marker=dict(size=10, color='#8effff'),
+        marker=dict(size=10, color='#8c24c7'),
         name="Experimental variogram"
     ))
     # handle intervals
@@ -206,7 +206,7 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
             x=V.bins,
             y=[b[0] for b in interval],
             mode='lines',
-            line_color='#bafcfc',
+            line_color='#9942cb',
             fill=None,
             name=f"{quartiles[0]}% percentile"
         ))
@@ -214,7 +214,7 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
             x=V.bins,
             y=[b[1] for b in interval],
             mode='lines',
-            line_color='#bafcfc',
+            line_color='#9942cb',
             fill='tonexty',
             name=f"{quartiles[1]}% percentile"
         ))
@@ -227,9 +227,15 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
     else:
         fig.update_yaxes(range=[0, 1.1 * np.nanmax(V.experimental)], title=f"{V.estimator.__name__} semi-variance")
     
+    # build figure
     fig.update_layout(legend=dict(orientation='h'))
     st.plotly_chart(fig, use_container_width=True)
 
+    # add download option
+    do_download = st.button('DOWNLOAD')
+    if do_download:
+        download_link = components.figure_download_link(fig)
+        st.write(download_link, unsafe_allow_html=True)
     
     if omit_estimation and interval is None:
         # variogram was loaded and no interval estimated, thus there is nothing to save

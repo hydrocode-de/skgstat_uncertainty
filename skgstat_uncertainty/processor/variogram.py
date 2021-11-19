@@ -72,7 +72,7 @@ def conf_interval_from_sample_std(variogram: Variogram, conf_level: 0.95) -> Lis
     # calculate the confidence interval for each group
     for est, grp in zip(variogram.experimental, variogram.lag_classes()):
         # get the z-score for standard normal distribution of given conf interval
-        z = stats.norm.ppf(conf_level)
+        z = stats.norm.ppf((1 + conf_level) / 2)
 
         # get the n and standard deviation of the sample
         n = len(grp)
