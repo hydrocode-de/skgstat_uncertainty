@@ -196,7 +196,7 @@ def apply_kriging(models: List[VarioModel], dataset: DataUpload, vario: VarioPar
         # update the bar
         progress.progress((i + 1) / n)
         prog_text.append(f"[{i + 1}/{n}]: kriging finsihed after {round(t2 - t1)} seconds.")
-        info_text.write('\n'.join(prog_text))
+        info_text.markdown('\n\n'.join(prog_text))
     
     end_time = time()
     runtime = end_time - start_time

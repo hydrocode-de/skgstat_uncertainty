@@ -23,6 +23,8 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
         # add multi plots
         TARGET['multi_field'] = 'Kriging estimation uncertainty bounds'
         TARGET['multi_sigma'] = 'Kriging error uncertainty bounds'
+        TARGET['entropy_field'] = 'Kriging estimation entropy map'
+        TARGET['entropy_model'] = 'Model entropy contribution'
     
         # add model plots
         TARGET['model'] = 'Single model function'
@@ -70,8 +72,8 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
             fig.add_trace(go.Violin(x=data, name=f"{res.model.model_type.capitalize()} model <ID={res.model.id}>"))
         fig.update_layout(legend=dict(orientation='h'))
     
-    # UNCERTAINTY AND ENTROPY
-    elif target.startswith('multi_') or target.startswith('entropy_'):
+    # UNCERTAINT
+    elif target.startswith('multi_'):
         mode, ident = target.split('_')
         cm = header[1].selectbox('Colorscale', options=CS, index=15 if mode=='multi' else 2, key=f'colorselect_{key}')
 
@@ -81,10 +83,6 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
         # calcualte the bounds width
         if mode == 'multi':
             _result = np.max(fields, axis=2) - np.min(fields, axis=2)
-        else:
-            # calculate the bins by Scott's rule
-            bins = np.histogram_bin_edges(fields.flatten(), bins='scott')
-            _result = np.apply_along_axis(entropy, 2, fields, bins=bins, normalize=True)
 
         # build the figure
         fig.add_trace(go.Heatmap(z=_result, colorscale=cm))
@@ -92,6 +90,42 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
             title=TARGET.get(target),
             yaxis=dict(scaleanchor='x')
         )
+
+    # ENTROPY MAPS
+    elif target.startswith('entropy_'):
+        mode, ident = target.split('_')
+        cm = header[1].selectbox('Colorscale', options=CS, index=15 if mode=='multi' else 2, key=f'colorselect_{key}')
+        # stack the stuff together
+        fields = np.stack([res.content['field'] for res in kriging_fields if res.model.id not in excluded_models], axis=2)
+
+        # get the confidence interval and experimental variogram
+        conf_interval: VarioConfInterval = kriging_fields[0].model.confidence_interval
+        obs = conf_interval.variogram.variogram.values
+
+        # calculute the bins 
+        bins = np.linspace(np.min(obs), np.max(obs), len(kriging_fields) - len(excluded_models))
+        all_h = np.apply_along_axis(entropy, 2, fields, bins=bins, normalize=True)
+
+        if ident == 'field':
+            # use the all_h result
+            _result = all_h
+        elif ident == 'model':
+            # calculate the h of the field
+            MODS = {res.model.id: f'{res.model.model_type.capitalize()} model <ID={res.model.id}>' for res in kriging_fields}
+            model_id = header[1].selectbox('Model result', options=list(MODS.keys()), format_func=lambda k: MODS.get(k), key=f'model{key}')
+            
+            # recreate the selected ids
+            selected_ids = [res.model.id for res in kriging_fields if res.model.id not in excluded_models]
+            _filtered = fields[:,:, [i for i, mod_id in enumerate(selected_ids) if mod_id != model_id]]
+            field_result = np.apply_along_axis(entropy, 2, _filtered, bins=bins, normalize=True)
+            _result = (all_h - field_result) / all_h 
+
+        # build the figure
+        fig.add_trace(go.Heatmap(z=_result, colorscale=cm))
+        fig.update_layout(
+            title=f'Entropy of all fields' if ident == 'field' else f'Entropy of {MODS[model_id]}',
+            yaxis=dict(scaleanchor='x')
+        )         
 
     # SINGLE MODEL
     elif target == 'model':
