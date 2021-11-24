@@ -92,17 +92,30 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
     # calcualte the rmse
     rmse = fit.rmse(vario, interval, params)
     
+    # calculate the cross-validation rmse
     v = vario.variogram
     cv = fit.cv(vario, params)
 
+    # calculate aic and bic
+    # Right now this needs the dev version of SciKit-Gstat
+    try:
+        aic = v.aic
+        bic = v.bic
+    except Exception:
+        aic = np.NaN
+        bic = np.NaN
+
     # create four cols
-    first, left, center, right = st.columns(4)
+    cols = st.columns(6)
+    # first, left, center, right = st.columns(4)
 
     # check if there are other models
     if len(other_models) > 0:
         # get population statistics
         pop_rmse = np.nanmean([m.parameters['measures'].get('RMSE', np.nan) for m in other_models])
         pop_cv = np.nanmean([m.parameters['measures'].get('cross-validation', np.nan) for m in other_models])
+        pop_aic = np.nanmean([m.parameters['measures'].get('AIC', np.nan) for m in other_models])
+        pop_bic = np.nanmean([m.parameters['measures'].get('BIC', np.nan) for m in other_models])
         rank = stats.rankdata([cv, *[m.parameters['measures'].get('cross-validation', np.nan) for m in other_models]], method='min')[0]
         
         # fancy
@@ -114,17 +127,23 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
         # calculate deviation
         rmse_dev = (rmse - pop_rmse).round(1)
         cv_dev = (cv - pop_cv).round(1)
+        aic_dev = np.abs(aic - pop_aic).round(1)
+        bic_dev = np.abs(bic - pop_bic).round(1)
         rank_dev = f"of {len(other_models) + 1} models"
     else:
         rmse_dev = None
         cv_dev = None
+        aic_dev = None
+        bic_dev = None
         rank = None
         rank_dev = None
 
-    first.markdown('### \n### All models')
-    left.metric("Model Rank", value=rank, delta=rank_dev, delta_color='off')
-    center.metric("Fit - RMSE", value=rmse.round(1), delta=rmse_dev, delta_color='inverse')
-    right.metric("Model - cross validation", value=cv.round(1), delta=cv_dev, delta_color='inverse')
+    cols[0].markdown('### \n### All models')
+    cols[1].metric("Model Rank", value=rank, delta=rank_dev, delta_color='off')
+    cols[2].metric("Fit - RMSE", value=rmse.round(1), delta=rmse_dev, delta_color='inverse')
+    cols[3].metric("Model - cross validation", value=cv.round(1), delta=cv_dev, delta_color='inverse')
+    cols[4].metric("MOdel - AIC", value=aic.round(1), delta=aic_dev, delta_color='inverse')
+    cols[5].metric("Model - BIC", value=bic.round(1), delta=bic_dev, delta_color='inverse')
 
     # check if the given model was already used
     if len(other_models) > 0:
@@ -145,6 +164,20 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
                 mod_cv = (cv - mod_cv_).round(1)
             except Warning:
                 mod_cv = None
+
+            # AIC
+            try:
+                mod_aic_ = np.nanmean([m.parameters['measures'].get('AIC', np.nan) for m in other_models if m.parameters['model_params']['model'] == params['model']])
+                mod_aic = (aic - mod_aic_).round(1)
+            except Warning:
+                mod_aic = None
+
+            # BIC
+            try:
+                mod_bic_ = np.nanmean([m.parameters['measures'].get('BIC', np.nan) for m in other_models if m.parameters['model_params']['model'] == params['model']])
+                mod_bic = (bic - mod_bic_).round(1)
+            except Warning:
+                mod_bic = None
         
             # CV RANK
             try:
@@ -162,21 +195,24 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
     else:
         mod_rmse = None
         mod_cv = None
+        mod_aic = None
+        mod_bic = None
         mod_rank = None
         mod_rank_dev = None
     
-    first.markdown(f"# \n### {params['model'].capitalize()} models only")
-    left.metric(f"{params['model'].capitalize()} model rank", value=mod_rank, delta=mod_rank_dev, delta_color='off')
-    center.metric("Fit - RMSE", value=rmse.round(1), delta=mod_rmse, delta_color='inverse')
-    right.metric("Model - cross validation", value=cv.round(1), delta=mod_cv, delta_color='inverse')
-
+    cols[0].markdown(f"# \n### {params['model'].capitalize()} models only")
+    cols[1].metric(f"{params['model'].capitalize()} model rank", value=mod_rank, delta=mod_rank_dev, delta_color='off')
+    cols[2].metric("Fit - RMSE", value=rmse.round(1), delta=mod_rmse, delta_color='inverse')
+    cols[3].metric("Model - cross validation", value=cv.round(1), delta=mod_cv, delta_color='inverse')
+    cols[4].metric("MOdel - AIC", value=aic.round(1), delta=mod_aic, delta_color='inverse')
+    cols[5].metric("Model - BIC", value=bic.round(1), delta=mod_bic, delta_color='inverse')
 
     # show the current params
     # params.update({'RMSE': rmse, 'cross-validation': cv})
     # left.markdown('## Current parameters')
     # left.json(params)
     
-    return rmse, cv
+    return rmse, cv, aic, bic
 
 
 def save_handler(api: API, interval: VarioConfInterval, params: dict, fit_measures: dict) -> VarioModel:
@@ -218,7 +254,7 @@ def main_app(api: API) -> None:
     st.plotly_chart(fig, use_container_width=True)
 
     # create the evaluation figures
-    rmse, cv = evaluate_fit(vario=vario, interval=interval, params=params, other_models=prior_models)
+    rmse, cv, aic, bic = evaluate_fit(vario=vario, interval=interval, params=params, other_models=prior_models)
 
     # handle save
     st.markdown('##\n')
@@ -227,7 +263,8 @@ def main_app(api: API) -> None:
     do_save2 = st.sidebar.button('SAVE', key='save_model2')
     
     if do_save or do_save2:
-        model = save_handler(api=api, params=params, interval=interval, fit_measures={'RMSE': rmse, 'cross-validation': cv})
+        measures = {'RMSE': rmse, 'cross-validation': cv, 'AIC': aic, 'BIC': bic}
+        model = save_handler(api=api, params=params, interval=interval, fit_measures=measures)
         st.success(f"Saved {model.model_type} model with ID {model.id}")
     else:
         st.stop()
