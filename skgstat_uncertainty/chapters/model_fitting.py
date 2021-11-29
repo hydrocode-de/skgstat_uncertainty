@@ -99,9 +99,10 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
     # calculate aic and bic
     # Right now this needs the dev version of SciKit-Gstat
     try:
-        aic = v.aic
-        bic = v.bic
-    except Exception:
+        aic = fit.aic(vario, params)
+        bic = fit.aic(vario, params)
+    except Exception as e:
+        print(e)
         aic = np.NaN
         bic = np.NaN
 
@@ -142,8 +143,8 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
     cols[1].metric("Model Rank", value=rank, delta=rank_dev, delta_color='off')
     cols[2].metric("Fit - RMSE", value=rmse.round(1), delta=rmse_dev, delta_color='inverse')
     cols[3].metric("Model - cross validation", value=cv.round(1), delta=cv_dev, delta_color='inverse')
-    cols[4].metric("MOdel - AIC", value=aic.round(1), delta=aic_dev, delta_color='inverse')
-    cols[5].metric("Model - BIC", value=bic.round(1), delta=bic_dev, delta_color='inverse')
+    cols[4].metric("Model - AIC", value=np.round(aic, 1), delta=aic_dev, delta_color='inverse')
+    cols[5].metric("Model - BIC", value=np.round(bic, 1), delta=bic_dev, delta_color='inverse')
 
     # check if the given model was already used
     if len(other_models) > 0:
@@ -204,8 +205,8 @@ def evaluate_fit(vario: VarioParams, interval: List[Tuple[float, float]], params
     cols[1].metric(f"{params['model'].capitalize()} model rank", value=mod_rank, delta=mod_rank_dev, delta_color='off')
     cols[2].metric("Fit - RMSE", value=rmse.round(1), delta=mod_rmse, delta_color='inverse')
     cols[3].metric("Model - cross validation", value=cv.round(1), delta=mod_cv, delta_color='inverse')
-    cols[4].metric("MOdel - AIC", value=aic.round(1), delta=mod_aic, delta_color='inverse')
-    cols[5].metric("Model - BIC", value=bic.round(1), delta=mod_bic, delta_color='inverse')
+    cols[4].metric("Model - AIC", value=np.round(aic, 1), delta=mod_aic, delta_color='inverse')
+    cols[5].metric("Model - BIC", value=np.round(bic, 1), delta=mod_bic, delta_color='inverse')
 
     # show the current params
     # params.update({'RMSE': rmse, 'cross-validation': cv})
