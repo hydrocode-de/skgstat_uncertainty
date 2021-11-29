@@ -28,6 +28,7 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
     
         # add model plots
         TARGET['model'] = 'Single model function'
+        TARGET['models'] = 'Plot all models'
 
     # Colorscales
     CS = ['Blackbody', 'Bluered', 'Blues','Cividis', 'Earth', 'Electric', 'Greens', 'Greys', 'Hot', 'Jet', 'Picnic','Portl', 'Rainbow', 'RdBu', 'Reds', 'Viridis', 'YlGnBu', 'YlOrRd']
@@ -154,6 +155,38 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
         fig.update_layout(
             legend=dict(orientation='h')
         )
+    
+    # ALL MODELS
+    elif target == 'models':
+        # check if excluded models should be displayed
+        show_excluded = header[1].checkbox('Show excluded models', value=False)
+        
+        # load all models
+        if show_excluded:
+            MODS = [res.model for res in kriging_fields]
+        else:
+            MODS = [res.model for res in kriging_fields if res.model.id not in excluded_models]
+
+        # load the conf interval of one model
+        interval = MODS[0].confidence_interval
+
+        # load the base variogram
+        vario = interval.variogram
+
+        # create the the plotting data
+        x = np.linspace(0, vario.variogram.bins[-1], 100)
+
+        # create the base graph
+        fig = base_conf_graph(vario=vario, interval=interval, fig=fig)
+
+        # add all models
+        for model in MODS:
+            # load the model
+            V = model.variogram
+
+            # add the trace
+            fig.add_trace(go.Scatter(x=x, y=V.fitted_model(x), mode='lines', line=dict(color='gray', width=0.5), name=f"{model.model_type.capitalize()} model <ID={model.id}>"))
+
 
     # change the size for just any figure
     fig.update_layout(height=600)
