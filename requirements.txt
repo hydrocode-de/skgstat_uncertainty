@@ -7,3 +7,4 @@ sqlalchemy
 fire
 plotly
 kaleido
+sympy
