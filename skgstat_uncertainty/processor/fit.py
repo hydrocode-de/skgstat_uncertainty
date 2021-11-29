@@ -1,9 +1,43 @@
 from typing import Tuple, List
 import numpy as np
-from skgstat import models
+from skgstat import models, Variogram
 
 from skgstat_uncertainty.models import VarioParams, VarioConfInterval
 
+
+def _build_with_new_params(vario: VarioParams, params: dict) -> Variogram:
+    """
+    Use the given parameters dictionary and build a new variogram instance.
+    The VarioParams instance, however, does not include the newly estimated 
+    parameters for the theoretical variogram model. Thus, a `skgstat.Variogram`
+    instance is created and the params are applied to it.
+
+    """
+    # build the variogram instance
+    variogram = vario.variogram
+
+    # set to manual fitting
+    variogram.fit_method = 'manual'
+
+    # set the model
+    variogram.model = params['model']
+
+    # set the parameters
+    if params.get('shape') is not None:
+        variogram.fit(
+            range=params.get('range'),
+            sill=params.get('sill'),
+            nugget=params.get('nugget'),
+            shape=params.get('shape')
+        )
+    else:
+        variogram.fit(
+            range=params.get('range'),
+            sill=params.get('sill'),
+            nugget=params.get('nugget')
+        )
+    
+    return variogram
 
 def rmse(vario: VarioParams, interval: VarioConfInterval, params: dict) -> float:
     # build the variogram instance
@@ -61,29 +95,13 @@ def cv(vario: VarioParams, params: dict) -> float:
 
 
 def aic(vario: VarioParams, params: dict) -> float:
-    # build the variogram instance
-    variogram = vario.variogram
+    # get the fitted parameters variogram instance
+    variogram = _build_with_new_params(vario, params)
 
-    # set the model
-    variogram.model = params['model']
+    return variogram.aic
 
-    # apply the parameters
-    variogram.fit(
-        method='manual',
-        range=params.get('range'),
-        sill=params.get('sill'),
-        nugget=params.get('nugget'),
-        shape=params.get('shape')
-    )
+def bic(vario: VarioParams, params: dict) -> float:
+    # get the fitted parameters variogram instance
+    variogram = _build_with_new_params(vario, params)
 
-    # predict
-    y = variogram.fitted_model(variogram.bins)
-
-    # get the number of parameters
-    k = 2 if nugget < 1e-3 else 3 if shape is None else 4
-    
-    # calcualte AIC
-    residuals = np.nansum(np.power(y - variogram.experimental, 2))
-    aic = 2 * k - 2 * np.log(residuals)
-
-    return aic
+    return variogram.bic
