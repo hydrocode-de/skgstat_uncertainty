@@ -200,13 +200,19 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
             container.write(figure_download_link(fig), unsafe_allow_html=True)
 
 
-def figure_download_link(figure: go.Figure, filename: str = None) -> str:
+def figure_download_link(figure: go.Figure, filename: str = None, adjust_background: bool = True) -> str:
 
     # check if a filename was given
     if filename is None:
         filename = ''.join([choice(ascii_letters) for _ in range(16)])
     if not filename.endswith('.pdf'):
         filename += '.pdf'
+
+    if adjust_background:
+        figure.update_layout(
+            paper_bgcolor='rgba(0,0,0,0)',
+            plot_bgcolor='rgba(0,0,0,0)'
+        )
     
     # create a byte string
     img_bytes = figure.to_image(format='pdf')
