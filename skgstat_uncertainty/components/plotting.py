@@ -185,11 +185,15 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
             V = model.variogram
 
             # add the trace
-            fig.add_trace(go.Scatter(x=x, y=V.fitted_model(x), mode='lines', line=dict(color='gray', width=0.5), name=f"{model.model_type.capitalize()} model <ID={model.id}>"))
+            fig.add_trace(go.Scatter(x=x, y=V.fitted_model(x), mode='lines', line=dict(color='green', width=0.5), name=f"{model.model_type.capitalize()} model <ID={model.id}>"))
 
 
     # change the size for just any figure
-    fig.update_layout(height=600)
+    fig.update_layout(
+        height=600,
+        xaxis=dict(showgrid=True),
+        yaxis=dict(showgrid=True)
+    )
 
     # render figure
     container.plotly_chart(fig, use_container_width=True)
@@ -200,7 +204,7 @@ def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: 
             container.write(figure_download_link(fig), unsafe_allow_html=True)
 
 
-def figure_download_link(figure: go.Figure, filename: str = None, adjust_background: bool = True) -> str:
+def figure_download_link(figure: go.Figure, filename: str = None, template: str = 'plotly_white') -> str:
 
     # check if a filename was given
     if filename is None:
@@ -208,10 +212,9 @@ def figure_download_link(figure: go.Figure, filename: str = None, adjust_backgro
     if not filename.endswith('.pdf'):
         filename += '.pdf'
 
-    if adjust_background:
+    if template is not None:
         figure.update_layout(
-            paper_bgcolor='rgba(0,0,0,0)',
-            plot_bgcolor='rgba(0,0,0,0)'
+            template=template
         )
     
     # create a byte string
