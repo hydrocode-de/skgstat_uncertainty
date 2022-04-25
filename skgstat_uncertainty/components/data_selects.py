@@ -109,9 +109,12 @@ SELECTED = Union[
     Tuple[DataUpload,VarioParams],
     Tuple[DataUpload,VarioParams,VarioConfInterval],
 ]
-def data_selector(api: API, stop_with: str = '', data_type='sample', container=st) -> SELECTED:
+def data_selector(api: API, stop_with: str = '', data_type='sample', container=st, add_expander: bool = True) -> SELECTED:
     # create the expander
-    expander = container.expander('DATA SELECT', expanded=True)
+    if add_expander:
+        expander = container.expander('DATA SELECT', expanded=True)
+    else:
+        expander = container.empty()
 
     # get the different data names - only for samples
     DATA_NAMES = api.get_upload_names(data_type=data_type)

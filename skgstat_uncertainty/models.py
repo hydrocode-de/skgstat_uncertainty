@@ -2,8 +2,9 @@ from typing import List, Tuple
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship, object_session
 from skgstat import Variogram
+import numpy as np
 
 
 Base = declarative_base()
@@ -28,6 +29,21 @@ class DataUpload(Base):
             'data_type': self.data_type,
             'data': self.data
         }
+
+    def base_variogram(self, **kwargs) -> Variogram:
+        """Return a baseic skg.Variogram from the given kwargs."""
+        # coordinates and values
+        coords = list(zip(*[self.data[dim] for dim in ('x', 'y', 'z') if dim in self.data]))
+        values = self.data['v']
+
+        # bug fix for n_lags
+        if 'n_lags' in kwargs and kwargs['n_lags'] is None:
+            del kwargs['n_lags']
+
+        # instantiate the Variogram
+        vario = Variogram(coordinates=coords, values=values, **kwargs)
+
+        return vario
 
 
 class VarioParams(Base):
@@ -94,14 +110,21 @@ class VarioConfInterval(Base):
     def interval(self):
         return self.spec['interval']
     
-    @property
-    def kriging_fields(self):
+    def get_result_type(self, type_name: str) -> List['VarioModelResult']:
         result_list = []
 
         for model in self.models:
-            result_list.extend([result for result in model.results if result.content_type == 'kriging_field'])
+            result_list.extend([result for result in model.results if result.content_type == type_name])
 
         return result_list
+        
+    @property
+    def kriging_fields(self):
+        return self.get_result_type('kriging_field')
+    
+    @property
+    def simulation_fields(self):
+        return self.get_result_type('simulation_field')
 
 
 class VarioModel(Base):
@@ -154,6 +177,37 @@ class VarioModel(Base):
             'parameters': self.parameters
 
         }
+
+    def get_base_grid(self) -> Tuple[int, int]:
+        """
+        """
+        # get the sample
+        dataset = self.confidence_interval.variogram.data
+
+        # check if a parent field exists
+        if dataset.data.get('field_id', False):
+            session = object_session(self)
+            parent_dataset = session.query(DataUpload).filter(DataUpload.id == dataset.data['field_id']).one()
+            parent_field = parent_dataset.data['field']
+            return np.array(parent_field).shape
+        
+        # there is no parent filed
+        else:
+            x = dataset.data.get['x']
+            y = dataset.data.get['y']
+
+            return (np.max(x), np.max(y))
+
+    def save(self):
+        # get a session to the database
+        session = object_session(self)
+
+        try:
+            session.add(self)
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
 
 
 class VarioModelResult(Base):
