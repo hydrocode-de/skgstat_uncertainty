@@ -25,4 +25,4 @@ RUN cd /src && pip install -e .
 # create the entrypoint
 WORKDIR /src/skgstat_uncertainty/chapters
 ENTRYPOINT ["streamlit", "run"]
-CMD ["learn_variograms.py"]
+CMD ["learn_geostatistics.py"]

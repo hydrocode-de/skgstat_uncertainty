@@ -459,7 +459,7 @@ def variogram_plot(api: API, dataset: DataUpload, **kwargs) -> go.Figure:
     return fig
 
 
-def main_app(api: API):
+def main_app(api: API, **kwargs):
     st.set_page_config(page_title='Learn Variograms', layout='wide')
     # get url params
     url_params = st.experimental_get_query_params()
@@ -493,8 +493,13 @@ def main_app(api: API):
     fig = variogram_plot(api, dataset)
     st.plotly_chart(fig, use_container_width=True)
 
-    e = st.expander('DEBUG')
-    e.json(st.session_state)
+    # add the code
+
+    # add a debugging view
+    if kwargs.get('debug', url_params.get('debug', False)):
+        e = st.expander('DEBUG')
+        e.json(st.session_state)
+
 
 if __name__=='__main__':
     api = API()
