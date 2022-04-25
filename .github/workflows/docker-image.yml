@@ -1,0 +1,24 @@
+name: Docker Image CI
+
+on:
+  push:
+    tags:
+      - 'v*'
+  release:
+    types: [published]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      
+      - name: build and push
+        uses: docker/build-push-action@v1
+        with:
+          registry: ghcr.io
+          username: "hydrocode-de"
+          password: ${{ secrets.PAT }}
+          repository: hydrocode-de/skgstat_uncertainty
+          tags: latest,${{ github.ref_name }}
