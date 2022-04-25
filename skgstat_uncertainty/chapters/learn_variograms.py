@@ -127,6 +127,7 @@ def check_story_mode(api: API):
         st.session_state.model = 'spherical'
         st.session_state.fit_method = 'trf'
         st.session_state.use_nugget = False
+        st.experimental_rerun()
 
     else:
         st.stop()
