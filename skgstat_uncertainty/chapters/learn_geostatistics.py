@@ -16,6 +16,7 @@ This application will guide you through the estimation of an empirical variogram
 You will learn about the parameters step by step and learn how to fit a model function. 
 If you are already familiar with variogram fitting, you can directly jump into the full fitting interface.
 """
+
 __data_intro = """
 First of all, you need to select one of the pre-definded data uploads. If you have access to the 
 full Uncertain Geostatistics app by [hydrocode](https://hydrocode.de) (LINK HERE), you can use the data-manage
@@ -24,6 +25,7 @@ Use the dropdown to inspect the datasets
 
 Once you found an exciting dataset, click on *continue* to get started with geostatistics!
 """
+
 __bin_intro = """
 To learn about spatial correlation in the dataset, that is not dependent on the location, we
 need to calculate separating distances between observations. This way, we can correlate observation similarity
