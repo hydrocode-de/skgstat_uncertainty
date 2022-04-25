@@ -1,6 +1,6 @@
 streamlit>=1.0.0
 pandas
-scikit-gstat>=0.6.10
+scikit-gstat>=1.0.0
 scikit-info>=0.4.0
 gstools>=1.3.0
 sqlalchemy

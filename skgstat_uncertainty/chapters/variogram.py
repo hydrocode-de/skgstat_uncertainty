@@ -8,8 +8,9 @@ from skgstat import Variogram
 
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload
-from skgstat_uncertainty.processor import sampling, variogram as variogram_processor
+from skgstat_uncertainty.processor import sampling
 from skgstat_uncertainty import components
+from skgstat_uncertainty.processor import exp_variogram_uncertainty as variogram_processor
 
 
 # create some mappings
@@ -49,6 +50,54 @@ CONF_METHODS = dict(
 )
 
 
+def variogram_manual_fit(dataset: DataUpload) -> Variogram:
+    """
+    """
+    # add a title to the sidebar
+    st.sidebar.title('Variogram parameter')
+    
+    # create the options and parameters
+    # ---------------
+
+    # binning
+    bin_func = st.sidebar.selectbox('Binning method', options=list(BIN_FUNC.keys()), format_func=lambda k: BIN_FUNC.get(k))
+    if bin_func in ('even', 'uniform', 'kmeans', 'ward'):
+        n_lags = st.sidebar.number_input('Number of lag classes', value=10, min_value=3, step=1)
+    else:
+        # default
+        n_lags = 10
+    
+    # estimator
+    estimator = st.sidebar.selectbox('Semi-variance estimator', options=list(ESTIMATORS.keys()), format_func=lambda k: ESTIMATORS.get(k))
+        
+    # maxlag settings
+    maxlag_type = st.sidebar.selectbox('Maxlag settings', options=list(MAXLAG.keys()), format_func=lambda k: MAXLAG.get(k))
+    if maxlag_type == 'none':
+        maxlag = None
+    elif maxlag_type == 'absolute':
+        maxlag = st.sidebar.number_input('Absolute maxlag', value=50, min_value=0)
+    elif maxlag_type == 'ratio':
+        maxlag = st.sidebar.slider('Ratio of max value', value=0.6, min_value=0., max_value=1.)
+    else:
+        maxlag = maxlag_type
+
+    # get the coordinates and values
+    coords = list(zip(*[dataset.data.get(dim) for dim in ('x', 'y', 'z') if dim in dataset.data]))
+    values = dataset.data['v']
+
+    # all set -> estimate the variogram
+    try:
+        vario = Variogram(coords, values, estimator=estimator, bin_func=bin_func, n_lags=n_lags, maxlag=maxlag)
+    except Exception as e:
+        st.info('Sorry. The chosen parameters did not result in a valid variogram. See below for the actual error')
+        err_expander = st.expander('ERROR DETAILS')
+        err_expander.exception(e)
+        st.stop()
+
+    return vario
+
+
+
 def estimate_variogram(dataset: DataUpload, api: API) -> None:
     st.markdown(f'## Estimate a variogram for the {dataset.upload_name} dataset')
     
@@ -62,39 +111,7 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
         omit_estimation = False
 
     if not omit_estimation:
-        # build the sidebar
-        st.sidebar.title('Variogram parameter')
-        bin_func = st.sidebar.selectbox('Binning method', options=list(BIN_FUNC.keys()), format_func=lambda k: BIN_FUNC.get(k))
-        if bin_func in ('even', 'uniform', 'kmeans', 'ward'):
-            n_lags = st.sidebar.number_input('Number of lag classes', value=10, min_value=3, step=1)
-        else:
-            # default
-            n_lags = 10
-        estimator = st.sidebar.selectbox('Semi-variance estimator', options=list(ESTIMATORS.keys()), format_func=lambda k: ESTIMATORS.get(k))
-        
-        # maxlag settings
-        maxlag_type = st.sidebar.selectbox('Maxlag settings', options=list(MAXLAG.keys()), format_func=lambda k: MAXLAG.get(k))
-        if maxlag_type == 'none':
-            maxlag = None
-        elif maxlag_type == 'absolute':
-            maxlag = st.sidebar.number_input('Absolute maxlag', value=50, min_value=0)
-        elif maxlag_type == 'ratio':
-            maxlag = st.sidebar.slider('Ratio of max value', value=0.6, min_value=0., max_value=1.)
-        else:
-            maxlag = maxlag_type
-
-        # get the coordinates and values
-        coords = list(zip(*[dataset.data.get(dim) for dim in ('x', 'y', 'z') if dim in dataset.data]))
-        values = dataset.data['v']
-
-        # all set -> estimate the variogram
-        try:
-            V = Variogram(coords, values, estimator=estimator, bin_func=bin_func, n_lags=n_lags, maxlag=maxlag)
-        except Exception as e:
-            st.info('Sorry. The chosen parameters did not result in a valid variogram. See below for the actual error')
-            err_expander = st.expander('ERROR DETAILS')
-            err_expander.exception(e)
-            st.stop()
+        V = variogram_manual_fit(dataset=dataset)
     else:
         # create a variogram loading selector
         vario_id = st.selectbox('Load Variogram', options=list(available_vario_names.keys()), format_func=lambda k: f"{available_vario_names.get(k)} <ID={k}>")
