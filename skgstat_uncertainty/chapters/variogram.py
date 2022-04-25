@@ -10,44 +10,8 @@ from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload
 from skgstat_uncertainty.processor import sampling
 from skgstat_uncertainty import components
+from skgstat_uncertainty.components.utils import BIN_FUNC, ESTIMATORS, MAXLAG, CONF_METHODS
 from skgstat_uncertainty.processor import exp_variogram_uncertainty as variogram_processor
-
-
-# create some mappings
-BIN_FUNC = dict(
-    even='Evenly spaced bins',
-    uniform='Uniformly distributed bin sizes',
-    kmeans='K-Means clustered bins',
-    ward='hierachical clustered bins',
-    sturges="Sturge's rule binning",
-    scott="Scott's rule binning",
-    sqrt="Squareroot rule binning",
-    fd="Freedman-Diaconis estimator binning",
-    doane="Doane's rule binning"
-)
-
-ESTIMATORS = dict(
-    matheron="Matheron estimator",
-    cressie="Cressie-Hawkins estimator",
-    dowd="Dowd estimator",
-    genton="Genton estimator",
-    entropy="Shannon entropy"
-)
-
-MAXLAG = dict(
-    median="Median value",
-    mean="Mean value",
-    ratio="Ratio of max distance",
-    absolute="Absolute value",
-    none="Disable maxlag"
-)
-
-CONF_METHODS = dict(
-    std="Sample standard deviation inference",
-    kfold="Bootstraped k-fold cross-validation",
-    absolute="Observation uncertainty propagation (MC)",
-    residual="Residual extrema elimination",
-)
 
 
 def variogram_manual_fit(dataset: DataUpload) -> Variogram:

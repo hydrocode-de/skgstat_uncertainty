@@ -8,17 +8,9 @@ import skgstat as skg
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty import components
 from skgstat_uncertainty.models import DataUpload
+from skgstat_uncertainty.components.utils import FIT_METHODS, MODELS, BIN_FUNC, ESTIMATORS
 
-# TODO: move them into defaults sub-module
-from skgstat_uncertainty.chapters.variogram import BIN_FUNC, ESTIMATORS
-from skgstat_uncertainty.chapters.model_fitting import MODELS
 
-FIT_METHODS = {
-    'trf': 'Trust-Region Reflective',
-    'lm': 'Levenberg-Marquardt',
-    'ml': 'Parameter Maximum Likelihood',
-    'manual': 'Manual Fitting' 
-}
 __story_intro = """
 This application will guide you through the estimation of an empirical variogram. 
 You will learn about the parameters step by step and learn how to fit a model function. 
