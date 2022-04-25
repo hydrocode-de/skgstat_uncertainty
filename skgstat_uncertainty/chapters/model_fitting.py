@@ -11,16 +11,7 @@ from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import VarioModel, VarioParams, VarioConfInterval
 from skgstat_uncertainty.processor import fit
 from skgstat_uncertainty import components
-
-
-MODELS = {
-    'spherical': 'Spherical',
-    'exponential': 'Exponential',
-    'gaussian': 'Gaussian',
-    'cubic': 'Cubic',
-    'stable': 'Stable',
-    'matern': 'Matérn'
-}
+from skgstat_uncertainty.components.utils import MODELS
 
 
 def apply_model(vario: VarioParams, interval: VarioConfInterval, figure: go.Figure, other_models: List[VarioModel] = []) -> Tuple[go.Figure, dict]:
