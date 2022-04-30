@@ -66,6 +66,13 @@ MAXLAG = dict(
     none="Disable maxlag"
 )
 
+KRIGING_METHODS = dict(
+    simple='Simple Kriging',
+    ordinary='Ordinary Kriging',
+    universal='Universal Kriging',
+    external='External drift Kriging'
+)
+
 CONF_METHODS = dict(
     std="Sample standard deviation inference",
     kfold="Bootstraped k-fold cross-validation",

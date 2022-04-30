@@ -1,3 +1,5 @@
+from typing import Tuple
+
 import streamlit as st
 import numpy as np
 import pandas as pd
@@ -8,7 +10,7 @@ import skgstat as skg
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty import components
 from skgstat_uncertainty.models import DataUpload
-from skgstat_uncertainty.components.utils import FIT_METHODS, MODELS, BIN_FUNC, ESTIMATORS
+from skgstat_uncertainty.components.utils import FIT_METHODS, MODELS, BIN_FUNC, ESTIMATORS, KRIGING_METHODS
 
 
 __story_intro = """
@@ -81,8 +83,9 @@ def _code_sample(**kwargs):
         return code
     
     # build the params
-    kw = [f"\t{k}={v},\n" for k, v in kwargs.items() if k != 'data_id' and isinstance(v, (int, float, bool))]
-    kw.extend([f"\t{k}='{v}',\n" for k, v in kwargs.items() if k != 'data_id' and isinstance(v, str)])
+    others = ['data_id', 'saw_intro', 'done_variogram', 'kriging_enabled']
+    kw = [f"\t{k}={v},\n" for k, v in kwargs.items() if k not in others and isinstance(v, (int, float, bool))]
+    kw.extend([f"\t{k}='{v}',\n" for k, v in kwargs.items() if k not in others and isinstance(v, str)])
 
     # something there?
     if len(kw) > 0:
@@ -165,6 +168,7 @@ def data_select(api: API) -> DataUpload:
 
 
 def binning(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+    """Learn about binning methods and set the parameters to session state"""
     # base variogram is always needed
     v = dataset.base_variogram()
 
@@ -225,6 +229,7 @@ def binning(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
 
 
 def estimator(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+    """Learn about SciKit-GStat's implemented estimators and set the parameters to session state"""
     # break out
     if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'estimator'):
         expander.selectbox('Semivariance estimator', options=list(ESTIMATORS.keys()), format_func=lambda k: ESTIMATORS.get(k), key='estimator')
@@ -244,7 +249,7 @@ def estimator(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
     _est = l.selectbox('Semi-variance estimator', options=list(ESTIMATORS.keys()), format_func=lambda k: ESTIMATORS.get(k))
 
     # code example
-    c = _code_sample(estimator=_est)
+    c = _code_sample(estimator=_est, **st.session_state)
     r.markdown('### Python sample code')
     r.code(c + "# make a plot\nvario.plot()", language='python')
 
@@ -262,6 +267,7 @@ def estimator(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
 
 
 def fit_method(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+    """Learn about SciKit-GStat's implemented fit methods and set the parameters to session state"""
     # break out
     if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'fit_method'):
         expander.selectbox('Fit Method', options=list(FIT_METHODS.keys()), format_func=lambda k: FIT_METHODS.get(k), key='fit_method')
@@ -314,6 +320,7 @@ def fit_method(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
 
 
 def fitting(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+    """Depending on the fitting method set in session_state, a fitting control panel is shown with appropriate parameters"""
     # fitting has no story mode
     fit_method = st.session_state.fit_method
 
@@ -343,6 +350,132 @@ def fitting(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
         else:
             st.session_state.fit_sigma = fs
 
+
+def variogram(api: API, dataset: DataUpload, always_plot: bool = True) -> None:
+    """Show the variogram, along with variogram parameters, code and measures to the user"""
+    story_mode = True
+
+    # story mode has to be handled different here
+    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'done_variogram'):
+        if always_plot:
+            story_mode = False
+        else:
+            return
+    
+    # story mode
+    if story_mode:
+        st.title('Variogram')
+        st.markdown("""Here you can check out your variogram. You can also continue to do some kriging, but that is still beta""")
+        btn = st.empty()
+
+    # add the plot
+    vario = base_variogram(dataset)
+    fig = variogram_plot(api, dataset, variogram=vario)
+    st.plotly_chart(fig, use_container_width=True)
+
+    # add measures, parameters and code
+    cols = st.columns((2, 2, 5))
+
+    # variogram parameters
+    par_exp = cols[2].expander('Variogram parameters', expanded=not story_mode)
+    par_exp.table([
+        {'Parameter': 'Effective range', 'Value': vario.parameters[0]},
+        {'Parameter': 'Sill', 'Value': vario.parameters[1]},
+        {'Parameter': 'Nugget', 'Value': vario.parameters[-1]},
+        {'Parameter': 'Shape', 'Value': vario.parameters[2] if len(vario.parameters) > 3 else None},
+    ])
+
+    # code
+    if story_mode:
+        c_exp = cols[2].expander('Python sample code', expanded=True)
+        c = _code_sample(**st.session_state)
+        c += "\n# plot variogram\nvario.plot()"
+        c_exp.code(c, language='python')
+
+    # measures
+    cols[0].metric('RMSE', vario.rmse.round(1))
+    cols[1].metric('Cross-validation', vario.cross_validate().round(1))
+
+    # button
+    if story_mode:
+        ok = btn.button('CONTINUE')
+        if ok:
+            st.session_state.done_variogram = True
+            st.experimental_rerun()
+        else:
+            st.stop()
+
+
+@st.experimental_memo
+def _apply_kriging(_dataset: DataUpload, vario_params: dict, grid_resolution: int = 100, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
+    # get the variogram
+    vario = base_variogram(_dataset, **vario_params)
+
+    # build the grid
+    x_range = np.linspace(vario.coordinates[:,0].min(), vario.coordinates[:,0].max(), grid_resolution)
+    y_range = np.linspace(vario.coordinates[:,1].min(), vario.coordinates[:,1].max(), grid_resolution)
+
+    # get the kriging instance
+    krige = vario.to_gs_krige(**kwargs)
+
+    field, sigma = krige.structured((x_range, y_range))
+
+    return field, sigma
+
+
+def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+    """Enable a kriging interface"""
+    # check if kriging is enabled
+    if st.session_state.get('kriging_enabled', False):
+        ok = expander.button('Disable kriging')
+        if ok:
+            st.session_state.kriging_enabled = False
+            st.experimental_rerun()
+    else:
+        st.sidebar.write('You can run a basic kriging interpolation')
+        run = expander.button('Enable')
+        if run:
+            st.session_state.kriging_enabled = True
+            st.experimental_rerun()
+        else:
+            return
+    
+    # get kriging parameters
+    krig_method = expander.selectbox('Kriging method', options=[m for m in KRIGING_METHODS.keys() if m != 'external'], format_func=lambda k: KRIGING_METHODS.get(k))
+    krig_kw = {}
+    if krig_method == 'simple':
+        krig_kw['mean'] = expander.number_input('Mean of the field', value=0.0)
+    elif krig_method == 'universal':
+        FUNC = {'linear': 'Linear drift', 'quadratic': 'Quadratic drift'}
+        krig_kw['drift_functions'] = expander.selectbox('Drift function', options=list(FUNC.keys()), format_func=lambda k: FUNC.get(k))
+    else:
+        krig_kw['unbiased'] = True
+    
+    # apply the kriging
+    field, sigma = _apply_kriging(dataset, vario_params={k:v for k,v in st.session_state.items()}, grid_resolution=100, **krig_kw)
+
+    # add the plot
+    l, c, r = st.columns(3)
+
+    # left
+    l.markdown('### Kriging interpolation')
+    fig = go.Figure(go.Heatmap(z=field, colorscale='Earth_r'))
+    l.plotly_chart(fig, use_container_width=True)
+
+    # center
+    c.markdown('### Kriging error variance')
+    fig = go.Figure(go.Heatmap(z=sigma))
+    c.plotly_chart(fig, use_container_width=True)
+
+    # right
+    r.markdown('### Python sample code')
+    c = _code_sample(**st.session_state)
+    c += f"\n# create a gstools.Krige instance\nkrige = vario.to_gs_krige()\n\n#Create a grid\n"
+    c += "x = np.linspace(vario.coordinates[:,0].min(), vario.coordinates[:,0].max(), 100)\n"
+    c += "y = np.linspace(vario.coordinates[:,1].min(), vario.coordinates[:,1].max(), 100)\n"
+    c += "\n#Apply\nfield, sigma = krige.structured((x, y))\n"
+    r.code(c, language='python')
+    
 
 def base_variogram(dataset: DataUpload, **kwargs) -> skg.Variogram:
     # get the needed parameters
@@ -462,6 +595,9 @@ def main_app(api: API, **kwargs):
 
     # first check for story mode
     check_story_mode(api)
+
+    # add the logo
+    st.sidebar.image("https://firebasestorage.googleapis.com/v0/b/hydrocode-website.appspot.com/o/public%2Fhydrocode_brand.png?alt=media")
     
     # get a dataset
     dataset = data_select(api)
@@ -482,12 +618,11 @@ def main_app(api: API, **kwargs):
     fit_expander = st.sidebar.expander('Fitting parameters', expanded=True)
     fitting(api, dataset, fit_expander)
     
+    # show the variogram
+    variogram(api, dataset)
 
-    # finally plot
-    fig = variogram_plot(api, dataset)
-    st.plotly_chart(fig, use_container_width=True)
-
-    # add the code
+    # run som kriging
+    kriging(api, dataset)
 
     # add a debugging view
     if kwargs.get('debug', url_params.get('debug', False)):
