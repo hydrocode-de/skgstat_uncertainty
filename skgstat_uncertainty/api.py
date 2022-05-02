@@ -1,6 +1,5 @@
 from typing import List, Tuple, Union
 from functools import wraps
-from sqlalchemy import Integer
 
 from .db import get_session
 from .models import DataUpload, VarioParams, VarioConfInterval, VarioModel, VarioModelResult
@@ -63,6 +62,33 @@ class API:
         dataset.upload_name = name
         dataset.data_type = data_type
         dataset.data = data
+
+        try:
+            self.session.add(dataset)
+            self.session.commit()
+        except Exception as e:
+            self.session.rollback()
+            raise e
+        
+        return dataset
+    
+    def update_upload_data(self, id, name: str = None, data_type: str = None, **data) -> DataUpload:
+        # get the dataset
+        dataset = self.get_upload_data(id=id)
+
+        # set new values:
+        if name is not None:
+            dataset.upload_name = name
+        if data_type is not None:
+            dataset.data_type = data_type
+
+        # get old data
+        old_data = dataset.data.copy()
+
+        # update data
+        old_data.update(data)
+
+        dataset.data = old_data
 
         try:
             self.session.add(dataset)
