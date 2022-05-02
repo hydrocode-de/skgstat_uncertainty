@@ -79,3 +79,10 @@ CONF_METHODS = dict(
     absolute="Observation uncertainty propagation (MC)",
     residual="Residual extrema elimination",
 )
+
+LICENSES = dict(
+    cc0="Creative Commons Public Domain Dedication",
+    ccby="Creative Commons Attribution 4.0 International",
+    dldeby="Data license Germany - attribution - version 2.0",
+    dlde0="Data license Germany - Zero - version 2.0"
+)
