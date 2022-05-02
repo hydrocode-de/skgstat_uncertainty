@@ -13,7 +13,8 @@ from skgstat_uncertainty.processor import sampling
 ACT = {
     'upload': 'Uplaod new dataset',
     'sample': 'Sample an existing dataset',
-    'list': 'List existing dataset'
+    'list': 'List existing dataset',
+    'edit': 'Edit existing dataset',
 }
 
 
@@ -135,11 +136,13 @@ def list_datasets(api: API, container=st):
     # preview data
     container.title(f"{dataset.data_type.upper()} dataset")
 
+    # create a column layout
+    left, right = container.columns((6, 4))
     if 'origin' in dataset.data:
-        container.markdown(dataset.data['origin'])
+        right.markdown(dataset.data['origin'])
 
     # create a preview plot
-    components.dataset_plot(dataset, disable_download=False)
+    components.dataset_plot(dataset, disable_download=False, container=left)
 
     # some basic stats
     stats = [
@@ -151,8 +154,43 @@ def list_datasets(api: API, container=st):
     if 'field_id' in dataset.data:
         stats.append({'Stat': 'Parent field id', 'Value': dataset.data['field_id']})
 
-    container.markdown('## Related data')
-    container.table(stats)
+    right.markdown('## Related data')
+    right.table(stats)
+
+
+def edit_dataset(api: API, container = st) -> None:
+    # select a dataset
+    all_names = api.get_upload_names()
+    if len(all_names) == 0:
+        container.warning('This database has no datasets. Please upload something.')
+        st.stop()
+
+    # select dropdown
+    dataset_id = container.selectbox('DATASET', options=list(all_names.keys()), format_func=lambda k: all_names.get(k))
+    dataset = api.get_upload_data(id=dataset_id)
+    data = dataset.data
+
+    with container.form('EDIT'):
+        LIC = components.utils.LICENSES
+        new_title= st.text_input('Title', dataset.upload_name)
+        new_origin = st.text_area('Origin', value=data.get('origin', ''), help="Add the source of the dataset to help others cite it correctly.")
+        new_description = st.text_area('Description', value=data.get('description', ''), help="Add a description of the dataset.")
+        new_license = st.selectbox('License', options=list(LIC.keys()), index=list(LIC.keys()).index(data.get('license', 'ccby')), format_func=lambda k: LIC.get(k))
+        save = st.form_submit_button('SAVE')
+
+        # check save
+        if save:
+            updates = {'license': new_license}
+            if new_origin.strip() != '':
+                updates['origin'] = new_origin
+            if new_description.strip() != '':
+                updates['description'] = new_description
+            
+            # overwrite dataset 
+            dataset = api.update_upload_data(id=dataset.id, name=new_title, **updates)
+            st.experimental_rerun()
+
+    pass
 
 
 def main_app(api: API):
@@ -188,6 +226,9 @@ def main_app(api: API):
     
     elif action == 'list':
         list_datasets(api=api)
+    
+    elif action == 'edit':
+        edit_dataset(api=api)
 
 
 if __name__=='__main__':
