@@ -6,6 +6,8 @@ from sqlalchemy.orm import relationship, object_session
 from skgstat import Variogram
 import numpy as np
 
+from skgstat_uncertainty.processor import utils
+
 
 Base = declarative_base()
 
@@ -44,6 +46,29 @@ class DataUpload(Base):
         vario = Variogram(coordinates=coords, values=values, **kwargs)
 
         return vario
+
+    def update_thumbnail(self, height: int = 200, width: int = 200, **kwargs):
+        """Adds a preview of the data as thumbnail to the the specs"""
+        # create the thumbnail
+        thumbnail = utils.create_thumbnail(self, return_type='base64', height=height, width=width, **kwargs)
+
+        # extract my data:
+        data_spec = self.data
+        
+        # add the thumbnail to the data_spec
+        data_spec['thumbnail'] = thumbnail
+
+        # overwrite data specs
+        self.data = data_spec
+
+        # get a session and save
+        session = object_session(self)
+        try:
+            session.add(self)
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
 
 
 class VarioParams(Base):
