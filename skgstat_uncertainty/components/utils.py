@@ -81,6 +81,7 @@ CONF_METHODS = dict(
 )
 
 LICENSES = dict(
+    no="No License - Contact owner for permission",
     cc0="Creative Commons Public Domain Dedication",
     ccby="Creative Commons Attribution 4.0 International",
     dldeby="Data license Germany - attribution - version 2.0",
