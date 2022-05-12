@@ -7,3 +7,4 @@ sqlalchemy
 fire
 plotly
 kaleido
+streamlit-card-select>=0.3.0

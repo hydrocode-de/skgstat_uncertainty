@@ -621,7 +621,7 @@ def main_app(api: API, **kwargs):
     # show the variogram
     variogram(api, dataset)
 
-    # run som kriging
+    # run some kriging
     kriging(api, dataset)
 
     # add a debugging view
@@ -631,5 +631,5 @@ def main_app(api: API, **kwargs):
 
 
 if __name__=='__main__':
-    api = API()
+    api = API(db_name='data.db')
     main_app(api)

@@ -66,7 +66,7 @@ def kfold_residual_bootstrap(variogram: Variogram, k: int = 5, repititions: int 
     return [calc(r) for r in variogram.lag_classes()]
 
 
-def conf_interval_from_sample_std(variogram: Variogram, conf_level: 0.95) -> List[Tuple[float, float]]:
+def conf_interval_from_sample_std(variogram: Variogram, conf_level: float = 0.95) -> List[Tuple[float, float]]:
     intervals = []
 
     # calculate the confidence interval for each group
