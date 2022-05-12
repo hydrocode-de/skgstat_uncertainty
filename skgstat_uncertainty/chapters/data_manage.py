@@ -1,8 +1,9 @@
 import streamlit as st
-import os
+from typing import List
 import pandas as pd
 import numpy as np
 import plotly.graph_objects as go
+from streamlit_card_select import card_select
 
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload
@@ -16,6 +17,221 @@ ACT = {
     'list': 'List existing dataset',
     'edit': 'Edit existing dataset',
 }
+
+#@st.experimental_memo
+def _options_from_dataset_names(_api: API, datasets: dict, add_button: bool = True) -> List[dict]:
+    if add_button:
+        # create a container with an add button
+        options = [dict(option='new', title='Create new dataset')]
+    else:
+        options = []
+    
+    # add each dataset as preview
+    for data_id, name in datasets.items():
+        d = dict(option=data_id, title=f"[ID: {data_id}] {name}")
+
+        # get the dataset from db
+        dataset = _api.get_upload_data(id=data_id)
+
+        # handle description
+        d['description'] = dataset.data['description'][:250] if 'description' in dataset.data else '<i>This dataset has no description</i>'
+
+        if 'thumbnail' in dataset.data:
+            d['image'] = dataset.data['thumbnail']
+        
+        # insert
+        options.insert(0, d)
+
+    # return
+    return options
+
+
+def dataset_grid(api: API) -> None:
+    """
+    Create a grid of all existing datasets. When clicked, the dataset is loaded
+    for viewing. In viewing mode, the dataset can be edited or deleted. The grid
+    does also include a button for creating new datasets
+    """
+    # get the upload names
+    all_datasets = api.get_upload_names()
+
+    # get the options
+    options = _options_from_dataset_names(api, all_datasets)
+
+    # check for data_id
+    data_id = card_select(options=options, spacing=5, md=3, lg=3)
+
+    # if None selected, stop
+    if data_id is None:
+        st.stop()
+    elif data_id == 'new':
+        # create new dataset
+        st.session_state.action = 'new'
+        st.experimental_rerun()
+    else:
+        st.session_state.action = 'view'
+        st.session_state.data_id = data_id
+        st.experimental_rerun()
+
+
+def button_panel(can_resample: bool = False, container=st) -> None:
+    # build the columns in the container
+    cols = container.columns(4 if can_resample else 3)
+
+    # add the buttons
+    back = cols[0].button('BACK TO LIST')
+    edit = cols[1].button('EDIT DATASET')
+    delete = cols[-1].button('DELETE DATASET')
+    
+    if can_resample:
+        resample = cols[2].button('RE-SAMPLE DATASET')
+    else:
+        resample = False
+
+    # check the action
+    if back:
+        del st.session_state['data_id']
+        del st.session_state['action']
+        st.experimental_rerun()
+    elif edit:
+        st.session_state.action = 'edit'
+        st.experimental_rerun()
+    elif delete:
+        st.session_state.action = 'delete'
+        st.experimental_rerun()
+    elif resample:
+        st.session_state.action = 'sample'
+        st.experimental_rerun()
+
+
+def action_view(api: API) -> None:
+    # get the dataset
+    dataset = api.get_upload_data(id=st.session_state.data_id)
+    data = dataset.data
+
+    # build the page
+    st.title(dataset.upload_name)
+    st.info(f"This dataset is licensed under: _{components.utils.LICENSES.get(data.get('license', '__no__'), 'no license found')}_")
+
+    # button list
+    button_expander = st.expander('ACTIONS', expanded=True)
+    button_panel(can_resample=dataset.data_type == 'field', container=button_expander)
+
+    # main description
+    left, right = st.columns((6, 4))
+    left.markdown('### Description')
+    right.markdown('### Origin')
+    if 'description' in data:
+        left.markdown(data['description'], unsafe_allow_html=True)
+    else:
+        left.info('Edit the dataset to add a description')
+    if 'origin' in data:
+        right.markdown(data['origin'], unsafe_allow_html=True)
+    else:
+        right.info('Edit the dataset to add the origin')
+
+    st.markdown('### Preview')
+    components.dataset_plot(dataset, disable_download=False)
+
+    # debug area
+    exp = st.expander('RAW database record')
+    exp.json(dataset.to_dict())
+
+
+def upload_view(api: API) -> None:
+    # Title
+    st.title('Upload a new dataset')
+    st.info('As of now, the Dataset will be named exactly like the uploaded file. If you would like to change the name, you need to edit the dataset afterwards.')
+    
+    # upload handler
+    dataset = components.upload_handler(api=api, can_select=False)
+
+    # add the preview
+    dataset.update_thumbnail()
+
+    # add auxiliary data
+    components.upload_auxiliary_data(dataset=dataset, api=api)
+
+    # preview
+    st.markdown('## Preview upload')
+    components.dataset_plot(dataset, disable_download=True)
+
+    st.markdown('## Finished?')
+    go_back = st.button('Back')
+    if go_back:
+        st.session_state.action = 'list'
+        st.experimental_rerun()
+
+
+def edit_view(api: API) -> None:
+    # get the dataset
+    dataset = api.get_upload_data(id=st.session_state.data_id)
+
+    # Title 
+    st.title(f'Edit {dataset.upload_name}')
+
+    # edit form
+    edit_dataset(dataset=dataset, api=api)
+
+
+def delete_view(api: API) -> None:
+    # get the dataset
+    dataset = api.get_upload_data(id=st.session_state.data_id)
+
+    # Title
+    st.title(f'Delete {dataset.upload_name}')
+    st.error("**CAUTION** This action cannot be undone. If you delete the data, it will be permanently lost.")
+     
+    # check whatesle will be deleted
+    varios = dataset.variograms
+    cis = []
+    for v in varios:
+        cis.extend(v.conf_intervals)
+    models = []
+    for c in cis:
+        models.extend(c.models)
+    
+    # inform on cascade deletes
+    if len(varios) > 0:
+        st.warning(f'The following data objects in the database depend on `{dataset.upload_name}` and will be **deleted as well**')
+
+        st.table([{'Object type': n, 'Instances': len(m)} for n, m in zip(('Empirical variograms', 'Confidence Intervals', 'Variogram Models'), (varios, cis, models))])
+
+    # acknowledge the deletion
+    ack = st.checkbox('I understand the consequences of this action')
+    if len(varios) > 0:
+        ack2 = st.checkbox('I also understand that dependend data will be permanently deleted')
+    else:
+        ack2 = True
+
+    # add cancel button
+    st.markdown('Are you sure to delete?')
+    l, r, _ = st.columns((2, 2, 4))
+    cancel = l.button('CANCEL')
+    if cancel:
+        st.session_state.action = 'view'
+        st.experimental_rerun()
+    
+    # Do the deletion if acknowledged
+    if ack and ack2:
+        delete = r.button('DELETE NOW')
+    
+        if delete:
+            api.delete_upload_data(id=dataset.id)
+            del st.session_state['data_id']
+            del st.session_state['action']
+            st.experimental_rerun()
+
+
+def sample_view(api: API) -> None:
+    # get the dataset
+    dataset = api.get_upload_data(id=st.session_state.data_id)
+
+    # Title
+    st.title(f'Re-Sample {dataset.upload_name}')
+    st.markdown('Use this little sub-app to create a new sample from the selected dense dataset or field. The new sample can be used just like any other dataset')
+
+    sample_dense_data(dataset=dataset, api=api)
 
 
 def sample_dense_data(dataset: DataUpload, api: API):
@@ -101,26 +317,36 @@ def sample_dense_data(dataset: DataUpload, api: API):
     st.info("""Check the sample shown above. If you are satisfied, choose a name for the new sample and hit save. 
     Afterwards, you can select the new dataset from the dropdown, or create another sample.""")
 
-    dataset_name = st.text_input('Dataset Name')
-    if dataset_name != "":
-        do_save = st.button('SAVE', key='save1')
-        do_save2 = sampling_container.button('SAVE', key='save2')
+    with st.form('Save sample'):
+        dataset_name = st.text_input('Dataset Name')
+        description = st.text_area('Description', value=f'{sampling_strategy.capitalize()} sample of {dataset.upload_name} <ID={dataset.id}>')
+        origin = st.text_area('Origin', value=dataset.data.get('origin'))
+        LIC = components.utils.LICENSES
+        license = st.selectbox('License', options=list(LIC.keys()), format_func=lambda k: LIC.get(k))
 
-        # check if we need to save
-        if do_save or do_save2:
-            dataset = api.set_upload_data(
-                dataset_name,
-                'sample',
-                field_id=dataset.id,
-                x=[c[0] for c in coords],
-                y=[c[1] for c in coords],
-                v=values
-            )
-            st.success(f'Dataset {dataset_name} saved! Reload and choose it from the dropdown.')
-            st.button('RELOAD')
 
-    # as long as we are in this app, we need to stop
-    st.stop()
+        save = st.form_submit_button()
+    
+    if save:
+        dataset = api.set_upload_data(
+            dataset_name,
+            'sample',
+            field_id=dataset.id,
+            x=[c[0] for c in coords],
+            y=[c[1] for c in coords],
+            v=values,
+            description=description,
+            origin=origin,
+            license=license
+        )
+
+        # create thumbnail
+        dataset.update_thumbnail()
+
+        # set the new dataset as active
+        st.session_state.data_id = dataset.id
+        st.session_state.action = 'view'
+        st.experimental_rerun()
 
 
 def list_datasets(api: API, container=st):
@@ -158,18 +384,17 @@ def list_datasets(api: API, container=st):
     right.table(stats)
 
 
-def edit_dataset(api: API, container = st) -> None:
-    # select a dataset
-    all_names = api.get_upload_names()
-    if len(all_names) == 0:
-        container.warning('This database has no datasets. Please upload something.')
-        st.stop()
+def edit_dataset(dataset: DataUpload, api: API, container = st) -> None:
+    # check if edit should be canceled
+    cancel = st.button('CANCEL')
+    if cancel:
+        st.session_state.action = 'view'
+        st.experimental_rerun()
 
-    # select dropdown
-    dataset_id = container.selectbox('DATASET', options=list(all_names.keys()), format_func=lambda k: all_names.get(k))
-    dataset = api.get_upload_data(id=dataset_id)
+    # extract the data
     data = dataset.data
 
+    # Build the main form
     with container.form('EDIT'):
         LIC = components.utils.LICENSES
         new_title= st.text_input('Title', dataset.upload_name)
@@ -177,7 +402,7 @@ def edit_dataset(api: API, container = st) -> None:
         new_description = st.text_area('Description', value=data.get('description', ''), help="Add a description of the dataset.")
         new_license = st.selectbox('License', options=list(LIC.keys()), index=list(LIC.keys()).index(data.get('license', 'ccby')), format_func=lambda k: LIC.get(k))
         save = st.form_submit_button('SAVE')
-
+    
         # check save
         if save:
             updates = {'license': new_license}
@@ -188,47 +413,29 @@ def edit_dataset(api: API, container = st) -> None:
             
             # overwrite dataset 
             dataset = api.update_upload_data(id=dataset.id, name=new_title, **updates)
+            
+            # switch back to view
+            st.session_state.action = 'view'
             st.experimental_rerun()
-
-    pass
 
 
 def main_app(api: API):
-    st.title('Data Upload manager')
-    st.markdown("Use this chapter to upload new datasets and create new samples.")
+    # check if the action state is set
+    if not 'action' in st.session_state:
+        dataset_grid(api=api)
     
-
-    # check what the user wants to do
-    action = st.radio('Specify action', options=list(ACT.keys()), format_func=lambda k: ACT.get(k))
-
-    if action == 'upload':
-        # upload handler
-        dataset = components.upload_handler(api=api, can_select=False)
-
-        # add auxiliary upload
-        components.upload_auxiliary_data(dataset=dataset, api=api)
-        st.markdown('### Preview')
-        components.dataset_plot(dataset=dataset)
-        
-            # check if this dataset has origin information
-        if 'origin' in dataset.data:
-            origin = dataset.data['origin']
-
-            oexp = st.expander('DATASET INFO', expanded=True)
-            oexp.markdown(f'## Origin information\n{origin}')
-
-    elif action == 'sample':
-        # create the data select
-        dataset = components.data_selector(api=api, stop_with='data', data_type='field', container=st.sidebar)
-
-        # dev only 
-        sample_dense_data(dataset=dataset, api=api)
-    
-    elif action == 'list':
-        list_datasets(api=api)
-    
+    # we have a state
+    action = st.session_state.action
+    if action == 'view':
+        action_view(api=api)
+    elif action == 'new':
+        upload_view(api=api)
     elif action == 'edit':
-        edit_dataset(api=api)
+        edit_view(api=api)
+    elif action == 'delete':
+        delete_view(api=api)
+    elif action == 'sample':
+        sample_view(api=api)
 
 
 if __name__=='__main__':
