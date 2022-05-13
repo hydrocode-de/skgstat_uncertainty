@@ -6,11 +6,13 @@ import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import skgstat as skg
+from streamlit_card_select import card_select
 
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty import components
 from skgstat_uncertainty.models import DataUpload
 from skgstat_uncertainty.components.utils import FIT_METHODS, MODELS, BIN_FUNC, ESTIMATORS, KRIGING_METHODS
+from skgstat_uncertainty.chapters.data_manage import _options_from_dataset_names
 
 
 __story_intro = """
@@ -142,14 +144,36 @@ def data_select(api: API) -> DataUpload:
     st.title('Select a Dataset')
     st.markdown(__data_intro)
     controls = st.columns((8,2))
-    dataset = components.data_selector(api, stop_with='data', add_expander=False, container=controls[0])
+
+    # Get the dataset names and convert to card dicts
+    all_names = api.get_upload_names(data_type='sample')
+    options = _options_from_dataset_names(api, all_names, add_button=False)
+
+    # force to the sidebar
+    with st.sidebar.container():
+        st.title('Select a Dataset')
+        data_id = card_select(options=options, spacing=5)
+    
+    # if a dataset is selected, show it
+    if data_id is None:
+        st.warning('No Dataset selected.')
+        st.stop()
+    else:
+        dataset = api.get_upload_data(id=data_id)
     
     # add the plot
     left, right = st.columns((6,4))
-    components.dataset_plot(dataset, disable_download=False, container=left)
+    left.markdown('### Dataset plot')
+    components.dataset_plot(dataset, disable_download=True, container=left)
     
     # add a data preview
     df = pd.DataFrame({k: v for k, v in dataset.data.items() if k in ('x', 'y', 'v')})
+    
+    # description
+    if 'description' in dataset.data:
+        right.markdown('### Dataset description')
+        right.markdown(dataset.data['description'])
+    
     right.markdown('### Data View')
     right.dataframe(df)
 
@@ -157,8 +181,8 @@ def data_select(api: API) -> DataUpload:
         right.markdown(f"### Origin\n{dataset.data['origin']}")
         
     # add the button
-    controls[1].markdown('##### Finished?')
-    ok = controls[1].button('CONTINUE')
+    controls[0].markdown('##### Finished?')
+    ok = controls[0].button('CONTINUE')
 
     if ok:
         st.session_state.data_id = dataset.id
