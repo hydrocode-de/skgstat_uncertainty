@@ -276,17 +276,6 @@ def estimate_variogram(dataset: DataUpload, api: API) -> None:
 def main_app(api: API) -> None:
     st.title('Variogram estimation')
     
-    # get or upload a dataset
-    #dataset = upload_handler(api=api)
-    # dataset  = components.upload_handler(api=api, container=st)
-
-    # handle auxiliary data if needed
-    # components.upload_auxiliary_data(dataset=dataset, api=api)
-
-    # if it is a field, a subset has to be sampled
-    # if dataset.data_type == 'field':
-    #    sample_dense_data(dataset=dataset, api=api)
-    
     # select
     dataset = components.data_selector(api=api, stop_with='data', data_type='sample')
 
