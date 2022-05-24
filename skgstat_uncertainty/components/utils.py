@@ -87,3 +87,11 @@ LICENSES = dict(
     dldeby="Data license Germany - attribution - version 2.0",
     dlde0="Data license Germany - Zero - version 2.0"
 )
+
+PERFORMANCE_MEASURES = dict(
+    rmse='Parameter fit - RMSE',
+    cv='Model - Cross-validation',
+    dic='Model type - DIC',
+    er='Parameter fit - Empirical Risk',
+    srm='Combined - Structural Risk Minimization',
+)
