@@ -1,13 +1,19 @@
 from typing import List
-import streamlit as st
-import numpy as np
-import plotly.graph_objects as go
 from random import choice
 from string import ascii_letters
 import base64
+from itertools import cycle
+from collections import defaultdict
+
+import streamlit as st
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+
 from skinfo.metrics import entropy
 
 from skgstat_uncertainty.models import VarioParams, VarioConfInterval, VarioModel, VarioModelResult, DataUpload
+from skgstat_uncertainty.components.utils import PERFORMANCE_MEASURES
 
 
 def single_result_plot(kriging_fields: List[VarioModelResult], excluded_models: List[int] = [], container=st, key='', disable_download=True):
@@ -289,4 +295,77 @@ def base_conf_graph(vario: VarioParams, interval: VarioConfInterval, fig: go.Fig
         yaxis=dict(title=f"{vario.variogram.estimator.__name__.capitalize()} semi-variance", showgrid=False),
     )
 
+    return fig
+
+
+def metric_parcats(models: List[VarioModel], metrics: List[str] = ['rmse', 'cv'], colors: List[str] = 'all', colorscale=None, percentiles: List[int] = [25, 50, 75], fig = None, col: int = 1, row: int = 1) -> go.Figure:
+    """
+    Parallel category plot for parameterization performance measures.
+    For any given list of parameterized VarioModels, a ranking for every given
+    metric is created. Each metric is repesented by a cateogry dimension in the plot.
+    The ranking is then categoriezed into percentiles (4 quartiles by default) and the 
+    parameterizations are ordered into dimension values to show patterns.
+    The first dimension is always the model type and the parameterizations will be colored
+    accordingly.
+    """
+    # make the figure
+    if fig is None:
+        fig = make_subplots(1, 1, specs=[[{'type': 'domain'}]])
+    
+    # make an index over unique model types
+    model_idx = {t: i for i, t in enumerate(set([m.model_type for m in models]))}
+
+    # build a colorarray
+    if colorscale is None:
+        if colors == 'all':
+            colors = cycle(['#1f77b4', '#ff7f0e','#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f', '#bcbd22', '#17becf'])
+        else:
+            colors = cycle(colors)
+
+        # build the colorscale from the colors
+        colorscale = [[i / (len(model_idx) - 1), next(colors)] for t, i in model_idx.items()]
+    else:
+        colors = None
+
+    # build the dimensions data structure
+    dimensions = defaultdict(lambda: dict(values=[]))
+    model_names = []
+
+    # add each model
+    for m in models:
+        for metric in metrics:
+            dimensions[metric]['values'].append(m.parameters['measures'].get(metric, np.nan))
+        model_names.append(model_idx[m.model_type])
+
+    # the first category dimension is just the model names
+    cat_dimensions = [
+        dict(label='Model type', values=model_names, categoryarray=list(model_idx.values()), ticktext=[k.capitalize() for k in model_idx.keys()])
+    ]
+
+    # build the ticktext label:
+    p = percentiles
+    ticktext = [f'<{p[0]}%', *[f'{p[i - 1]} - %{p[i]}%' for i in range(1, len(p))], f'>{p[-1]}%']
+    
+    # add each metric as a new dimension
+    for metric, data in dimensions.items():
+        # get the percentiles for this measure
+        p = np.nanpercentile(data['values'], percentiles)
+        
+        # replace each with the highest fitting category, or 0 if None fits
+        f = lambda x: ([0] + [i + 1 for i, b in enumerate(p) if x >= b]).pop()
+        v = [f(_) for _ in data['values']]
+
+        # order only ticks that are actually present
+        arr = sorted(np.unique(v).tolist()) 
+
+        # add dimension
+        cat_dimensions.append(dict(label=PERFORMANCE_MEASURES.get(metric), values=v, ticktext=ticktext, categoryarray=arr))
+
+    # build the figure
+    fig.add_trace(go.Parcats(
+        line=dict(color=model_names, colorscale=colorscale, shape='hspline'),
+        dimensions=cat_dimensions,
+        hoveron='color'
+    ), row=row, col=col)
+    
     return fig
