@@ -136,14 +136,14 @@ def deviance(vario: Union[VarioParams, Variogram], params: dict) -> float:
     return dic_deviance(variogram)
 
 
-def empirical_risk(vario: Union[VarioParams, Variogram], interval: VarioConfInterval, params: dict, method: str = 'mse') -> float:
+def empirical_risk(vario: Union[VarioParams, Variogram], interval: VarioConfInterval, params: dict, method: str = 'mae') -> float:
     # build the variogram instance
     variogram = rebuild_variogram(vario, params)
 
     return rm.empirical_risk(variogram, conf_interval=interval, method=method)
 
 
-def structural_risk(vario: Union[VarioParams, Variogram], interval: VarioConfInterval, params: dict, models: List[VarioModel], weight: float = 1., method: str = 'mse', pD_method: str = 'mean') -> float:
+def structural_risk(vario: Union[VarioParams, Variogram], interval: VarioConfInterval, params: dict, models: List[VarioModel], weight: float = 1., method: str = 'mae', pD_method: str = 'mean') -> float:
     """"""
     # build the variogram instance
     variogram = rebuild_variogram(vario, params)
