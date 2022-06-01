@@ -122,7 +122,7 @@ def data_selector(api: API, stop_with: str = '', data_type='sample', container=s
     if len(DATA_NAMES) == 0:
         expander.markdown('No data available.')
         st.stop()
-    data_id = expander.selectbox('Sample dataset', options=list(DATA_NAMES.keys()), format_func=lambda k: f'{DATA_NAMES.get(k)} <{k}>')
+    data_id = expander.selectbox('Sample dataset', options=list(DATA_NAMES.keys()), format_func=lambda k: f'{DATA_NAMES.get(k)} <{k}>', key='data_id')
     dataset = api.get_upload_data(id=data_id)
     
     # check if that is all we need
