@@ -2,32 +2,20 @@ from typing import Tuple
 
 import streamlit as st
 import numpy as np
-import pandas as pd
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import skgstat as skg
-from streamlit_card_select import card_select
 
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty import components
 from skgstat_uncertainty.models import DataUpload
 from skgstat_uncertainty.components.utils import FIT_METHODS, MODELS, BIN_FUNC, ESTIMATORS, KRIGING_METHODS
-from skgstat_uncertainty.chapters.data_manage import _options_from_dataset_names
 
 
 __story_intro = """
 This application will guide you through the estimation of an empirical variogram. 
 You will learn about the parameters step by step and learn how to fit a model function. 
 If you are already familiar with variogram fitting, you can directly jump into the full fitting interface.
-"""
-
-__data_intro = """
-First of all, you need to select one of the pre-definded data uploads. If you have access to the 
-full Uncertain Geostatistics app by [hydrocode](https://hydrocode.de) (LINK HERE), you can use the data-manage
-chapter to upload datasets and fields and create new ones.
-Use the dropdown to inspect the datasets
-
-Once you found an exciting dataset, click on *continue* to get started with geostatistics!
 """
 
 __bin_intro = """
@@ -128,65 +116,6 @@ def check_story_mode(api: API):
         st.session_state.use_nugget = False
         st.experimental_rerun()
 
-    else:
-        st.stop()
-
-
-def data_select(api: API) -> DataUpload:
-    """Give a full page intro to data"""
-    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'data_id'):
-        # build the data select into the sidebar
-        dataset = components.data_selector(api, stop_with='data', container=st.sidebar)
-        st.session_state.data_id = dataset.id
-        return dataset
-    
-    # story mode
-    st.title('Select a Dataset')
-    st.markdown(__data_intro)
-    controls = st.columns((8,2))
-
-    # Get the dataset names and convert to card dicts
-    all_names = api.get_upload_names(data_type='sample')
-    options = _options_from_dataset_names(api, all_names, add_button=False)
-
-    # force to the sidebar
-    with st.sidebar.container():
-        st.title('Select a Dataset')
-        data_id = card_select(options=options, spacing=5)
-    
-    # if a dataset is selected, show it
-    if data_id is None:
-        st.warning('No Dataset selected.')
-        st.stop()
-    else:
-        dataset = api.get_upload_data(id=data_id)
-    
-    # add the plot
-    left, right = st.columns((6,4))
-    left.markdown('### Dataset plot')
-    components.dataset_plot(dataset, disable_download=True, container=left)
-    
-    # add a data preview
-    df = pd.DataFrame({k: v for k, v in dataset.data.items() if k in ('x', 'y', 'v')})
-    
-    # description
-    if 'description' in dataset.data:
-        right.markdown('### Dataset description')
-        right.markdown(dataset.data['description'])
-    
-    right.markdown('### Data View')
-    right.dataframe(df)
-
-    if 'origin' in dataset.data:
-        right.markdown(f"### Origin\n{dataset.data['origin']}")
-        
-    # add the button
-    controls[0].markdown('##### Finished?')
-    ok = controls[0].button('CONTINUE')
-
-    if ok:
-        st.session_state.data_id = dataset.id
-        st.experimental_rerun()
     else:
         st.stop()
 
@@ -624,7 +553,7 @@ def main_app(api: API, **kwargs):
     st.sidebar.image("https://firebasestorage.googleapis.com/v0/b/hydrocode-website.appspot.com/o/public%2Fhydrocode_brand.png?alt=media")
     
     # get a dataset
-    dataset = data_select(api)
+    dataset = components.data_select_page(api)
 
     # create a container for the variogram parameters
     vario_expander = st.sidebar.expander('Variogram parameters', expanded=True)
