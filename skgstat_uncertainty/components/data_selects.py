@@ -3,9 +3,22 @@ import streamlit as st
 import os
 import json
 import numpy as np
+import pandas as pd
 
 from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload, VarioParams, VarioConfInterval
+from streamlit_card_select import card_select
+from skgstat_uncertainty.components.plotting import dataset_plot
+from skgstat_uncertainty.components.utils import card_options_from_dataset_names
+
+__data_intro = """
+First of all, you need to select one of the pre-definded data uploads. If you have access to the 
+full Uncertain Geostatistics app by [hydrocode](https://hydrocode.de) (LINK HERE), you can use the data-manage
+chapter to upload datasets and fields and create new ones.
+Use the dropdown to inspect the datasets
+
+Once you found an exciting dataset, click on *continue* to get started with geostatistics!
+"""
 
 def upload_handler(api: API, can_select=True, upload_mime=['csv', 'asc', 'txt', 'json'], container=st) -> DataUpload:
     # get all existing upload names
@@ -102,7 +115,6 @@ def upload_handler(api: API, can_select=True, upload_mime=['csv', 'asc', 'txt', 
 
     return dataset
 
-
 # define the return type for data selector
 SELECTED = Union[
     DataUpload,
@@ -188,3 +200,71 @@ def upload_auxiliary_data(dataset: DataUpload, api: API) -> None:
         st.success(
             'Data added to the database. You can upload more or disable the upload area')
     st.stop()
+
+
+def data_select_page(api: API, container=st.sidebar) -> DataUpload:
+    """
+    Full page data selector.
+    This component will populate the sidebar with a select card component to let the user
+    select a dataset. The dataset is presented on a full page including preview and 
+    data tables. Once a dataset was selected, the component will collapse into a 
+    dropdown in the sidebar (or any other container).
+    The component is controlled via session_state:
+
+      * ``story_mode`` can be set to False to always force component collapse
+    """
+    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'data_id'):
+        # build the data select into the sidebar
+        dataset = data_selector(api, stop_with='data', container=container)
+        # st.session_state.data_id = dataset.id
+        return dataset
+    
+    # story mode
+    st.title('Select a Dataset')
+    st.markdown(__data_intro)
+    controls = st.columns((8,2))
+
+    # Get the dataset names and convert to card dicts
+    all_names = api.get_upload_names(data_type='sample')
+    options = card_options_from_dataset_names(api, all_names, add_button=False)
+
+    # force to the sidebar
+    with st.sidebar.container():
+        st.title('Select a Dataset')
+        data_id = card_select(options=options, spacing=5)
+    
+    # if a dataset is selected, show it
+    if data_id is None:
+        st.warning('No Dataset selected.')
+        st.stop()
+    else:
+        dataset = api.get_upload_data(id=data_id)
+    
+    # add the plot
+    left, right = st.columns((6,4))
+    left.markdown('### Dataset plot')
+    dataset_plot(dataset, disable_download=True, container=left)
+    
+    # add a data preview
+    df = pd.DataFrame({k: v for k, v in dataset.data.items() if k in ('x', 'y', 'v')})
+    
+    # description
+    if 'description' in dataset.data:
+        right.markdown('### Dataset description')
+        right.markdown(dataset.data['description'])
+    
+    right.markdown('### Data View')
+    right.dataframe(df)
+
+    if 'origin' in dataset.data:
+        right.markdown(f"### Origin\n{dataset.data['origin']}")
+        
+    # add the button
+    controls[0].markdown('##### Finished?')
+    ok = controls[0].button('CONTINUE')
+
+    if ok:
+        st.session_state.data_id = dataset.id
+        st.experimental_rerun()
+    else:
+        st.stop()

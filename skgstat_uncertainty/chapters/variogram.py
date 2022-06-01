@@ -12,9 +12,6 @@ from skgstat_uncertainty import components
 from skgstat_uncertainty.components.utils import BIN_FUNC, ESTIMATORS, MAXLAG, CONF_METHODS
 from skgstat_uncertainty.processor import exp_variogram_uncertainty as variogram_processor
 
-# TODO: turn the data_select into a component that takes an optional intro-text
-from skgstat_uncertainty.chapters.learn_geostatistics import data_select
-
 
 CONF_INTRO = """### Calculate confidence interval
 
@@ -429,7 +426,7 @@ def main_app(api: API) -> None:
     
     # handle data select    
     if 'data_id' not in st.session_state:
-        data_select(api)
+        components.data_select_page(api)
     else:
         dataset = components.data_selector(api, stop_with='data', data_type='sample', container=main_params_exp, add_expander=False)
 
