@@ -286,14 +286,14 @@ def fitting(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
         vario = base_variogram(dataset, fit_method='trf')
 
         if vario.use_nugget:
-            nug, sill = expander.slider('Nugget & Sill', min_value=0.0, max_value=float(np.max(vario.experimental)), value=(0.0, float(np.mean(vario.experimental))))
+            nug, sill = expander.slider('Nugget & Sill', min_value=0.0, max_value=float(np.nanmax(vario.experimental)), value=(0.0, float(np.nanmean(vario.experimental))))
             st.session_state.nugget = nug
             st.session_state.sill = sill
         else:
-            sill = expander.slider('Sill', min_value=0.0, max_value=float(np.max(vario.experimental)), value=float(np.mean(vario.experimental)), key='sill')
+            sill = expander.slider('Sill', min_value=0.0, max_value=float(np.nanmax(vario.experimental)), value=float(np.nanmean(vario.experimental)), key='sill')
         
         # add the range
-        expander.slider('Effective range', min_value=float(vario.bins[0]), max_value=float(vario.bins[-1]), value=float(np.mean(vario.bins)), key='range')
+        expander.slider('Effective range', min_value=float(vario.bins[0]), max_value=float(vario.bins[-1]), value=float(np.nanmean(vario.bins)), key='range')
     else:
         # handle fit sigma
         SIG = dict(none='Equal Weights', linear='Linear decreasing', exp='Logarithmic decreasing', sq='Exponential decreasing')
