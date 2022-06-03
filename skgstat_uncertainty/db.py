@@ -13,8 +13,17 @@ DBNAME = 'data.db'
 
 def _get_sqlite_engine(**kwargs):
     # build the db uri
-    data_path = kwargs.get('data_path', DATAPATH)
-    db_name = kwargs.get('db_name', DBNAME)
+    # handle data path
+    data_path = kwargs.get('data_path')
+    if data_path is None:
+        data_path = DATAPATH
+
+    # get db name
+    db_name = kwargs.get('db_name')
+    if db_name is None:
+        db_name = DBNAME
+
+    # build the connection uri
     uri = f"sqlite:///{data_path}/{db_name}"
 
     # build the engine
