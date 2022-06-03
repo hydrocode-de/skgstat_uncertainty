@@ -411,8 +411,10 @@ def main_app(api: API):
 
 
 if __name__=='__main__':
-    def run(db_name='data.db'):
-        api = API(db_name=db_name)
+    st.set_page_config(page_title='Data Manager', layout='wide')
+    
+    def run(data_path=None, db_name='data.db'):
+        api = API(data_path=data_path, db_name=db_name)
         main_app(api=api)
 
     import fire

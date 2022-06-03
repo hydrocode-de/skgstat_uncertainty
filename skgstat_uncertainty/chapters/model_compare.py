@@ -215,10 +215,11 @@ def main_app(api: API) -> None:
 
 
 if __name__ == '__main__':
-    st.set_page_config(page_title='Model comparison', layout='wide')
-    def run(data_path=None, db_name=None):
+    st.set_page_config(page_title='Model Compare', layout='wide')
+    
+    def run(data_path=None, db_name='data.db'):
         api = API(data_path=data_path, db_name=db_name)
-        main_app(api=api)
+        main_app(api)
     
     import fire
     fire.Fire(run)

@@ -477,5 +477,11 @@ def main_app(api: API) -> None:
 
 
 if __name__ == '__main__':
-    api = API()
-    main_app(api=api)
+    st.set_page_config(page_title='Variogram estimation', layout='wide')
+    
+    def run(data_path=None, db_name='data.db'):
+        api = API(data_path=data_path, db_name=db_name)
+        main_app(api)
+    
+    import fire
+    fire.Fire(run)
