@@ -134,3 +134,4 @@ data/*
 !data/data.db
 examples/*
 dev
+.ENCRYPT_KEY
