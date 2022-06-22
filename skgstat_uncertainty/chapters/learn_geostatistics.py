@@ -120,13 +120,13 @@ def check_story_mode(api: API):
         st.stop()
 
 
-def binning(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+def binning(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool = False) -> None:
     """Learn about binning methods and set the parameters to session state"""
     # base variogram is always needed
     v = dataset.base_variogram()
 
     # break out
-    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'bin_method'):
+    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'bin_method') or no_story:
         expander.selectbox('Binning Method', options=list(BIN_FUNC.keys()), format_func=lambda k: BIN_FUNC.get(k), key='bin_method')
         opt = expander.selectbox('Maxlag Method', options=['none', 'median', 'mean', 'absolute'], format_func=lambda k: k.capitalize())
         if opt == 'none':
@@ -181,10 +181,10 @@ def binning(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
         st.stop()
 
 
-def estimator(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+def estimator(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool = False) -> None:
     """Learn about SciKit-GStat's implemented estimators and set the parameters to session state"""
     # break out
-    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'estimator'):
+    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'estimator') or no_story:
         expander.selectbox('Semivariance estimator', options=list(ESTIMATORS.keys()), format_func=lambda k: ESTIMATORS.get(k), key='estimator')
         return
     
@@ -219,10 +219,10 @@ def estimator(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
         st.stop()
 
 
-def fit_method(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
+def fit_method(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool = False) -> None:
     """Learn about SciKit-GStat's implemented fit methods and set the parameters to session state"""
     # break out
-    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'fit_method'):
+    if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'fit_method') or no_story:
         expander.selectbox('Fit Method', options=list(FIT_METHODS.keys()), format_func=lambda k: FIT_METHODS.get(k), key='fit_method')
         expander.checkbox('Use nugget', key='use_nugget')
         return
