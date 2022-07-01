@@ -16,22 +16,25 @@ def flat_dict(data: dict) -> dict:
 
 
 def create_thumbnail(data: 'DataUpload', return_type: str = 'base64', **kwargs) -> Union[str, go.Figure]:
-    fig = go.Figure()
-    # check if this is a field or sample
-    if data.data_type == 'field':
-        fig.add_trace(go.Heatmap(z=data.data['field'], colorscale=kwargs.get('colorscale', 'Earth_r'), showscale=False))
-        fig.update_layout(yaxis=dict(scaleanchor='x'))
-    elif data.data_type == 'sample':
-        fig.add_trace(go.Scatter(
-            x=data.data['x'],
-            y=data.data['y'],
-            mode='markers',
-            marker=dict(size=9, color=data.data['v'], colorscale=kwargs.get('colorscale', 'Electric'), 
-            showscale=False,
-            )
-        ))
-    else:
-        fig.add_annotation(text='No Preview', x=0.5, y=0.5, yref="paper", xref="paper", showarrow=False, font=dict(size=22, color="grey"))
+    fig = kwargs.get('fig')
+
+    if fig is None:
+        fig = go.Figure()
+        # check if this is a field or sample
+        if data.data_type == 'field':
+            fig.add_trace(go.Heatmap(z=data.data['field'], colorscale=kwargs.get('colorscale', 'Earth_r'), showscale=False))
+            fig.update_layout(yaxis=dict(scaleanchor='x'))
+        elif data.data_type == 'sample':
+            fig.add_trace(go.Scatter(
+                x=data.data['x'],
+                y=data.data['y'],
+                mode='markers',
+                marker=dict(size=9, color=data.data['v'], colorscale=kwargs.get('colorscale', 'Electric'), 
+                showscale=False,
+                )
+            ))
+        else:
+            fig.add_annotation(text='No Preview', x=0.5, y=0.5, yref="paper", xref="paper", showarrow=False, font=dict(size=22, color="grey"))
 
     # set some general layout
     fig.update_layout(

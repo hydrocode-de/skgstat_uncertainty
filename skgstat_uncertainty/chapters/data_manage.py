@@ -24,13 +24,25 @@ def dataset_grid(api: API) -> None:
     for viewing. In viewing mode, the dataset can be edited or deleted. The grid
     does also include a button for creating new datasets
     """
+    # create the select interface
+    st.sidebar.markdown('## Filter')
+    use_field = st.sidebar.checkbox('Random Fields', value=True)
+    use_sample = st.sidebar.checkbox('Spatial Sample', value=True)
+    use_aux = st.sidebar.checkbox('Auxiliary data', value=False)
+    
+    # build a filter
+    filt = [name for name, use in zip(('field', 'sample', 'auxiliary'), (use_field, use_sample, use_aux)) if use]
+    
     # get the upload names
-    all_datasets = api.get_upload_names()
+    all_datasets = api.get_upload_names(data_type=filt)
 
     # get the options
     options = card_options_from_dataset_names(api, all_datasets)
 
     # check for data_id
+    st.title('Datasets')
+    st.markdown("""""")
+
     data_id = card_select(options=options, spacing=5, md=3, lg=3)
 
     # if None selected, stop
@@ -103,7 +115,7 @@ def action_view(api: API) -> None:
         right.info('Edit the dataset to add the origin')
 
     st.markdown('### Preview')
-    components.dataset_plot(dataset, disable_download=False)
+    components.dataset_plot(dataset, disable_download=False, add_controls=True)
 
     # debug area
     exp = st.expander('RAW database record')
@@ -203,6 +215,20 @@ def sample_view(api: API) -> None:
     # Title
     st.title(f'Re-Sample {dataset.upload_name}')
     st.markdown('Use this little sub-app to create a new sample from the selected dense dataset or field. The new sample can be used just like any other dataset')
+
+    # buttons
+    with st.sidebar.expander('ACTIONS', expanded=False):
+        l, r = st.columns(2)
+        go_list = l.button('Back to List')
+        go_data = r.button(f"Back to {dataset.upload_name}")
+
+        if go_list:
+            del st.session_state['action']
+            st.experimental_rerun()
+        if go_data:
+            st.session_state.action = 'view'
+            st.session_state.data_id = dataset.id
+            st.experimental_rerun()
 
     sample_dense_data(dataset=dataset, api=api)
 

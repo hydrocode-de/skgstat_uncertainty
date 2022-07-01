@@ -14,19 +14,17 @@ class API:
             # open a database session
             self.session = get_session(uri=None, mode='session', **{k: v for k, v in self._kwargs.items() if k in ('db_name', 'data_path')})
 
-    def get_upload_names(self, data_type: Union[List[str], str] = None):
+    def get_upload_names(self, data_type: Union[List[str], str] = ['sample', 'field']):
         # get base query
         query = self.session.query(DataUpload.id, DataUpload.upload_name)
 
-        # always exculde auxiliary data
-        query = query.filter(DataUpload.data_type.in_(['sample', 'field']))
-
-        # apply filter
+        # check the type of data_type
+        if isinstance(data_type, str):
+            data_type = [data_type]
+        
+        # build the filter for data type
         if data_type is not None:
-            if isinstance(data_type, str):
-                query = query.filter(DataUpload.data_type==data_type)
-            elif isinstance(data_type, list):
-                query = query.filter(DataUpload.data_type.in_(data_type))
+            query = query.filter(DataUpload.data_type.in_(data_type))
         
         return {row[0]: row[1] for row in query.all()}
 

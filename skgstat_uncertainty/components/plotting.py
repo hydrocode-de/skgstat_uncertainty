@@ -8,6 +8,7 @@ from collections import defaultdict
 import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
+from plotly.express.colors import named_colorscales
 from plotly.subplots import make_subplots
 
 from skinfo.metrics import entropy
@@ -233,11 +234,29 @@ def figure_download_link(figure: go.Figure, filename: str = None, template: str 
     return f"""<a href="data:application/pdf;base64,{b64.decode()}" download="{filename}">Download {filename}</a>"""
 
 
-def dataset_plot(dataset: DataUpload, disable_download=True, key='', container=st) -> None:
+def dataset_plot(dataset: DataUpload, disable_download=True, key='', add_controls: bool = False, container=st) -> None:
+    # handle container
+    if add_controls:
+        opt_container, plot_area = container.columns((1, 5))
+    else:
+        plot_area = container.container()
+        opt_container = container.container()
+    
+    # add controls
+    if add_controls:
+        # color
+        c_name = opt_container.selectbox('COLOR', options=named_colorscales(), format_func=lambda n: n.capitalize(), index=named_colorscales().index('earth'))
+        invert = opt_container.checkbox('Invert color scale', value=True)
+        color = f"{c_name}{'_r' if invert else ''}"
+
+
+    else:
+        color = 'Cividis'
+
     # switch the figure type
     if dataset.data_type == 'field' or dataset.data_type == 'auxiliary':
         fig = go.Figure(
-            go.Heatmap(z=dataset.data['field'])
+            go.Heatmap(z=dataset.data['field'], colorscale=color)
         )
 
         fig.update_layout(
@@ -246,7 +265,8 @@ def dataset_plot(dataset: DataUpload, disable_download=True, key='', container=s
             plot_bgcolor='rgba(0,0,0,0)'
         )
 
-        container.plotly_chart(fig, use_container_width=True)
+        # plot 
+        plot_area.plotly_chart(fig, use_container_width=True)
     elif dataset.data_type == 'sample':
         fig = go.Figure(
             go.Scatter(x=dataset.data['x'], y=dataset.data['y'], mode='markers', marker=dict(size=8, symbol='cross', color=dataset.data['v']))
@@ -258,16 +278,24 @@ def dataset_plot(dataset: DataUpload, disable_download=True, key='', container=s
             plot_bgcolor='rgba(0,0,0,0)'
         )
 
-        container.plotly_chart(fig, use_container_width=True)
+        # plot
+        plot_area.plotly_chart(fig, use_container_width=True)
     else:
-        container.json(dataset.data)
+        plot_area.json(dataset.data)
         return
     
+    # add the thumbnail re-creation
+    if add_controls:
+        rebuild = opt_container.button('Use as thumbnail')
+        if rebuild:
+            dataset.update_thumbnail(fig=fig)
+            st.success('Updated!')
+
     # if this is run, an actual plot was created
     if not disable_download:
         do_download = container.button('DOWNLOAD', key=f'download_{key}')
         if do_download:
-            container.write(figure_download_link(fig), unsafe_allow_html=True)
+            opt_container.write(figure_download_link(fig), unsafe_allow_html=True)
 
 
 def base_conf_graph(vario: VarioParams, interval: VarioConfInterval, fig: go.Figure = None) -> go.Figure:
