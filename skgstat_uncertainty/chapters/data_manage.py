@@ -113,6 +113,13 @@ def action_view(api: API) -> None:
 def upload_view(api: API) -> None:
     # Title
     st.title('Upload a new dataset')
+
+    # back button
+    go_back = st.sidebar.button('Back to List')
+    if go_back:
+        del st.session_state['action']
+        st.experimental_rerun()
+
     st.info('As of now, the Dataset will be named exactly like the uploaded file. If you would like to change the name, you need to edit the dataset afterwards.')
     
     # upload handler
@@ -127,12 +134,6 @@ def upload_view(api: API) -> None:
     # preview
     st.markdown('## Preview upload')
     components.dataset_plot(dataset, disable_download=True)
-
-    st.markdown('## Finished?')
-    go_back = st.button('Back')
-    if go_back:
-        st.session_state.action = 'list'
-        st.experimental_rerun()
 
 
 def edit_view(api: API) -> None:
