@@ -433,7 +433,7 @@ def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
 def base_variogram(dataset: DataUpload, **kwargs) -> skg.Variogram:
     # get the needed parameters
     bin_func = kwargs.get('bin_method', st.session_state.get('bin_method'))
-    n_lags = kwargs.get('n_lags', st.session_state.get('n_lags', 10))
+    n_lags = int(kwargs.get('n_lags', st.session_state.get('n_lags', 10)))
     maxlag = kwargs.get('maxlag', st.session_state.get('maxlag'))
     estimator = kwargs.get('estimator', st.session_state.get('estimator'))
     model = kwargs.get('model', st.session_state.get('model'))
