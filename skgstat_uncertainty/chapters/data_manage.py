@@ -58,9 +58,14 @@ def dataset_grid(api: API) -> None:
         st.experimental_rerun()
 
 
-def button_panel(can_resample: bool = False, container=st) -> None:
+def button_panel(can_resample: bool = False, can_upload: bool = False, container=st) -> None:
     # build the columns in the container
-    cols = container.columns(4 if can_resample else 3)
+    n_col = 3
+    if can_resample:
+        n_col += 1
+    if can_upload:
+        n_col += 1
+    cols = container.columns(n_col)
 
     # add the buttons
     back = cols[0].button('BACK TO LIST')
@@ -71,6 +76,11 @@ def button_panel(can_resample: bool = False, container=st) -> None:
         resample = cols[2].button('RE-SAMPLE DATASET')
     else:
         resample = False
+    
+    if can_upload:
+        aux = cols[3 if can_resample else 2].button('UPLOAD AUXILIARY')
+    else:
+        aux = False
 
     # check the action
     if back:
@@ -86,6 +96,9 @@ def button_panel(can_resample: bool = False, container=st) -> None:
     elif resample:
         st.session_state.action = 'sample'
         st.experimental_rerun()
+    elif aux:
+        st.session_state.action = 'auxiliary'
+        st.experimental_rerun()
 
 
 def action_view(api: API) -> None:
@@ -99,7 +112,7 @@ def action_view(api: API) -> None:
 
     # button list
     button_expander = st.expander('ACTIONS', expanded=True)
-    button_panel(can_resample=dataset.data_type == 'field', container=button_expander)
+    button_panel(can_resample=dataset.data_type == 'field', can_upload=dataset.data_type in ('field', 'sample'), container=button_expander)
 
     # main description
     left, right = st.columns((6, 4))
@@ -137,15 +150,11 @@ def upload_view(api: API) -> None:
     # upload handler
     dataset = components.upload_handler(api=api, can_select=False)
 
-    # add the preview
-    dataset.update_thumbnail()
+    if dataset is not None:
+        st.session_state.data_id = dataset.id
+        st.session_state.action = 'view'
+        st.experimental_rerun()
 
-    # add auxiliary data
-    components.upload_auxiliary_data(dataset=dataset, api=api)
-
-    # preview
-    st.markdown('## Preview upload')
-    components.dataset_plot(dataset, disable_download=True)
 
 
 def edit_view(api: API) -> None:
@@ -231,6 +240,31 @@ def sample_view(api: API) -> None:
             st.experimental_rerun()
 
     sample_dense_data(dataset=dataset, api=api)
+
+
+def auxiliary_upload_view(api: API) -> None:
+    # ger the dataset
+    dataset = api.get_upload_data(id=st.session_state.data_id)
+
+    # Title
+    st.title('Upload auxiliary information')
+    st.markdown(f"### for {dataset.upload_name}")
+
+    # buttons
+    with st.sidebar.expander('ACTIONS', expanded=False):
+        l, r = st.columns(2)
+        go_list = l.button('Back to List')
+        go_data = r.button(f"Back to {dataset.upload_name}")
+
+        if go_list:
+            del st.session_state['action']
+            st.experimental_rerun()
+        if go_data:
+            st.session_state.action = 'view'
+            st.session_state.data_id = dataset.id
+            st.experimental_rerun()
+    
+    components.upload_auxiliary_data(dataset=dataset, api=api)
 
 
 def sample_dense_data(dataset: DataUpload, api: API):
@@ -390,32 +424,13 @@ def edit_dataset(dataset: DataUpload, api: API, container = st) -> None:
         st.session_state.action = 'view'
         st.experimental_rerun()
 
-    # extract the data
-    data = dataset.data
+    # use the edit dataset component
+    dataset = components.edit_dataset(dataset, api, container=container)
 
-    # Build the main form
-    with container.form('EDIT'):
-        LIC = components.utils.LICENSES
-        new_title= st.text_input('Title', dataset.upload_name)
-        new_origin = st.text_area('Origin', value=data.get('origin', ''), help="Add the source of the dataset to help others cite it correctly.")
-        new_description = st.text_area('Description', value=data.get('description', ''), help="Add a description of the dataset.")
-        new_license = st.selectbox('License', options=list(LIC.keys()), index=list(LIC.keys()).index(data.get('license', 'ccby')), format_func=lambda k: LIC.get(k))
-        save = st.form_submit_button('SAVE')
-    
-        # check save
-        if save:
-            updates = {'license': new_license}
-            if new_origin.strip() != '':
-                updates['origin'] = new_origin
-            if new_description.strip() != '':
-                updates['description'] = new_description
-            
-            # overwrite dataset 
-            dataset = api.update_upload_data(id=dataset.id, name=new_title, **updates)
-            
-            # switch back to view
-            st.session_state.action = 'view'
-            st.experimental_rerun()
+    if dataset is not None:
+        st.session_state.dataset_id = dataset.id
+        st.session_state.action = 'view'
+        st.experimental_rerun()
 
 
 def main_app(api: API):
@@ -435,6 +450,8 @@ def main_app(api: API):
         delete_view(api=api)
     elif action == 'sample':
         sample_view(api=api)
+    elif action == 'auxiliary':
+        auxiliary_upload_view(api=api)
 
 
 if __name__=='__main__':

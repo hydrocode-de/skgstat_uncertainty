@@ -3,3 +3,4 @@ from .plotting import single_result_plot, dataset_plot, base_conf_graph, figure_
 from .tables import model_table
 from .filters import model_selection
 from . import utils
+from .data_edit import edit_dataset

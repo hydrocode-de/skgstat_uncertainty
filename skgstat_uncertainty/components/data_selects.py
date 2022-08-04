@@ -10,6 +10,7 @@ from skgstat_uncertainty.models import DataUpload, VarioParams, VarioConfInterva
 from streamlit_card_select import card_select
 from skgstat_uncertainty.components.plotting import dataset_plot
 from skgstat_uncertainty.components.utils import card_options_from_dataset_names
+from skgstat_uncertainty.components.data_edit import edit_dataset
 
 __data_intro = """
 First of all, you need to select one of the pre-definded data uploads. If you have access to the 
@@ -61,6 +62,8 @@ def upload_handler(api: API, can_select=True, upload_mime=['csv', 'asc', 'txt', 
         if uploaded_file is not None:
             data_name, mime = os.path.splitext(uploaded_file.name)
 
+            # check for mime type
+            # TODO make functions of this
             if mime == '.csv':
                 data = pd.read_csv(uploaded_file)
 
@@ -70,23 +73,13 @@ def upload_handler(api: API, can_select=True, upload_mime=['csv', 'asc', 'txt', 
                     st.stop()
 
                 # save data
-                dataset = api.set_upload_data(
-                    data_name,
-                    'sample',
-                    x=data.x.values.tolist(),
-                    y=data.y.values.tolist(),
-                    v=data.z.values.tolist()
-                )
+                dataset = DataUpload(upload_name=data_name, data_type='sample', data=dict(x=data.x.values.tolist(), y=data.y.values.tolist(), v=data.v.values.tolist()))
             
             elif mime == '.asc' or mime == '.txt':
                 data = np.loadtxt(uploaded_file)
 
                 # save the data
-                dataset = api.set_upload_data(
-                    data_name,
-                    'field',
-                    field=data.tolist()
-                )
+                dataset = DataUpload(upload_name=data_name, data_type='field', data=dict(field=data.tolist()))
             
             elif mime == '.json':
                 data = json.load(uploaded_file)
@@ -99,16 +92,20 @@ def upload_handler(api: API, can_select=True, upload_mime=['csv', 'asc', 'txt', 
                 else:
                     type_ = 'generic'
 
-                # save the data
-                dataset = api.set_upload_data(
-                    data_name,
-                    type_,
-                    **data
-                )
+                # cache the dataset to load the preview
+                dataset = DataUpload(upload_name=data_name, data_type=type_, data=data)
 
             else:
                 container.error(f'File of type {mime} not supported.')
                 st.stop()
+
+            # Upload form
+            dataset = edit_dataset(dataset=dataset, api=api, container=container, add_preview=True, edit=False)
+            if dataset is not None:
+                return dataset
+            else:
+                st.stop()
+        
         else:
             # stop until upload de-selected or file upload completed
             st.stop()
