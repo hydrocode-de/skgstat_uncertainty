@@ -1,4 +1,5 @@
 from typing import Tuple
+from io import StringIO
 
 import streamlit as st
 import numpy as np
@@ -60,6 +61,27 @@ You can estimate the parameters by eye, or capture them more systematically by f
 to the empirical variogram. This will also let you use the model parameterization in more sophisticated geostatistical applications.
 Using `skgstat` you can choose between different methods for fitting.
 """
+
+
+def _arr_to_dat(arr: np.array) -> bytes:
+    """Converts an array to a string representation in .DAT format"""
+    # create the buffer
+    buf = StringIO()
+
+    # determine format
+    fmt = '%.1f'
+    if abs(np.mean(arr)) < 1:
+        fmt = '%.3f'
+    if abs(np.mean(arr)) < 1e-3:
+        fmt = '%.5f'
+
+    # write
+    np.savetxt(buf, arr, fmt=fmt)
+
+    # encode and return
+    buf.seek(0)
+    return buf.read().encode('utf-8')
+
 
 def _code_sample(**kwargs):
     code = """import skgstat as skg\nfrom skgstat_uncertainty.api import API\n\napi = API()\n"""
@@ -359,7 +381,7 @@ def variogram(api: API, dataset: DataUpload, always_plot: bool = True) -> None:
             st.stop()
 
 
-@st.experimental_memo
+#@st.experimental_memo
 def _apply_kriging(_dataset: DataUpload, vario_params: dict, grid_resolution: int = 100, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
     # get the variogram
     vario = base_variogram(_dataset, **vario_params)
@@ -378,21 +400,7 @@ def _apply_kriging(_dataset: DataUpload, vario_params: dict, grid_resolution: in
 
 def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
     """Enable a kriging interface"""
-    # check if kriging is enabled
-    if st.session_state.get('kriging_enabled', False):
-        ok = expander.button('Disable kriging')
-        if ok:
-            st.session_state.kriging_enabled = False
-            st.experimental_rerun()
-    else:
-        st.sidebar.write('You can run a basic kriging interpolation')
-        run = expander.button('Enable')
-        if run:
-            st.session_state.kriging_enabled = True
-            st.experimental_rerun()
-        else:
-            return
-    
+
     # get kriging parameters
     krig_method = expander.selectbox('Kriging method', options=[m for m in KRIGING_METHODS.keys() if m != 'external'], format_func=lambda k: KRIGING_METHODS.get(k))
     krig_kw = {}
@@ -414,11 +422,13 @@ def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
     l.markdown('### Kriging interpolation')
     fig = go.Figure(go.Heatmap(z=field, colorscale='Earth_r'))
     l.plotly_chart(fig, use_container_width=True)
+    l.download_button('Download kriging data', _arr_to_dat(field), file_name='kriging.dat', mime='text/plain')
 
     # center
     c.markdown('### Kriging error variance')
     fig = go.Figure(go.Heatmap(z=sigma))
     c.plotly_chart(fig, use_container_width=True)
+    c.download_button('Download kriging error variance', _arr_to_dat(sigma), file_name='kriging_error_variance.dat', mime='text/plain')
 
     # right
     r.markdown('### Python sample code')
@@ -428,6 +438,7 @@ def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
     c += "y = np.linspace(vario.coordinates[:,1].min(), vario.coordinates[:,1].max(), 100)\n"
     c += "\n#Apply\nfield, sigma = krige.structured((x, y))\n"
     r.code(c, language='python')
+    r.download_button('Download sample code', c.encode('utf-8'), file_name='kriging.py', mime='text/plain')
     
 
 def base_variogram(dataset: DataUpload, **kwargs) -> skg.Variogram:
