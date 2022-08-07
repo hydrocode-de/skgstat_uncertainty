@@ -156,7 +156,6 @@ def upload_view(api: API) -> None:
         st.experimental_rerun()
 
 
-
 def edit_view(api: API) -> None:
     # get the dataset
     dataset = api.get_upload_data(id=st.session_state.data_id)
