@@ -120,8 +120,6 @@ class DataUpload(Base):
         'sample' and a 'CRS' identifier has to be added to :attr:`DataUpload.data`
         """
         if self.data_type == 'sample' and 'crs' in self.data:
-            raise NotImplementedError
-
             # get source crs
             src_crs = pyproj.CRS.from_epsg(self.data['crs'])
 
