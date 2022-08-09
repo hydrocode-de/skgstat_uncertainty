@@ -5,14 +5,56 @@ from sqlalchemy.ext.mutable import MutableDict
 from sqlalchemy.orm import relationship, object_session
 from skgstat import Variogram
 import numpy as np
+import pyproj
 
 from skgstat_uncertainty.processor import utils
 
-
+# database Base model
 Base = declarative_base()
+
+# target coordinate reference system
+TGT_CRS = pyproj.CRS.from_epsg(4326)
 
 
 class DataUpload(Base):
+    """
+    Base model for representing datasets in SkGstat-Uncertainty.
+    A data upload into the database is represented by an id, name,
+    data type and an arbitrary json-seriallizable objects to respresent
+    the data itself and the associated metadata.
+    The two fundamental data types are 'field' for areal information,
+    organized as raster and 'sample' for collections of sample points.
+
+    Data Attributes
+    ---------------
+    x, y, v : List, optional
+        List of integers or floats representing 2D sample points ('x', 'y')
+        and the associated observations ('v')
+    field : List[List], optional
+        List of List of integeger or floats representing a row-oriented
+        2D field
+    field_id : int
+        If data type is 'sample' and a field in the database was sub-sampled
+        to derive this dataset, the parent entitiy can be referenced by its id
+    origin : str
+       Origin information about the dataset. Markdown is allowed.
+    description : str
+        Description of the databse. Markdown is allowed.
+    license : str
+        License abbreviation for this dataset. Supported are:
+        
+        * no - No license - ask for permission
+        * cc0 - Creative Commons public dedication
+        * ccby - Creative Commons by Attribution
+        * dldeby - Data license Germany - attribution
+        * dlde0 - Data license Germany - zero
+    doi : str
+        DOI of a dataset description publication associated to this instance.
+    crs : int
+        EPSG number of a coordinate reference system associated to the sample
+        or field. As of now, only samples are supported.
+
+    """
     __tablename__ = 'uploads'
 
     # columns
@@ -25,6 +67,7 @@ class DataUpload(Base):
     variograms = relationship("VarioParams", back_populates="data", cascade="all, delete")
 
     def to_dict(self):
+        """Return the instance data as dicionary"""
         return {
             'id': self.id,
             'upload_name': self.upload_name,
@@ -69,6 +112,27 @@ class DataUpload(Base):
         except Exception as e:
             session.rollback()
             raise e
+
+    def to_wgs84(self) -> Tuple[list, list]:
+        """
+        Convert the dataset to WGS84 referenced dataset, to use them on a web map.
+        For this to work properly, as of now, the DataUpload needs a data_type of
+        'sample' and a 'CRS' identifier has to be added to :attr:`DataUpload.data`
+        """
+        if self.data_type == 'sample' and 'crs' in self.data:
+            raise NotImplementedError
+
+            # get source crs
+            src_crs = pyproj.CRS.from_epsg(self.data['crs'])
+
+            # create a transformer
+            transformer = pyproj.Transformer.from_crs(src_crs, TGT_CRS, always_xy=True)
+
+            x, y = transformer.transform(self.data['x'], self.data['y'])
+
+            return x, y
+        else:
+            print("Only supported for DataUpload.data_type=='sample' with defined CRS.")
 
 
 class VarioParams(Base):
