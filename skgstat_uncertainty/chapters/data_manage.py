@@ -23,6 +23,20 @@ def dataset_grid(api: API) -> None:
     Create a grid of all existing datasets. When clicked, the dataset is loaded
     for viewing. In viewing mode, the dataset can be edited or deleted. The grid
     does also include a button for creating new datasets
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    
+    Note
+    ----
+    This comonent terminates the streamlit application until the user has 
+    selected a dataset. State manangement is done using a state variable called
+    ``action``, which is set to view. Then a ``data_id`` is available for the 
+    selected dataset.
+
     """
     # create the select interface
     st.sidebar.markdown('## Filter')
@@ -59,6 +73,22 @@ def dataset_grid(api: API) -> None:
 
 
 def button_panel(can_resample: bool = False, can_upload: bool = False, container=st) -> None:
+    """
+    Creates a panel for various buttons to manage datasets. Actions are not
+    applied, but indicated in the streamlit session. This compnent does
+    restart the streamlit application, in case the user took action. The selected
+    action is stored in the ``action`` state variable.
+
+    Parameters
+    ----------
+    can_resample : bool
+        If ``False`` (default), the resampling tool for field data types is 
+        disabled and the user can't resample datasets.
+    can_upload : bool
+        If ``False``(default), the upload dialog is disabled. This will prevent 
+        users from uploading new datasets into the database.
+
+    """
     # build the columns in the container
     n_col = 3
     if can_resample:
@@ -102,6 +132,20 @@ def button_panel(can_resample: bool = False, can_upload: bool = False, container
 
 
 def action_view(api: API) -> None:
+    """
+    Page for viewing all details about a dataset. This page is based on streamlit
+    session state as the ``data_id`` has to be present in the state in order 
+    to load the corresponding dataset from the database. 
+    The view page includes a button panel for manipulating the dataset, along
+    with license, origin information, a description and a preview of the dataset.
+    
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    
+    """
     # get the dataset
     dataset = api.get_upload_data(id=st.session_state.data_id)
     data = dataset.data
@@ -136,6 +180,21 @@ def action_view(api: API) -> None:
 
 
 def upload_view(api: API) -> None:
+    """
+    Page for uploading new datasets. The page uses the upload handler component.
+    
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    
+    Note
+    ----
+    This component uses the streamlit session state to refer to the newly uploaded
+    dataset and restarts the streamlit application on user interaction
+
+    """
     # Title
     st.title('Upload a new dataset')
 
@@ -156,8 +215,19 @@ def upload_view(api: API) -> None:
         st.experimental_rerun()
 
 
-
 def edit_view(api: API) -> None:
+    """
+    Page for editing an existing dataset. This page relies on the streamlit session
+    state, as the ``data_id`` has to be present in order to load the corresponding
+    dataset from the database.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # get the dataset
     dataset = api.get_upload_data(id=st.session_state.data_id)
 
@@ -169,6 +239,19 @@ def edit_view(api: API) -> None:
 
 
 def delete_view(api: API) -> None:
+    """
+    Page for handling dataset deletions. This page relies on the streamlit session
+    state, as the ``data_id`` has to be present in oder to laod the corresponding
+    dataset from the database.
+    The deletion process has to be acknowlegded by the user at least once.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # get the dataset
     dataset = api.get_upload_data(id=st.session_state.data_id)
 
@@ -218,6 +301,19 @@ def delete_view(api: API) -> None:
 
 
 def sample_view(api: API) -> None:
+    """
+    Page for resample field data. This page relies on the streamlit session state,
+    as it needs the ``data_id`` to be present in order to load the corresponding 
+    field from the database. It uses the ``sample_dense_data`` component to
+    load the actual user interactions.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # get the dataset
     dataset = api.get_upload_data(id=st.session_state.data_id)
 
@@ -243,6 +339,20 @@ def sample_view(api: API) -> None:
 
 
 def auxiliary_upload_view(api: API) -> None:
+    """
+    Page view to upload auxiliary data for exsiting field or sample data.
+    Auxiliary data has to be of field type and can be used for external drift 
+    kriging.
+    This page relies on the streamlit session state, as a ``data_id`` has to be 
+    present in order to load the corresponding dataset from the database.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # ger the dataset
     dataset = api.get_upload_data(id=st.session_state.data_id)
 
@@ -268,6 +378,25 @@ def auxiliary_upload_view(api: API) -> None:
 
 
 def sample_dense_data(dataset: DataUpload, api: API):
+    """
+    Streamlit component for re-sampling field data and store the result as a new
+    sample data type to the database. The component can terminate or restart the
+    the streamlit application due to user interaction.
+    The component can re-sample the field on a regular grid by specifying the 
+    grid resolution, grid cell size or the number of desired sampling points.
+    Alternatively, a specified number of sampling points can be selected randomly
+    from the domain. The component also includes a preview and a dataset creation
+    dialog.
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        The base dataset, which should be used for resampling
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # create the sidebar
     st.sidebar.title('Parameters')
 
@@ -383,6 +512,17 @@ def sample_dense_data(dataset: DataUpload, api: API):
 
 
 def list_datasets(api: API, container=st):
+    """
+    Dropdown component for all datasets found in the database. On selection, 
+    the component will preview some basic information about the dataset.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # select a dataset
     all_names = api.get_upload_names()
     if len(all_names) == 0:
@@ -418,6 +558,24 @@ def list_datasets(api: API, container=st):
 
 
 def edit_dataset(dataset: DataUpload, api: API, container = st) -> None:
+    """
+    Wrapper to integrate the ``edit_dataset`` component. This wrapper adds controls
+    and manages the state management to indicate the user interaction to other
+    components of the application.
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        The dataset, which will be edited.
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    Note
+    ----
+    This wrapper terminates and restarts the streamlit application on user interaction.
+
+    """
     # check if edit should be canceled
     cancel = st.button('CANCEL')
     if cancel:
@@ -434,6 +592,26 @@ def edit_dataset(dataset: DataUpload, api: API, container = st) -> None:
 
 
 def main_app(api: API):
+    """
+    Data management chapter.
+    This streamlit application can be run on its own or embedded into another
+    application. It will preview all datasets in the connected database as a 
+    default action and then manage all operations like view, edit or delete on
+    user interaction.
+    Please note that this application does not include access management. If 
+    the application is loaded, the user will be allowed to operate the underlying
+    database.
+    To manage user interactions, the application shares several streamlit session
+    state variables with all child components. ``action`` is used to indicate the
+    user interaction and ``data_id`` the affected dataset.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # check if the action state is set
     if not 'action' in st.session_state:
         dataset_grid(api=api)
