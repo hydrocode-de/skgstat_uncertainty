@@ -1,4 +1,4 @@
-from typing import List, Tuple
+from typing import List, Tuple, Union
 import sqlalchemy as sa
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.ext.mutable import MutableDict
@@ -15,6 +15,227 @@ Base = declarative_base()
 # target coordinate reference system
 TGT_CRS = pyproj.CRS.from_epsg(4326)
 
+
+class CoverageData(Base):
+    """"""
+    __tablename__ = 'coverages'
+
+    # columns
+    id = sa.Column(sa.Integer, primary_key=True)
+    name = sa.Column(sa.String, nullable=False, unique=True)
+    coverage_type = sa.Column(sa.Enum('Coverage', 'CoverageCollection'), nullable=False)
+    sample_type = sa.Column(sa.Enum('sample', 'field', 'auxiliary', 'generic', 'interpolation', 'simulation'), nullable=False)
+    domain = sa.Column(MutableDict.as_mutable(sa.JSON), nullable=True)
+    parameters = sa.Column(MutableDict.as_mutable(sa.JSON), nullable=False, default={})
+    ranges = sa.Column(MutableDict.as_mutable(sa.JSON), nullable=False)
+    extra = sa.Column(MutableDict.as_mutable(sa.JSON), nullable=False, default={})
+
+    @classmethod
+    def from_sample(cls, x: np.ndarray, y: np.ndarray, *v: List[np.ndarray], parameters: dict = None, **kwargs) -> 'CoverageData':
+        """"""
+        # create base object
+        coverageData = CoverageData(coverage_type='CoverageCollection', sample_type='sample')
+
+        # set parameters
+        coverageData.set_parameters(parameters=parameters)
+
+        # build the ranges, will become coverages
+        coverages = []
+        for x_, y_, vals in zip(x, y, zip(*v)):
+            coverages.append({
+                'type': 'Coverage',
+                'domain': {
+                    'type': 'Domain',
+                    'axes': {
+                        'x': {'values': [x_]},
+                        'y': {'values': [y_]}
+                    }
+                },
+                'ranges': {par_name: {
+                    'type': 'NdArray',
+                    'dataType': 'integer' if isinstance(val, int) else 'float',
+                    'values': [ val ]
+                } for par_name, val in zip(self.parameters.keys(), vals)}
+            })
+        
+        # for samples, the coverages are stored as ranges, as only the range and domain axes differ
+        coverageData.ranges = coverages
+
+        # set extra information
+        coverageData.extra = kwargs
+
+        return coverageData
+
+    @classmethod
+    def from_grid(cls, z: np.ndarray, xx: Unp.ndarray, yy: np.ndarray, parameters: dict = None, **kwargs) -> 'CoverageData':
+        """"""
+        # create base object
+        coverageData = CoverageData(coverage_type='CoverageCollection', sample_type='sample')
+
+        # set parameters
+        coverageData.set_parameters(parameters=parameters)
+
+        # set domain
+        coverageData.domain = {
+            'type': 'Domain',
+            'domainType': 'Grid',
+            'axes': {
+                'x': {'start': xx.min(), 'stop': xx.max(), 'num': xx.size},
+                'y': {'start': yy.min(), 'stop': yy.max(), 'num': yy.size}
+            }
+        }
+
+        # iterate z
+        if not isinstance(z, list):
+            z = [z]
+
+        # set range
+        coverageData.ranges = {
+            par_name: {
+                'type': 'NdArray',
+                'dataType': 'float',
+                'axisNames': ['x', 'y'],
+                'shape': [var.shape[0], var.shape[1]],
+                'values': var.flatten().tolist()
+            } for par_name, var in zip(coverageData.parameters.keys(), z)
+        }
+
+        # add extra information
+        coverageData.extra = kwargs
+
+        return coverageData
+        
+    def set_parameters(self, parameters: Union[dict, int, List[str]] = None, update: bool = False):
+        """"""
+        # build the parameters
+        if parameters is None:
+            parameters = {
+                "Variable": {
+                    'type': 'Parameter',
+                    'description': {'en': 'Generic parameter of any observable. No further information is available.'},
+                    'observedProperty': {'label': 'Unkown Property'}
+                }
+            }
+        elif isinstance(parameters, int):
+            num_of_pars = parameters
+            parameters = {}
+            for i, par in enumerate(num_of_pars):
+                parameters[f"Variable{i + 1 if i > 0 else ''}"] = {
+                    'type': 'Parameter',
+                    'description': {'en': 'Generic parameter of any observable. No further information is available.'},
+                    'observedProperty': {'label': 'Unkown Property'}
+                }
+        elif isinstance(parameters, list) and all([isinstance(_, str) for _ in parameters]):
+            names = parameters
+            parameters = {}
+            for name in names:
+                parameters[name] = {
+                    'type': 'Parameter',
+                    'description': {'en': f'Generic parameter of any observable called "{name}".'},
+                    'observedProperty': {'label': name.capitalize()}
+                }
+        
+        # update or save
+        if update:
+            old_params = self.parameters
+        else:
+            old_params = {}
+
+        old_params.update(parameters)
+        self.parameters = old_params
+
+    def save(self):
+        """Save current state of the coverage info"""
+        # get a session
+        session = object_session(self)
+        
+        # save changes
+        try:
+            session.add(self)
+            session.commit()
+        except Exception as e:
+            session.rollback()
+            raise e
+    
+    @property
+    def data(self):
+        """"""
+        data = self.extra
+
+        # get the main parameter and its data
+        d = self.get_parameter_data(self.parameters.keys()[0])
+        
+        # add         
+        if self.coverage_type == 'Coverage':
+            data['field'] = d
+        elif self.coverage_type == 'CoverageCollection':
+            data['x'] = d[0]
+            data['y'] = d[1]
+            data['v'] = d[2]
+        
+        # return
+        return data
+
+    def get_parameter_data(self, parameter: str) -> Union[np.ndarray, Tuple[list, list, list]]:
+        """"""
+        # check if the parameter exists
+        if parameter not in self.parameters:
+            raise KeyError(f"{parameter} not in CoverageData.parameters")
+
+        # check coverage type:
+        cov_type = self.domain.get('type')
+
+        # switch
+        if cov_type == 'Coverage':
+            r = self.ranges(parameter)
+            data = np.asarray(r['values']).reshape(r['shape'])
+        elif cov_type == 'CoverageCollection':
+            # container
+            x, y, v = list, list, list
+            
+            # extract the sample
+            for cov in self.ranges:
+                ax = cov['domain']['axes']
+                x.append(ax['x']['values'][0])
+                y.append(ax['y']['values'][0])
+                v.append(cov['ranges'][parameter]['values'][0])
+            
+            # merge back
+            data = (x, y, v, )
+
+        return data
+
+    def to_json(self) -> dict:
+        """Return CoverageJSON of this coverage data"""
+        cov = {
+            'type': self.coverage_type,
+            'parameters': self.parameters,
+            'extra': self.extra
+        }
+
+        if self.coverage_type == 'Coverage':
+            cov['domain'] = self.domain
+            cov['ranges'] = self.ranges
+        elif self.coverage_type == 'CoverageCollection':
+            cov['domainType'] = 'Point'
+            cov['coverages'] = self.ranges
+        
+        return cov
+
+    def base_variogram(self, parameter: str = None, **kwargs) -> Variogram:
+        # get the base parameter
+        par = parameter if parameter is not None else self.parameters.keys()[0]
+        
+        if self.coverage_type == 'CoverageCollection':
+            coords, vals = self.get_parameter_data(parameter=par)
+        elif self.coverage_type == 'Coverage':
+            # get the field
+            field = self.get_parameter_data(parameter=par)
+            
+            # get the coordinates from domain
+            x_ax = self.domain['axes']['x']
+            if 'start' in self.domain['axes'][]
+            x_ = np.linspace(self.domain['axes']['x']['start'], self.domain['axes']['x']['end'], self.domain['axes']['x']['num'])
 
 class DataUpload(Base):
     """
