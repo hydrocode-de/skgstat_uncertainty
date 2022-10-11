@@ -4,11 +4,21 @@ import numpy as np
 from time import time
 
 from skgstat_uncertainty.api import API
-from skgstat_uncertainty.models import VarioModelResult, VarioParams, VarioConfInterval, VarioModel, DataUpload
+from skgstat_uncertainty.models import VarioModelResult, VarioParams, VarioModel, DataUpload
 from skgstat_uncertainty import components
 
 
 def model_table(models: List[VarioModel]) -> None:
+    """
+    Helper function to create a streamlit table of all passed
+    Variogram models
+
+    Parameters
+    ----------
+    models : List[VarioModel]
+        List of models to be displayed in the table
+
+    """
     # if running, create the table
     table_data = []
     for model in models:
@@ -24,6 +34,19 @@ def model_table(models: List[VarioModel]) -> None:
 
 
 def check_for_auxiliary_data(dataset: DataUpload, api: API, container = st) -> Union[List[DataUpload], None]:
+    """
+    Helper function to check for auxiliary data present for the 
+    given dataset. Returns None if no data found
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        Dataset for which auxiliary data is required.
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # check if the sample has a field id otherwiese use the dataset id
     field_id = dataset.data.get('field_id', dataset.id)
     
@@ -35,27 +58,39 @@ def check_for_auxiliary_data(dataset: DataUpload, api: API, container = st) -> U
         return None
     else:
         return aux
-    # we have auxiliary data
-    info = container.empty()
-    info.info(f"A total of {len(aux)} auxiliary datasets were found in the database. Select if and how many should be used. This will activate Kriging with external drift.")
-
-    # build up an info dict
-    INFO = {d.id: d.upload_name  for d in aux}
-    using_ids = container.multiselect(
-        'Select drift datasets for EDK',
-        options=list(INFO.keys()),
-        format_func=lambda k: INFO.get(k)
-    )
-
-    # check how many are selected
-    if len(using_ids) == 0:
-        return None
-    else:
-        info.empty()
-        return [dataset for dataset in aux if dataset.id in using_ids]
 
 
 def choose_algorithm(aux: Union[List[DataUpload], None], vario: VarioParams, container=st) -> dict:
+    """
+    Component to render a Kriging algorithm selection interface to the user.
+    The user can select Ordinary, Simple, Universal or External drift kriging. 
+    Based on the selection, different parameterization dialogs are rendered.
+
+    Parameters
+    ----------
+    aux: List[DatUpload], optional
+        List of auxiliary datasets used for kriging. Can be None, 
+        if no auxiliary data is present, External drift kriging will be disabled.
+    vario: VarioParams
+        Variogram parameterization used to apply the selected kriging algorithm.
+        Note, that this component only renders the dialog and does not apply the
+        algorithm.
+    
+    Returns
+    -------
+    opt : dict
+        Agrument dictionary to be passed to :any:`Krige <gstools.Krige>`
+    
+    Example
+    -------
+    The return of this component can directly be passed to a Kriging instance
+    created by the variogram:
+
+    >> # Get the variogram and kriging instances
+    >> vario = varioParams.variogram
+    >> krige = vario.to_gs_krige(**opt)
+
+    """
     # There are different Kriging algorithms available
     available = {'ordinary': 'Ordinary Kriging', 'simple': 'Simple Kriging', 'universal': 'Universal Kriging'}
     preselect = 'ordinary'
@@ -106,6 +141,32 @@ def choose_algorithm(aux: Union[List[DataUpload], None], vario: VarioParams, con
 
 
 def apply_kriging(models: List[VarioModel], dataset: DataUpload, vario: VarioParams, opts: dict, api: API) -> List[VarioModelResult]:
+    """
+    Main component to apply kriging algorithm. The component renders all needed dialogs
+    and filters. The same kriging algorithm can be applied to a list of models and their
+    parameterizations at once. The progress will be displayed by a number of progress bars.
+
+    Parameters
+    ----------
+    models : List[VarioModel]
+        List of parameterized theoretical model instances. Each will be used for a kriging
+        application.
+    dataset : DataUpload
+        Base dataset, which will be used as the conditional grid points for the kriging.
+    vario : VarioParams
+        Basic empirical Variogram representation, which is shared by all parameterized
+        model instances.
+    opts : dict
+        Kriging parameters
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    Note
+    ----
+    This component restarts and stops the streamlit application on user interaction.
+
+    """
     st.markdown("""## Apply models""")
     st.markdown("""Kriging can take a time. Therefore you need to start the processing manually using the button below below.""")
 
@@ -206,6 +267,21 @@ def apply_kriging(models: List[VarioModel], dataset: DataUpload, vario: VarioPar
 
 
 def main_app(api: API) -> None:
+    """
+    Kriging chapter.
+    This streamlit application can be run on its own or embedded into another
+    application. The application displays a datasets selection dialog to load
+    the base dataset. Before the user is able to apply kriging algorithms to
+    the dataset, an empirical variogram has to be estimated and at least one
+    theoretical variogram model has to be parameterized.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     st.title('Model application by Kriging')
     st.markdown("""This chapter aims at generating result field by interpolating the original sample 
         using the models fitted within the confidence intervals.
