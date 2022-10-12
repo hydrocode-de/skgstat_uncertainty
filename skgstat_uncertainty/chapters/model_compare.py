@@ -13,7 +13,24 @@ from skgstat_uncertainty.components.utils import variomodel_to_dict, PERFORMANCE
 from skgstat_uncertainty.components.plotting import metric_parcats
 
 
-def measure_plot(models: List[VarioModel], container=st):
+def measure_plot(models: List[VarioModel], container=st) -> None:
+    """
+    Plot component to inspect variogram model parameter sets in a scatter- or
+    boxplot. This component takes a list of model parameterizations and renders
+    a number of controls to let the user create a plot of the the selected
+    model fit performance metric in dependence of variogram parameters.
+
+    Parameters
+    ----------
+    models : List[VarioModel]
+        List of variogram model parameterizations.
+    
+    Note
+    ----
+    This component renders controls along with the plot area.
+    It does not return the plotly figure.
+
+    """
     # get the models as list
     data = variomodel_to_dict(models, add_measures=True)
 
@@ -102,7 +119,19 @@ def measure_plot(models: List[VarioModel], container=st):
         fig_area.write(download_link, unsafe_allow_html=True)
 
 
-def metric_plot(models: List[VarioModel], metric_select: bool = True, container=st) -> None:
+def metric_plot(models: List[VarioModel], container=st) -> None:
+    """
+    Parallel coordinates plot of variogram model parameterizations.
+    Each parameter set is categorized by each selected performance metric,
+    by splitting all values into quartiles. Colors are associcated to 
+    the underlying model used in the corresponding parameterization.
+
+    Parameters
+        ----------
+    models : List[VarioModel]
+        List of variogram model parameterizations.
+
+    """
     # load the available metrics
     available_metrics = []
     for m in models:
@@ -122,6 +151,14 @@ def metric_plot(models: List[VarioModel], metric_select: bool = True, container=
 
 
 def feature_enabler(container=st.sidebar):
+    """
+    Helper component to enable or disable different other components as 
+    used in the main application of the model_compare chapter.
+
+    Note that this component uses the user session state to keep track
+    of activated and deactivated components.
+
+    """
     # set features on/off by default
     if 'show_metrics' not in st.session_state:
         st.session_state.show_metrics = True
@@ -136,10 +173,27 @@ def feature_enabler(container=st.sidebar):
     container.checkbox('enable filter & results', key='show_results', help='Filter parameterizations and create multiple result plots. Can be computationally expansive, so disable while still filtering')
 
 
-def result_grid():
-    pass
-
 def main_app(api: API) -> None:
+    """
+    Model and model parameterization comparison chapter.
+    This streamlit application can be run on its own or embedded into another
+    application. This chapter needs a list of parameterized theoretical 
+    variogram models to be present in the database. The user can choose
+    between several options to assess and compare the different parameterizations.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    Notes
+    -----
+    This chapter requires a number of variogram model parameterizations saved to the
+    database. Thus, the user has to run the variogram estimation and the model
+    parameterization first.
+
+    """
     st.title("Model comparison")
     st.markdown("In this chapter you can use different metric to assess model quality to come up with an automated selection process.")
 
