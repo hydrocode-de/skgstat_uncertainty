@@ -84,6 +84,9 @@ def _arr_to_dat(arr: np.array) -> bytes:
 
 
 def _code_sample(**kwargs):
+    """
+    Helper function to build the code sample for the user.
+    """
     code = """import skgstat as skg\nfrom skgstat_uncertainty.api import API\n\napi = API()\n"""
     
     # data loaded
@@ -143,7 +146,25 @@ def check_story_mode(api: API):
 
 
 def binning(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool = False) -> None:
-    """Learn about binning methods and set the parameters to session state"""
+    """
+    Component to change the binning settings.
+    The current settings will be stored into the streamlit session state.
+    Additionally, the component can be run in story mode, which will load 
+    an distance - value residuals scatterplot into the application and terminate
+    it, until the user made a decision on the needed binning settings.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    no_story : bool
+        If True, the component will suppress the story mode.
+        Defaults to ``False``
+
+    """
     # base variogram is always needed
     v = dataset.base_variogram()
 
@@ -204,7 +225,24 @@ def binning(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool
 
 
 def estimator(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool = False) -> None:
-    """Learn about SciKit-GStat's implemented estimators and set the parameters to session state"""
+    """
+    Component to change the estimator settings.
+    The current settings will be stored into the streamlit session state.
+    Additionally, the component can be run in story mode, which will load 
+    an empirical variogram preview into the application and terminate
+    it, until the user made a decision on the needed estimator settings.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    no_story : bool
+        If True, the component will suppress the story mode.
+        Defaults to ``False``
+    """
     # break out
     if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'estimator') or no_story:
         expander.selectbox('Semivariance estimator', options=list(ESTIMATORS.keys()), format_func=lambda k: ESTIMATORS.get(k), key='estimator')
@@ -242,7 +280,24 @@ def estimator(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bo
 
 
 def fit_method(api: API, dataset: DataUpload, expander = st.sidebar, no_story: bool = False) -> None:
-    """Learn about SciKit-GStat's implemented fit methods and set the parameters to session state"""
+    """
+    Component to change the fitting method settings.
+    The current settings will be stored into the streamlit session state.
+    Additionally, the component can be run in story mode, which will display
+    help texts for each method and terminate it, until the user made a 
+    decision on the used method.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    no_story : bool
+        If True, the component will suppress the story mode.
+        Defaults to ``False``
+    """
     # break out
     if not st.session_state.get('story_mode', True) or hasattr(st.session_state, 'fit_method') or no_story:
         expander.selectbox('Fit Method', options=list(FIT_METHODS.keys()), format_func=lambda k: FIT_METHODS.get(k), key='fit_method')
@@ -295,7 +350,24 @@ def fit_method(api: API, dataset: DataUpload, expander = st.sidebar, no_story: b
 
 
 def fitting(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
-    """Depending on the fitting method set in session_state, a fitting control panel is shown with appropriate parameters"""
+    """
+    Component to change the fitting parameters.
+    The current settings will be stored into the streamlit session state.
+    Additionally, the component can be run in story mode, which will load 
+    an preview of the selected model into the application and terminate
+    it, until the user made a decision on the needed settings.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    no_story : bool
+        If True, the component will suppress the story mode.
+        Defaults to ``False``
+    """
     # fitting has no story mode
     fit_method = st.session_state.fit_method
 
@@ -327,7 +399,30 @@ def fitting(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
 
 
 def variogram(api: API, dataset: DataUpload, always_plot: bool = True) -> None:
-    """Show the variogram, along with variogram parameters, code and measures to the user"""
+    """
+    Component to guide the user through the parameterization and application of
+    a variogram. The component will return if it is not in story mode, as no
+    additional interface are present to the user. The story mode adds additional
+    informations and a set of performance metrics to the user to aid variogram
+    estimation and fitting
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    always_plot : bool
+        If True (default) the main variogram plot will be displayed in any case,
+        even if the story mode is disabled.
+
+    Note
+    ----
+    This component will terminate or restart the streamlit application on user
+    interaction.
+
+    """
     story_mode = True
 
     # story mode has to be handled different here
@@ -383,6 +478,7 @@ def variogram(api: API, dataset: DataUpload, always_plot: bool = True) -> None:
 
 #@st.experimental_memo
 def _apply_kriging(_dataset: DataUpload, vario_params: dict, grid_resolution: int = 100, **kwargs) -> Tuple[np.ndarray, np.ndarray]:
+    """Helper function to actually run kriging."""
     # get the variogram
     vario = base_variogram(_dataset, **vario_params)
 
@@ -399,7 +495,20 @@ def _apply_kriging(_dataset: DataUpload, vario_params: dict, grid_resolution: in
 
 
 def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
-    """Enable a kriging interface"""
+    """
+    Component to guide the user through the Kriging interface.
+    This component calls all necesary interfaces and will terminate or
+    restart the streamlit application on user interaction
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+
+    """
 
     # get kriging parameters
     krig_method = expander.selectbox('Kriging method', options=[m for m in KRIGING_METHODS.keys() if m != 'external'], format_func=lambda k: KRIGING_METHODS.get(k))
@@ -442,6 +551,22 @@ def kriging(api: API, dataset: DataUpload, expander = st.sidebar) -> None:
     
 
 def base_variogram(dataset: DataUpload, **kwargs) -> skg.Variogram:
+    """
+    Helper function to parameterize a theoretical variogram model on the fly.
+    The function will collect settings and parameter values from the user session
+    state or the passed kwargs. Note that the session state is overwritten by 
+    passed arguments.
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    
+    Returns
+    -------
+    vario : skgstat.Variogram
+        The parameterized :class:`Variogram <skgstat.Variogram>`.
+    """
     # get the needed parameters
     bin_func = kwargs.get('bin_method', st.session_state.get('bin_method'))
     n_lags = int(kwargs.get('n_lags', st.session_state.get('n_lags', 10)))
@@ -483,7 +608,25 @@ def base_variogram(dataset: DataUpload, **kwargs) -> skg.Variogram:
 
 
 def variogram_plot(api: API, dataset: DataUpload, **kwargs) -> go.Figure:
-    """"""
+    """
+    Component to build a plotly Figure of the current variogram. Depending
+    on the current state of the user session, which reflects the progress made
+    in story mode, the plot is adjusted to only plot what the user has already
+    learned about.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    dataset : DataUpload
+        The basic dataset used to estimate an empirical variogram.
+    
+    Returns
+    -------
+    fig : go.Figure
+        The plotly Figure objecet containting the variogram plot
+    """
     # # get the needed parameters
     bin_func = st.session_state.get('bin_method', kwargs.get('bin_method'))
     estimator = st.session_state.get('estimator', kwargs.get('estimator'))
@@ -551,6 +694,24 @@ def variogram_plot(api: API, dataset: DataUpload, **kwargs) -> go.Figure:
 
 
 def main_app(api: API, **kwargs):
+    """
+    Tutorial chapter about geostatistics.
+    This streamlit application can be run on its own or embedded into another
+    application. This application is the main entrypoint into the SciKit-GStat
+    Uncertainty geostatistical applications and a generic introduction and tutorial
+    about geostatistics. There are no uncertainty considerations embedded into this
+    application. The user is guided from the selection of a pre-defined spatial dataset
+    through all steps necessary to estimate an empirical variogram, then select and
+    parameterize a theoretical variogram model and finally apply this model using 
+    one of the implemented kriging algorithms.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     st.set_page_config(page_title='Learn Variograms', layout='wide')
     # get url params
     url_params = st.experimental_get_query_params()
