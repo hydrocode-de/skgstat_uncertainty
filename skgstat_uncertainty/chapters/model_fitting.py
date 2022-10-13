@@ -16,6 +16,33 @@ from skgstat_uncertainty.components.utils import MODELS, PERFORMANCE_MEASURES
 
 
 def apply_model(vario: VarioParams, interval: VarioConfInterval, figure: go.Figure, other_models: List[VarioModel] = [], expander_container=st.sidebar) -> Tuple[go.Figure, dict]:
+    """
+    Main component to render variogram parameter selection widgets and apply the parameterization
+    for the selected theoretical variogram model. This is the core components for applications,
+    that are built around manual variogram parameterization. The compontent will return a plotly
+    figure of the parameterized model and parameters themself.
+
+    Parameters
+    ----------
+    vario : VarioParams
+        Estimated empirical variogram instance to use as a basis to create a model
+        parameterization.
+    interval : VarioConfInterval
+        Empirical variogram confidence interval to be used for parameterization.
+    figure : go.Figure
+        Plotly Figure instance to be used for plotting.
+    other_models : List[VarioModel]
+        Optional list of other parameter sets for the same empirical variogram
+        instance. This can be used to compare the current parameter to already
+        exisiting parameter sets.
+
+    Returns
+    -------
+    figure : go.Figure
+        Plotly figure adjusted to depict the parameterized model, as well.
+    params : dict
+        Variogram model parameterization created by the user.
+    """
     # get the variogram and bounds
     variogram = vario.variogram
     bounds = interval.spec['interval']
@@ -78,6 +105,37 @@ def apply_model(vario: VarioParams, interval: VarioConfInterval, figure: go.Figu
 
 
 def parameterization_evaluation(vario: VarioParams, interval: List[Tuple[float, float]], params: dict, other_models: List[VarioModel] = []) -> Tuple[Dict[str, float], dict]:
+    """
+    Component for evaluating the current parameterization of a theoretical
+    variogram model. It can be compared to other parameterizations of the 
+    same empirical variogram instance.
+    The component will return two dictionaries containing the performance
+    measures for evaluation and the measue parameters.
+
+    Parameters
+    ----------
+    vario : VarioParams
+        Estimated empirical variogram instance to use as a basis to create a model
+        parameterization.
+    interval : VarioConfInterval
+        Empirical variogram confidence interval to be used for parameterization.
+    params : dict
+        Variogram model parameterization created by the user.
+    other_models : List[VarioModel]
+        Optional list of other parameter sets for the same empirical variogram
+        instance. This can be used to compare the current parameter to already
+        exisiting parameter sets.
+
+    Returns
+    -------
+    measures : dict
+        Dictionary of all selected performance metrics for the current
+        parameterization.
+    measure_params : dict
+        Dictionary of parameters needed to calculate the performance metrics.
+        These should be stored along with the metrics into the database.
+
+    """
     # create a dictionary to hold all measures
     measures = {}
     measure_params = defaultdict(lambda: {})
@@ -149,7 +207,7 @@ def parameterization_evaluation(vario: VarioParams, interval: List[Tuple[float, 
 
 def evaluation_metric_badges(measures: Dict[str, float], container=st) -> None:
     """
-    Visualize the current measures using metric badges
+    Helper function to render visual badges for each passed metric.
     """
     # number of elements
     n = len(measures)
@@ -163,6 +221,27 @@ def evaluation_metric_badges(measures: Dict[str, float], container=st) -> None:
 
 
 def save_handler(api: API, interval: VarioConfInterval, params: dict, measures: Dict[str, float], measure_params: Dict[str, Dict[str, float]]) -> VarioModel:
+    """
+    Helper function for saving a new parameterization into the database, along with all
+    calculated performance and the associated parameters for calculation.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    interval : VarioConfInterval
+        Empirical variogram confidence interval to be used for parameterization.
+    measures : dict
+        Dictionary of all selected performance metrics for the current
+        parameterization.
+    measure_params : dict
+        Dictionary of parameters needed to calculate the performance metrics.
+        These should be stored along with the metrics into the database.
+
+    Returns
+    -------
+    """
     # create the save object
     parameters = dict(model_params=params, measures=measures, measure_params=measure_params)
 
@@ -186,12 +265,31 @@ def save_handler(api: API, interval: VarioConfInterval, params: dict, measures: 
 
 
 def main_app(api: API) -> None:
+    """
+    Variogram model parameterization chapter.
+    This streamlit application can be run on its own or embedded into another
+    application. This chapter is build around manual variogram model parameterization.
+    The user can interact with a number of widgets to change parameterization manually
+    on the fly. Different performance metrics aid the user in optimizing the 
+    parameterization.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    Notes
+    -----
+    This chapter requires an estimated empirical variogram instance to be present in the
+    database.
+
+    """
     st.title('Variogram Model Fitting')
     st.markdown("")
-    save_btn = st.empty()
 
     # create the dataset creator  
-    dataset, vario, interval = components.data_selector(api=api, container=st.sidebar)
+    _, vario, interval = components.data_selector(api=api, container=st.sidebar)
 
     # load existing models
     load_other = st.sidebar.checkbox(
@@ -230,8 +328,7 @@ def main_app(api: API) -> None:
         model = save_handler(api=api, params=params, interval=interval, measures=measures, measure_params=measure_params)
         st.success(f"Saved {model.model_type} model with ID {model.id}")
     else:
-        st.stop()
-    
+        st.stop() 
 
 
 if __name__ == '__main__':
