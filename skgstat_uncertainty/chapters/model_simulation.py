@@ -1,4 +1,4 @@
-from typing import Tuple, List, Dict
+from typing import List, Dict
 import streamlit as st
 import numpy as np
 import gstools as gs
@@ -12,7 +12,25 @@ from skgstat_uncertainty.models import VarioModel
 
 def run_single_simulation(model: VarioModel, N: int = 100, show_progess: bool = True, seed: int = 42, container=st) -> np.ndarray:
     """
-    Runs the simulation for a specific model
+    Run a geostatistical simulation for one model parameterization. 
+    The simulation is done using GSTools conditional spatial random field class
+    :any:`CondSRF <gstools.CondSRF>`. A progess bar will indicate the 
+    progress to the user. The component returns a 3-dimensional numpy array, containing
+    all simulations on the 3rd axis.
+
+    Parameters
+    ----------
+    model : VarioModel
+        Instance of a variogram model parameterization used to condition the field.
+    N : int
+        Number of iterations. This also determines the length of the
+        returns 3rd axis.
+    show_progress : Bool
+        If True (default), the component will render a progress bar
+    seed : int
+        Any integer to seed the random number generator used for the 
+        stochastic simulation.
+
     """
     # extract the variogram
     variogram = model.variogram
@@ -45,6 +63,25 @@ def run_single_simulation(model: VarioModel, N: int = 100, show_progess: bool = 
 
 
 def run_simulations(simulations: Dict[int, np.ndarray], models: List[VarioModel], opts_container=st) -> None:
+    """
+    Start geostatistical simulations for all passed model parameterizations.
+    The component will render controls to specify the number of simulation runs per
+    parameterization and seeding. The progress of the simulations is indicated by a progress bar.
+
+    Parameters
+    ----------
+    simulations : dict
+        dictionary of all model runs. If there are already model runs present
+        the user can decide to overwrite these.
+    models : List[VarioModel]
+        List of variogram model parameterizations to use for the geostatistical simulation.
+        The settings for simulation will be applied to each parameter set.
+
+    Notes
+    -----
+    This component will restart and terminate the streamlit application on user interaction.
+
+    """
     # add options to control simulation
     n = opts_container.number_input('Number of simulations', value=10, min_value=1, max_value=100)
     seed = opts_container.number_input('Random seed', value=42, min_value=0, max_value=9999999, help='Set a seed to make the simulations reproducible')
@@ -87,6 +124,25 @@ def run_simulations(simulations: Dict[int, np.ndarray], models: List[VarioModel]
 
 
 def save_results(simulations: Dict[int, np.ndarray], models: List[VarioModel], api: API) -> None:
+    """
+    Main component to store simulation results into the database.
+    All simulations for each model parametrization are aggregated to their mean value 
+    per cell and the cell variance. The data type for stored results are 'simulation_field'.
+
+    Parameters
+    ----------
+    simulations : dict
+        dictionary of all model runs. The dictionary used the parameter set ID as key
+        and a stacked numpy array of all model runs for this parameter.
+    models : List[VarioModel]
+        List of variogram model parameterizations used for the geostatistical simulation.
+        The list must be provided to link the new database entries for the simulation results
+        with the parameter sets, they originate from.
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
     # all simulations done, show results
     st.success('All simulations done')
     st.markdown('### Save results\n The results are not saved to the database yet!')
@@ -144,6 +200,27 @@ def save_results(simulations: Dict[int, np.ndarray], models: List[VarioModel], a
 
 
 def main_app(api: API):
+    """
+    Geostatistical simulation chapter.
+    This streamlit application can be run on its own or embedded into another
+    application. This chapter is build around geostatistical simulations.
+    For any variogram parameter set the user can setup a geostatistical simulation.
+    The single simulated fields will be aggregated to the simulations' mean value
+    and can be saved back to the database and used as a field dataset.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    Notes
+    -----
+    This chapter requires an estimated empirical variogram instance and at least one
+    variogram model parameter set to be present in the database.
+
+    """
+
     st.title('Model Simulation')
     st.markdown("This chapter is an alternative to the Kriging chapter. Instead of predicting the target field, it will run geostatistical simulations.")
 
