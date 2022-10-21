@@ -23,8 +23,25 @@ Do you want to activate the confidence interval estimation or just save the empi
 without confidence interval?
 """
 
-def variogram_manual_fit(dataset: DataUpload, container=st.sidebar) -> Variogram:
+def empirical_variogram_estimation(dataset: DataUpload, container=st.sidebar) -> Variogram:
     """
+    Renders controls to estimate an empirical variogram for a given dataset.
+    The component returns an instance of :class:`Variogram <skgstat.Variogram>`,
+    which represents the empirical variogram.
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        Dataset to use for estimating an empirical variogram. The dataset has to
+        be of 'sample' data type. You may need to subsample for data before you can
+        use it here.
+    
+    Returns
+    -------
+    variogram : skgstat.Variogram
+        Variogram instance. The empirical components can be accessed by ``variogram.bins``
+        and ``variogram.experimental``.
+
     """
     # create the options and parameters
     # ---------------
@@ -67,8 +84,30 @@ def variogram_manual_fit(dataset: DataUpload, container=st.sidebar) -> Variogram
     return vario
 
 
-def calculate_confidence_interval(variogram: Variogram, expander_container: st.sidebar) -> Tuple[Tuple[Tuple[float, float]], dict]:
+def calculate_uncertainty_bounds(variogram: Variogram, expander_container: st.sidebar) -> Tuple[Tuple[Tuple[float, float]], dict]:
     """
+    Calculate the uncertainty bounds for a given :class:`Variogram <skgstat.Variogram>` instance.
+    The uncertainty bounds can be calculated with different methods. The component renders
+    a selectbox component to select the method and then loads a special component for the 
+    respective method, which in turn will render settings controls.
+    Once finished, the component will merge general with method specific settings and return the
+    interval along with its settings.
+
+    Parameters
+    ----------
+    variogram : skgstat.Variogram
+        Variogram instance representing the empirical variogram to be used.
+        Any properties of the variogram, which are not associated with an 
+        empirical variogram will be ignored.
+    
+    Returns
+    -------
+    interval : numpy.ndarray
+        Array of tuples for the lower and upper limit of the uncertainty bounds.
+    conf_method_params : dict
+        Dictionary containing all settings and their values used to calculate
+        or estimate the uncertainty bounds.
+
     """
     # switch the propagation method
     conf_method = expander_container.selectbox('Propagation method', options=list(CONF_METHODS.keys()), format_func=lambda k: CONF_METHODS.get(k))
@@ -259,7 +298,28 @@ def monte_carlo_params_interface(variogram: Variogram, quartiles: Tuple[int, int
 
 def load_or_estimate_variogram(dataset: DataUpload, api: API, expander_container=st.sidebar) -> Variogram:
     """
-    Either load existing variogram or estimate a new one
+    This component gives the user the ability to load an existing estimated
+    empirical variogram for the selected dataset. If no empirical variogram
+    can be found in the database, the component will render the components needed
+    to estimate a new empirical variogram.
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        The datset the user requested an empirical variogram for. Has to be 
+        of 'sample' data type
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    Returns
+    -------
+    variogram : skgstat.Variogram
+        Variogram instance, which the user requested or newly created.
+
+    Notes
+    -----
+    This component may restart or terminate the streamlit application on user interaction.
     """
     # the user has to make a decision - load available params if any
     available_vario_names = {vparam.id: vparam.name for vparam in api.filter_vario_params(data_id=dataset.id)}
@@ -281,7 +341,7 @@ def load_or_estimate_variogram(dataset: DataUpload, api: API, expander_container
     # check if an estimation is needed
     if not omit_estimation:
         emp_expander = st.sidebar.expander('VARIOGRAM HYPER-PARAMETERS', expanded=True)
-        variogram = variogram_manual_fit(dataset=dataset, container=emp_expander)
+        variogram = empirical_variogram_estimation(dataset=dataset, container=emp_expander)
     else:
         # otherwise select a model
         left, right = st.columns((7,2))
@@ -308,7 +368,25 @@ def load_or_estimate_variogram(dataset: DataUpload, api: API, expander_container
 
 
 def plot_variogram_params(variogram: Variogram, interval: Tuple[Tuple[float, float]] = None, interval_params: dict = {}, container=st.sidebar) -> go.Figure:
-    """Create a preview
+    """
+    Create a plotly figure for the current empirical variogram and its associated
+    uncertainty bounds if there are any.
+
+    Parameters
+    ----------
+    variogram : skgstat.Variogram
+        Variogram instance defining the empirical variogram parameters.
+    interval : tuple
+        List/Tuple of tuples of lower and upper bounds for the uncertainty bounds.
+    inteval_params : dict
+        Dictionary containing the settings used to estimate/calculate the
+        uncertainty bounds
+    
+    Returns
+    -------
+    fig : go.Figure
+        Plotly figure of the variogram with optional uncertainty bounds.
+
     """
     # build the basic plot
     fig = go.Figure(go.Scatter(
@@ -360,8 +438,33 @@ def plot_variogram_params(variogram: Variogram, interval: Tuple[Tuple[float, flo
     return fig
 
 
-def save_handler(dataset: DataUpload, variogram: Variogram, interval: Tuple[Tuple[float, float]] = None, interval_params: dict = {}) -> None:
-    """Activate controls to save the variogram"""
+def save_handler(dataset: DataUpload, variogram: Variogram, api: API, interval: Tuple[Tuple[float, float]] = None, interval_params: dict = {}) -> None:
+    """
+    Component to save a new empirical variogram instance, optionally along with its
+    uncertainty bounds to the database. The user needs to describe and title 
+    both instances to make a later indentification easier.
+
+    Parameters
+    ----------
+    dataset : DataUpload
+        Dataset used to estimate the empirical variogram.
+    variogram : skgstat.Variogram
+        Variogram isnstance containing the empirical variogram
+        parameters and settings.
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+    interval : tuple
+        List/Tuple of tuples of lower and upper bounds for the uncertainty bounds.
+    inteval_params : dict
+        Dictionary containing the settings used to estimate/calculate the
+        uncertainty bounds
+
+    Notes
+    -----
+    The component may reload or terminate the streamlit application on user interaction.        
+    
+    """
     # first check if the variogram is new
     vario_is_new = 'vario_id' not in st.session_state
     
@@ -420,6 +523,24 @@ def save_handler(dataset: DataUpload, variogram: Variogram, interval: Tuple[Tupl
 
 
 def main_app(api: API) -> None:
+    """
+    Empirical variogram and uncertainty estimation chapter.
+    This streamlit application can be run on its own or embedded into another
+    application. This chapter is the main chapter, which combines the estimation
+    of an empirical variogram for a given dataset with the estimation of an
+    uncertainty bound for the variogram. In the following, this empirical variogram
+    will be represented by the uncertainty bounds instead of the main semi-variance 
+    values.
+
+    Parameters
+    ----------
+    api : skgstat_uncertainty.api.API
+        Connected instance of the SciKit-GStat Python API to interact with
+        the backend.
+
+    """
+
+
     st.title('Variogram estimation')
     
     main_params_exp = st.sidebar.expander('OPTIONS', expanded=True)
@@ -459,7 +580,7 @@ def main_app(api: API) -> None:
     
     if st.session_state.calculate_interval:
         conf_box = st.sidebar.expander('CONFIDENCE INTERVAL SETTINGS', expanded=True)
-        interval, interval_params = calculate_confidence_interval(variogram, expander_container=conf_box)
+        interval, interval_params = calculate_uncertainty_bounds(variogram, expander_container=conf_box)
     else:
         interval = None
         interval_params = {}
@@ -473,7 +594,7 @@ def main_app(api: API) -> None:
 
     # handle save
     with st.expander('SAVE VARIOGRAM'):
-        save_handler(dataset, variogram, interval, interval_params)
+        save_handler(dataset, variogram, api, interval, interval_params)
 
 
 if __name__ == '__main__':
