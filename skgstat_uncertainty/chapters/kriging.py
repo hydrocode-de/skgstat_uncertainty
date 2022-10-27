@@ -79,7 +79,7 @@ def choose_algorithm(aux: Union[List[DataUpload], None], vario: VarioParams, con
     Returns
     -------
     opt : dict
-        Agrument dictionary to be passed to :any:`Krige <gstools.Krige>`
+        Agrument dictionary to be passed to :class:`Krige <gstools.Krige>`
     
     Example
     -------

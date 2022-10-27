@@ -24,8 +24,8 @@ author = 'Mirko Mälicke'
 # The full version, including alpha/beta/rc tags
 with open('../../skgstat_uncertainty/__init__.py') as f:
     loc = dict()
-    eval(f.read(), loc, loc)
-release =loc['__version__']
+    exec(f.read(), loc, loc)
+release = loc['__version__']
 
 
 # -- General configuration ---------------------------------------------------

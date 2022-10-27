@@ -14,7 +14,7 @@ def run_single_simulation(model: VarioModel, N: int = 100, show_progess: bool = 
     """
     Run a geostatistical simulation for one model parameterization. 
     The simulation is done using GSTools conditional spatial random field class
-    :any:`CondSRF <gstools.CondSRF>`. A progess bar will indicate the 
+    :class:`CondSRF <gstools.CondSRF>`. A progess bar will indicate the 
     progress to the user. The component returns a 3-dimensional numpy array, containing
     all simulations on the 3rd axis.
 
@@ -25,7 +25,7 @@ def run_single_simulation(model: VarioModel, N: int = 100, show_progess: bool = 
     N : int
         Number of iterations. This also determines the length of the
         returns 3rd axis.
-    show_progress : Bool
+    show_progress : bool
         If True (default), the component will render a progress bar
     seed : int
         Any integer to seed the random number generator used for the 
