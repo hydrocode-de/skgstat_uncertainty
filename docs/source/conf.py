@@ -22,9 +22,10 @@ copyright = '2022, Mirko Mälicke'
 author = 'Mirko Mälicke'
 
 # The full version, including alpha/beta/rc tags
-import importlib
-skgu = importlib.import_module('skgstat_uncertainty')
-release =skgu.__version__
+with open('../../skgstat_uncertainty/__init__.py') as f:
+    loc = dict()
+    eval(f.read(), loc, loc)
+release =loc['__version__']
 
 
 # -- General configuration ---------------------------------------------------

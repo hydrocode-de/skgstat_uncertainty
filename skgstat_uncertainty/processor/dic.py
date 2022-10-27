@@ -1,3 +1,19 @@
+"""
+This processor calculates the DIC following Spiegelhater et al. (2002) and Gelman et al. (2004).
+This sub-module is only useful within the context of SKGstat Uncertainty, as it uses 
+:class:`Variograms <skgstat.Variogram>` as input. 
+
+References
+~~~~~~~~~~
+  Spiegelhalter, D. J., Best, N. G., Carlin, B. P., & Van Der Linde, A. (2002).
+  Bayesian measures of model complexity and fit. Journal of the royal statistical
+  society: Series b (statistical methodology), 64(4), 583-639.
+
+  Gelman, Andrew; Carlin, John B.; Stern, Hal S.; Rubin, Donald B. (2004).
+  Bayesian Data Analysis: Second Edition. Texts in Statistical Science.
+  CRC Press. ISBN 978-1-58488-388-3.
+
+"""
 from typing import List
 
 import numpy as np
@@ -86,7 +102,6 @@ def posterior_mean_deviance(variograms: List[Variogram]) -> float:
 
 
 def effective_parameters(variograms: List[Variogram], method='mean') -> float:
-    
     """Effective parameters
     Calculate the effective parameters for the given list of models. Following
     Spiegelhalter (2002), this can be calculated by the posterior mean, median
@@ -134,9 +149,3 @@ def _effective_gelman(variograms: List[Variogram]) -> float:
     deviances = [deviance(vario) for vario in variograms]
 
     return np.nanvar(deviances) / 2.
-
-
-# add gelman et al 2004 and celeux et al 2006; DIC3 p. 655
-
-# pD = mean(D(theta)) - D(theta)
-# DIC = mean(D(theta)) + pD
