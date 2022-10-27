@@ -10,7 +10,7 @@ from skgstat_uncertainty.api import API
 from skgstat_uncertainty.models import DataUpload
 from skgstat_uncertainty import components
 from skgstat_uncertainty.components.utils import BIN_FUNC, ESTIMATORS, MAXLAG, CONF_METHODS
-from skgstat_uncertainty.processor import exp_variogram_uncertainty as variogram_processor
+from skgstat_uncertainty.processor import propagation as variogram_processor
 
 
 CONF_INTRO = """### Calculate confidence interval

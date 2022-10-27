@@ -1,4 +1,6 @@
 """
+Description
+~~~~~~~~~~~
 This processor calculates the DIC following Spiegelhater et al. (2002) and Gelman et al. (2004).
 This sub-module is only useful within the context of SKGstat Uncertainty, as it uses 
 :class:`Variograms <skgstat.Variogram>` as input. 

@@ -1,3 +1,38 @@
+"""
+Uncertainty Estimation
+~~~~~~~~~~~~~~~~~~~~~~
+The `propagation` module implements all relevant methods to propagate
+*observation uncertainty* into the experimental variogram. The *observation uncertainty*
+is considered to include all kinds of uncertainty, that affect the values passed
+to :class:`Variogram.values <skgstat.Variogram.values>`. We consider any aleatory and
+epistemic source, originating from the act of observation, the description of the sampled
+medium, the context of measurement and the transmission to any kind of data file to 
+collectively be termed *observation uncertainty*.
+To learn more about the different metrics refer to the publication:
+
+  Mälicke M., Guadagnini A., Zehe E.: SciKit-GStat: SciKit-GStat Uncertainty: A software 
+  extension to cope with uncertain geostatistical estimates. Environmental Modelling &
+  Software, Elsevier, 2022. *submitted*.
+
+Example
+~~~~~~~
+>> import skgstat as skg
+>> c, v = skg.data.pancake(N=150).get('sample')
+>> vario = skg.Variogram(c, v, maxlag=0.65, n_lags=15, model='exponential')
+>> interv = kfold_residual_bootstrap(vario, k=7, repititions = 50, seed=42)
+>> for (lo, up), mu in zip(interv, vario.experimental):
+>>     print(f"{lo} <- {mu} -> {up}")
+
+Usage
+~~~~~
+Following the example above, each of the propagation methods returns a list of tuples, with
+two elements each. These two numbers represent the lower and upper limits of the uncertainty
+bounds for each :class:`bins <skgstat.Variogram.bins>`. In the following, the SciKit-GSTat
+Uncertainty software will substitute the experimental values of the empirical variogram with
+this uncertainty bounds. This allows to interpret an empirical variogram in a multi-model
+context.
+
+"""
 from typing import List, Tuple
 
 from skgstat import Variogram

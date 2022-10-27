@@ -1,3 +1,9 @@
 # SciKit-GStat Uncertainty extension
 
-work in progress
+The online application, tutorials and documentation are currently being updated
+and should be available soon.
+
+## Links
+
+* Documentation: https://hydrocode-de.github.io/skgstat_uncertainty
+
