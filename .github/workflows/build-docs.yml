@@ -1,0 +1,37 @@
+name: Build documentation
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  documentation:
+    name: Build AutoAPI docs and deploy to pages
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+
+      - name: Install Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install build dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install sphinx pydata_sphinx_theme sphinx-autoapi
+      
+      - name: Build the docs using AutoAPI
+        run: | 
+          cd docs
+          sphinx-build -b html ./source/ build
+
+      - name: Upload to Github pages
+        uses: crazy-max/ghaction-github-pages@v1
+        with:
+          target_branch: gh-pages
+          build_dir: docs/build/html
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
