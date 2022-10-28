@@ -53,6 +53,44 @@ def random(field: List[list], N: int, seed: int = None) -> Tuple[List[list], lis
 
 
 def grid(field: List[list], N: int = None, spacing: List[int] = None, shape: List[int] = None, offset: List[int] = None) -> Tuple[List[list], list]:
+    """
+    Sample a field on a regular grid. Yon can either specify the spacing of the target grid
+    or specify its dimensions to auto-calculate the spacing. Both options can be offset from
+    the boundaries.
+
+    Parameters
+    ----------
+    field : list
+        The field can be given as a list of equal size lists containing 
+        numeric field values, or as a numpy array.
+    N : int
+        You can pass the number of observations the target grid should have in total.
+        The tool tries to figure out a regular grid dimension, that holds N observations.
+        .. note::
+            It is possible that the sample size is larger or smaller than N in case
+            N cannot be distributed along a regular grid.
+        
+    spacing : list
+        The spacing list has to be of field.ndim size.
+        Each number is the spacing in grid units along the respective axis.
+        Will be ignored if N is given.
+    shape : list
+        The shape list has to be of field.ndim size.
+        Each number specifies the desired target cells along the respective axis.
+        Will be ignored if N or spacing is given.
+    offset : list
+        The offset list has to be of field.ndim size. 
+        Each number specifies the offset from the boundary in grid units along
+        the respective axis. Can be combined with N, spacing and shape.
+
+    Returns
+    -------
+    coords : list
+        List of 2D coordinates (sample locations)
+    values : list
+        List of observation quatities
+
+    """
     # turn the field into a numpy array
     arr = np.array(field)
 
