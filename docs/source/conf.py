@@ -40,7 +40,8 @@ extensions = [
     'sphinx.ext.githubpages',
     'sphinx.ext.autodoc',
     'sphinx.ext.autosummary',
-    'autoapi.extension'
+    'autoapi.extension',
+    'sphinxcontrib.youtube'
 ]
 
 autoapi_dirs = ['../../skgstat_uncertainty']
