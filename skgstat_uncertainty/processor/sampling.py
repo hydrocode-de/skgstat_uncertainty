@@ -1,3 +1,13 @@
+"""
+The SciKit-GSTat Uncertainty package contains two methods to sample a field dataset
+from the database. The result can be used to build a new dataset of internal 'sample'
+type. Right now, samples are the only datasets that can be consumed by the variogram
+estimation tools. If you want to feed a full field into a variogram, you need to 
+exsaustively sample the field. This can be achieved by performing a grid sampling
+and passing the field dimensions as desired output grid.
+
+
+"""
 from typing import Tuple, List
 import numpy as np
 
@@ -6,6 +16,24 @@ def random(field: List[list], N: int, seed: int = None) -> Tuple[List[list], lis
     """
     Random sample of the given field by taking N permutations of the coordinate 
     meshgrid.
+
+    Parameters
+    ----------
+    field : list
+        The field can be given as a list of equal size lists containing 
+        numeric field values, or as a numpy array.
+    N : int
+        sample size
+    seed : int
+        Seed for the random number generator
+
+    Returns
+    -------
+    coords : list
+        List of 2D coordinates (sample locations)
+    values : list
+        List of observation quatities
+
     """
     # turn the field into a numpy array
     arr = np.array(field)
