@@ -1,4 +1,36 @@
-from typing import List, Tuple, Union
+"""
+Main data management API
+------------------------
+The datasets in the backend database of *SKGstat-Uncertainty* can be accessed and managed
+using this API. On creation, you can pass the path or connection string to the backend database,
+which defaults to the standard SQLite database distributed with the package.
+
+.. note::
+    Before you can connect a backend database other than the default SQLite options, like a 
+    PostgreSQL or MySQL backend, you need to run the 
+    :func:`install function <skgstat_uncertainty.db.install>` for this backend.
+
+If there is anything the API can't do for you, the underlying database session pool and 
+database object models can easily be accessed. Refer to SQLAlchemy for more details.
+
+Example:
+
+.. code-block:: python
+    api = API()
+
+    session = api.session  # sqlalchemy.orm.Session
+
+    # now you can execute SQL queries
+    with session.connect() as con:
+        res = con.execute('SELECT count(*) FROM uploads;')
+
+    # you can also access all models
+    from skgstat_uncertainty.models import DataUpload
+
+    datasets = session.query(DataUpload).limit(5).all()
+
+"""
+from typing import Dict, List, Tuple, Union
 from functools import wraps
 
 from .db import get_session
@@ -6,6 +38,24 @@ from .models import DataUpload, VarioParams, VarioConfInterval, VarioModel, Vari
 
 class API:
     def __init__(self, **kwargs):
+        """
+        Create a API instance. The kwargs accept anything that `create_engine` from 
+        SQLAlchemy accepts. Additionally, there are some extra config options:
+
+        Parameters
+        ----------
+        uri : str, optional
+            Connection URI. Works for almost any relational database system.
+            If not supplied, the SQLite backend will be used.
+        data_path : str, optional
+            Optional path to the directory containing the SQLite databases.
+            If uri is supplied, data_path will be ignored. In any other case
+            it defaults to the data path of the repository.
+        db_name : str, optional
+            Optional name of the SQLite database file. If uri is supplied,
+            db_name will be ignored. In any other case it defaults to ``'data.db'``
+
+        """
         self._kwargs = kwargs
 
         if 'uri' in self._kwargs:
@@ -14,7 +64,24 @@ class API:
             # open a database session
             self.session = get_session(uri=None, mode='session', **{k: v for k, v in self._kwargs.items() if k in ('db_name', 'data_path')})
 
-    def get_upload_names(self, data_type: Union[List[str], str] = ['sample', 'field']):
+    def get_upload_names(self, data_type: Union[List[str], str] = ['sample', 'field']) -> Dict[int, str]:
+        """
+        Load all IDs and names for all datasets in the database.
+        Can be used to let the user select a dataset from a dropdown, before loading
+        all data into memory.
+
+        Parameters
+        ----------
+        data_type : list
+            List of DataUpload.data_types that should be considered. By omitting
+            'auxiliary' and 'simulation_field' (default) you can skip these kind of
+            intermediate datasets.
+        
+        Returns
+        -------
+        names : dict
+            Dictionary of {id: name} for all filtered datasets.
+        """
         # get base query
         query = self.session.query(DataUpload.id, DataUpload.upload_name)
 
@@ -29,6 +96,26 @@ class API:
         return {row[0]: row[1] for row in query.all()}
 
     def filter_auxiliary_data(self, parent_id: int) -> List[DataUpload]:
+        """
+        Load auxiliary data from the dataset for a given parent DataUpload.id.
+
+        .. note::
+            To filter for the parent id, the API needs to extract JSON metadata
+            for all 'auxiliary' instances in the database and thus load all
+            dataset into memory. If there are many and large auxiliary datasets,
+            this function might take some time.
+
+        Parameters
+        ----------
+        parent_id : int
+            The id of the parent dataset, the auxiliary dataset is belonging to.
+        
+        Returns
+        -------
+        datasets : list
+            List of DataUpload instances.
+
+        """
         # build the base query
         query = self.session.query(DataUpload)
         
@@ -38,6 +125,17 @@ class API:
         return [dataset for dataset in query.all() if dataset.data.get('parent_id', -1) == parent_id]
     
     def get_upload_data(self, id=None, name=None) -> DataUpload:
+        """
+        Load a DataUpload of given id or name from the database.
+
+        Parameters
+        ----------
+        id : int, optional
+            ID of the DataUpload to be loaded.
+        name : str, optional
+            title of the DataUpload to be loaded
+
+        """
         if id is None and name is None:
             raise AttributeError('Either id or name has to be given.')
         
@@ -50,6 +148,21 @@ class API:
         return query.first()
     
     def set_upload_data(self, name, data_type, **data) -> DataUpload:
+        """
+        Upload a new or edit an existing DataUpload in the database and 
+        return the new instance after mutation. The data-model is very 
+        flexible and will store anything passed as keyword argument into
+        a JSON field. You have to use specific keywords and formats,
+        otherwise the processors can't make any sense of the data.
+
+        Parameters
+        ----------
+        name : str
+            A unique title for the dataset
+        data_type : str
+            Has to be one of 'field', 'sample', 'auxiliary' or 'simulation_field'
+
+        """
         # check if create or replace is needed
         dataset = self.session.query(DataUpload).filter(DataUpload.upload_name==name).first()
 
@@ -98,6 +211,17 @@ class API:
         return dataset
 
     def delete_upload_data(self, id=None, name=None) -> None:
+        """
+        Delete the DataUpload of given ID or name.
+
+        Parameters
+        ----------
+        id : int, optional
+            ID of the DataUpload to be loaded.
+        name : str, optional
+            title of the DataUpload to be loaded
+
+        """
         # get the dataset
         dataset = self.get_upload_data(id=id, name=name)
 
@@ -109,6 +233,18 @@ class API:
             raise e
 
     def filter_vario_params(self, data_id=None, name=None) -> List[VarioParams]:
+        """
+        Filter the empirical variogram estimations stored in the 
+        databse.
+
+        Parameters
+        ----------
+        data_id : int, optional
+            Filter VarioParams for the parenting DataUpload.id
+        name : str, optional
+            Filter VarioParams for title.
+
+        """
         # build the base query
         query = self.session.query(VarioParams)
 
