@@ -1,18 +1,18 @@
+"""
+Utility function for handling toolbox data in the scope of a 
+streamlit application.
+
+The only function so far can consume 'field' and 'sample' DataUpload from
+the database and create a plotly figure of the data. This figure can be 
+returned or exported into a png, which is base64 encoded and injected
+into a data-url. This is saved to the DataUpload as 'thumbnail' and can
+be loaded in streamlit as a preview of the dataset.
+"""
 from typing import Union
 from io import BytesIO
 import base64
 
 import plotly.graph_objects as go
-
-
-def flat_dict(data: dict) -> dict:
-    out = dict()
-    for key, value in out.items():
-        if isinstance(value, dict):
-            out.update(flat_dict)
-        else:
-            out[key] = value
-    return out
 
 
 def create_thumbnail(data: 'DataUpload', return_type: str = 'base64', **kwargs) -> Union[str, go.Figure]:
