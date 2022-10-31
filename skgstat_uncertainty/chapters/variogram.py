@@ -1,5 +1,24 @@
+"""
+The empirical variogram estimation chapter is used to create an empirical variogram
+instance for a specified sample dataset in the database.
+It is the main foundation to propagate observation uncertainties into a geostatistical
+analysis workflow.
+
+.. youtube:: azfgDmPST2U
+
+This should not be confused with a theoretical model parameterization. The empirical
+variogram config is deterministic for the sample in the context of the specified
+hyper-parameters, like the semi-variance estimator or number distance lag classes.
+Theoretical models are parameterized in the context of uncertainty bounds associated to
+the empirical variogram for this application. This implicitly defines a 1:n cardinality
+between empirical variograms and the parameters of a variogram function.
+
+.. note::
+    This chapter can be run standalone, or as a part of another streamlit application.
+    Note that the chapter may terminte or restart the current run on user interaction.
+
+"""
 from typing import Tuple
-from unittest.main import MAIN_EXAMPLES
 import streamlit as st
 import numpy as np
 

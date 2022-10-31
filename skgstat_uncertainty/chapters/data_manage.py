@@ -1,7 +1,4 @@
 """
-Data Manager chapter
---------------------
-
 The data manager chapter can be used to manage the data in the connected database. 
 It includes a sub-application, that can sample existing datasets marked as *'field'*, to derive
 new *'sample'* datasets.
