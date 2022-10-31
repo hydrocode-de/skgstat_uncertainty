@@ -1,3 +1,33 @@
+"""
+Data Manager chapter
+--------------------
+
+The data manager chapter can be used to manage the data in the connected database. 
+It includes a sub-application, that can sample existing datasets marked as *'field'*, to derive
+new *'sample'* datasets.
+SciKit-GStat Uncertainty defines a number of dataset types:
+
+* 'field' - this is considered to be an exhaustive (random) field, with covering quantities.
+* 'sample' - a sample of a field. This is used throughout the application for geostatistics.
+* 'auxiliary' - covering, additional information associated to a 'sample'; used for external drift kriging.
+
+.. note::
+    This chapter can be run standalone, or as a part of another streamlit application.
+    Note that the chapter may terminte or restart the current run on user interaction.
+
+.. youtube:: z4X0ZQem4UU
+
+In the demo application
+*Uncertain geostatistics* (https://geostat.hydrocode.de/uncertain) it is used to let registered users
+upload new data and mutate existing. In the standalone chapter *Learning Geostatistics* 
+(https://geostat.hydrocode.de/learn) you can see several rendering functions in action to provide a nice 
+data selection experience for the user, without the ability to upload or change data.
+
+.. warning:: 
+    Any user entering the Data Manager with all action (including edit, upload and sample)
+    are able to mutate the data in the connected database.
+
+"""
 import streamlit as st
 import numpy as np
 import plotly.graph_objects as go
