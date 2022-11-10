@@ -95,7 +95,7 @@ def rmse(vario: VarioParams, interval: VarioConfInterval, params: dict) -> float
     return np.sqrt(np.nanmean(se))
 
 
-def cv(vario: Union[VarioParams, Variogram], params: dict, k: int = 1, max_iter: int = None) -> float:
+def cv(vario: Union[VarioParams, Variogram], params: dict, k: int = 1, max_iter: int = None, measure: str = 'rmse') -> float:
     """
     Leave-one-out cross-validation for the params for an estimated
     empirical variogram. Each observation is interpolated using
@@ -116,13 +116,19 @@ def cv(vario: Union[VarioParams, Variogram], params: dict, k: int = 1, max_iter:
         Maximum number of iterations. If None (default) the
         length of observations is used. If smaller, the result
         is not deterministic anymore.
+    measure : str
+        Target loss function. Can be either 'rmse' (default), 'mad
+        or 'mae'.
     
     Returns
     -------
-    rmse : float
-        RMSE value for all interpolated observations.
+    measure : float
+        RMSE, MAD or MAE value for all interpolated observations.
 
     """
+    # check target value
+    if measure.lower() not in ('rmse', 'mae', 'mad'):
+        raise AttributeError(f"target needs to be 'rmse', 'mad' or 'mae', got: '{measure}'")
 
     # build the variogram instance
     variogram = rebuild_variogram(vario, params)
@@ -162,10 +168,16 @@ def cv(vario: Union[VarioParams, Variogram], params: dict, k: int = 1, max_iter:
         y_pred = krige(coords[set_idx].T)
 
         # calculate the error
-        e = np.mean(np.abs(y_pred - values[set_idx]))
+        e = np.mean(y_pred - values[set_idx])
         err.append(e)
 
-    return np.mean(err) 
+    if measure.lower() == 'rmse':
+        return np.sqrt(np.mean(np.power(err, 2)))
+    elif measure.lower() == 'mad':
+        return np.median(np.abs(err))
+    else:
+        # do MAE
+        return np.mean(np.abs(err))
 
 
 def aic(vario: Union[VarioParams, Variogram], params: dict) -> float:
