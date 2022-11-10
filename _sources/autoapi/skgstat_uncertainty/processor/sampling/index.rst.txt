@@ -1,0 +1,84 @@
+:py:mod:`skgstat_uncertainty.processor.sampling`
+================================================
+
+.. py:module:: skgstat_uncertainty.processor.sampling
+
+.. autoapi-nested-parse::
+
+   The SciKit-GSTat Uncertainty package contains two methods to sample a field dataset
+   from the database. The result can be used to build a new dataset of internal 'sample'
+   type. Right now, samples are the only datasets that can be consumed by the variogram
+   estimation tools. If you want to feed a full field into a variogram, you need to
+   exsaustively sample the field. This can be achieved by performing a grid sampling
+   and passing the field dimensions as desired output grid.
+
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.processor.sampling.random
+   skgstat_uncertainty.processor.sampling.grid
+   skgstat_uncertainty.processor.sampling.transect
+
+
+
+.. py:function:: random(field: List[list], N: int, seed: int = None) -> Tuple[List[list], list]
+
+   Random sample of the given field by taking N permutations of the coordinate
+   meshgrid.
+
+   :param field: The field can be given as a list of equal size lists containing
+                 numeric field values, or as a numpy array.
+   :type field: list
+   :param N: sample size
+   :type N: int
+   :param seed: Seed for the random number generator
+   :type seed: int
+
+   :returns: * **coords** (*list*) -- List of 2D coordinates (sample locations)
+             * **values** (*list*) -- List of observation quatities
+
+
+.. py:function:: grid(field: List[list], N: int = None, spacing: List[int] = None, shape: List[int] = None, offset: List[int] = None) -> Tuple[List[list], list]
+
+   Sample a field on a regular grid. Yon can either specify the spacing of the target grid
+   or specify its dimensions to auto-calculate the spacing. Both options can be offset from
+   the boundaries.
+
+   :param field: The field can be given as a list of equal size lists containing
+                 numeric field values, or as a numpy array.
+   :type field: list
+   :param N: You can pass the number of observations the target grid should have in total.
+             The tool tries to figure out a regular grid dimension, that holds N observations.
+             .. note::
+                 It is possible that the sample size is larger or smaller than N in case
+                 N cannot be distributed along a regular grid.
+   :type N: int
+   :param spacing: The spacing list has to be of field.ndim size.
+                   Each number is the spacing in grid units along the respective axis.
+                   Will be ignored if N is given.
+   :type spacing: list
+   :param shape: The shape list has to be of field.ndim size.
+                 Each number specifies the desired target cells along the respective axis.
+                 Will be ignored if N or spacing is given.
+   :type shape: list
+   :param offset: The offset list has to be of field.ndim size.
+                  Each number specifies the offset from the boundary in grid units along
+                  the respective axis. Can be combined with N, spacing and shape.
+   :type offset: list
+
+   :returns: * **coords** (*list*) -- List of 2D coordinates (sample locations)
+             * **values** (*list*) -- List of observation quatities
+
+
+.. py:function:: transect(field: List[list], p1: Tuple[int, int], p2: Tuple[int, int], N: int = None, spacing: int = None) -> Tuple[List[list], list]
+
+

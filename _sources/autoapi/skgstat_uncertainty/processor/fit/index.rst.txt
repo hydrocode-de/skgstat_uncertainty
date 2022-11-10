@@ -1,0 +1,125 @@
+:py:mod:`skgstat_uncertainty.processor.fit`
+===========================================
+
+.. py:module:: skgstat_uncertainty.processor.fit
+
+.. autoapi-nested-parse::
+
+   Various metrics to assess the quality of a variogram model parameterization.
+   These metrics are key to manually parameterizing variogram models in the context
+   of uncertainty bounds.
+   The metrics can be used solely or jointly to filter a number of parameterizations,
+   to select the parameter candidates best represeting the uncertain variogram with
+   respect to uncertainty bounds.
+
+   The implemented metrics are:
+
+   * RMSE: the root mean squared error adjusted to the confidence interval.
+   * cv: leave-one-out cross-validation by using the parameters to predict an observation based on the sample using kriging
+   * dic: DIC of a collection of parameterization associated to a specific model.
+   * aic / bic: AIC / BIC of a collection of parameterizations associated to a specific model
+   * empirical / structural risk of a parameterization with respect to all other parameter sets calculated for the same model type.
+
+   .. warning::
+       We are not sure if the AIC / BIC calculation is scientifically valid if the optimal parameter set
+       may possibly not be included in the collection. Strictly speaking it applies only to the optimal
+       parameter set.
+
+   .. note::
+       The metrics dic / aic / bic are metrics on model type level.
+
+   .. note::
+       The empirical / structural risk metrics are always calculated with respect to the whole
+       collection of parameters for the given model type. With each new parameterization in the
+       database (for the current confidence interval instance) the values for all other parameterizations
+       need to be updated.
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.processor.fit.rmse
+   skgstat_uncertainty.processor.fit.cv
+   skgstat_uncertainty.processor.fit.aic
+   skgstat_uncertainty.processor.fit.bic
+   skgstat_uncertainty.processor.fit.dic
+   skgstat_uncertainty.processor.fit.idic
+   skgstat_uncertainty.processor.fit.deviance
+   skgstat_uncertainty.processor.fit.empirical_risk
+   skgstat_uncertainty.processor.fit.structural_risk
+
+
+
+.. py:function:: rmse(vario: skgstat_uncertainty.models.VarioParams, interval: skgstat_uncertainty.models.VarioConfInterval, params: dict) -> float
+
+   Adjusted RMSE for the params with respect to the confidence interval of
+   the passed empirical variogram. The RMSE is adjusted to yield 0 for bins
+   within the uncertainty bounds, even if there is a deviance to the
+   experimental semi-variance values.
+
+   :param vario: Empirical variogram estimation from the database.
+   :type vario: VarioParams
+   :param interval: Uncertainty bounds representation from the database.
+   :type interval: VarioConfInterval
+   :param params: The variogram model parameterization to be assessed
+   :type params: dict
+
+   :returns: **rmse** -- RMSE value for params
+   :rtype: float
+
+
+.. py:function:: cv(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict, k: int = 1, max_iter: int = None, measure: str = 'rmse') -> float
+
+   Leave-one-out cross-validation for the params for an estimated
+   empirical variogram. Each observation is interpolated using
+   ordinary kriging using all other observations. The RMSE of
+   all interpolations is returned.
+
+   :param vario: Empirical variogram estimation from the database.
+   :type vario: VarioParams
+   :param params: The variogram model parameterization to be assessed
+   :type params: dict
+   :param k: Number of points to be omitted in each iteration.
+             Defaults to 1, if you change this number, it is not
+             a leave-one-out cv anymore.
+   :type k: 1
+   :param max_iter: Maximum number of iterations. If None (default) the
+                    length of observations is used. If smaller, the result
+                    is not deterministic anymore.
+   :type max_iter: int
+   :param measure: Target loss function. Can be either 'rmse' (default), 'mad
+                   or 'mae'.
+   :type measure: str
+
+   :returns: **measure** -- RMSE, MAD or MAE value for all interpolated observations.
+   :rtype: float
+
+
+.. py:function:: aic(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict) -> float
+
+
+.. py:function:: bic(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict) -> float
+
+
+.. py:function:: dic(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict, varioparams: List[skgstat_uncertainty.models.VarioModel], method='mean') -> float
+
+
+.. py:function:: idic(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict, varioparams: List[skgstat_uncertainty.models.VarioModel], method='mean', pop_dic: float = None) -> float
+
+
+.. py:function:: deviance(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict) -> float
+
+
+.. py:function:: empirical_risk(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], interval: skgstat_uncertainty.models.VarioConfInterval, params: dict, method: str = 'mae') -> float
+
+
+.. py:function:: structural_risk(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], interval: skgstat_uncertainty.models.VarioConfInterval, params: dict, models: List[skgstat_uncertainty.models.VarioModel], weight: float = 1.0, method: str = 'mae', pD_method: str = 'mean') -> float
+
+

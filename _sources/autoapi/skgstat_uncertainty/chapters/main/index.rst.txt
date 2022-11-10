@@ -1,0 +1,39 @@
+:py:mod:`skgstat_uncertainty.chapters.main`
+===========================================
+
+.. py:module:: skgstat_uncertainty.chapters.main
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.main.navigation
+   skgstat_uncertainty.chapters.main.main_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.main.NAV_NAMES
+
+
+.. py:data:: NAV_NAMES
+   
+
+   
+
+.. py:function:: navigation(names: dict, container=st) -> str
+
+
+.. py:function:: main_app(data_path=DATAPATH, db_name=DBNAME, **kwargs)
+
+

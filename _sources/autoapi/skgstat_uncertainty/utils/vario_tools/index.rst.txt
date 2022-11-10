@@ -1,0 +1,34 @@
+:py:mod:`skgstat_uncertainty.utils.vario_tools`
+===============================================
+
+.. py:module:: skgstat_uncertainty.utils.vario_tools
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.utils.vario_tools.rebuild_variogram
+   skgstat_uncertainty.utils.vario_tools.parameterized_clone
+
+
+
+.. py:function:: rebuild_variogram(vario: Union[skgstat_uncertainty.models.VarioParams, skgstat.Variogram], params: dict) -> skgstat.Variogram
+
+   Use the given parameters dictionary and build a new variogram instance.
+   The VarioParams instance, however, does not include the newly estimated
+   parameters for the theoretical variogram model. Thus, a `skgstat.Variogram`
+   instance is created and the params are applied to it.
+
+
+
+.. py:function:: parameterized_clone(variogram: skgstat.Variogram, parameters: Union[List[float], dict]) -> skgstat.Variogram
+
+   Creates a clone of variogram with the given parameters already fitted.
+
+

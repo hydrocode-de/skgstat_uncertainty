@@ -1,0 +1,107 @@
+:py:mod:`skgstat_uncertainty.processor.dic`
+===========================================
+
+.. py:module:: skgstat_uncertainty.processor.dic
+
+.. autoapi-nested-parse::
+
+   Description
+   ~~~~~~~~~~~
+   This processor calculates the DIC following Spiegelhater et al. (2002) and Gelman et al. (2004).
+   This sub-module is only useful within the context of SKGstat Uncertainty, as it uses
+   :class:`Variograms <skgstat.Variogram>` as input.
+
+   .. rubric:: References
+
+   Spiegelhalter, D. J., Best, N. G., Carlin, B. P., & Van Der Linde, A. (2002).
+   Bayesian measures of model complexity and fit. Journal of the royal statistical
+   society: Series b (statistical methodology), 64(4), 583-639.
+
+   Gelman, Andrew; Carlin, John B.; Stern, Hal S.; Rubin, Donald B. (2004).
+   Bayesian Data Analysis: Second Edition. Texts in Statistical Science.
+   CRC Press. ISBN 978-1-58488-388-3.
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.processor.dic.DIC
+   skgstat_uncertainty.processor.dic.deviance
+   skgstat_uncertainty.processor.dic.posterior_mean_deviance
+   skgstat_uncertainty.processor.dic.effective_parameters
+   skgstat_uncertainty.processor.dic._effective_spiegelhalter
+   skgstat_uncertainty.processor.dic._effective_gelman
+
+
+
+.. py:function:: DIC(variograms: List[skgstat.Variogram], method='mean') -> float
+
+   Calculate the DIC (deviance information criterion) [201]_ for the given list of
+   variograms. Each variogram instance is interpreted as a sample parameterization
+   for the used model. You have to make sure, that each instance shares the same
+   model and the parameter array has identical shape.
+   The DIC supports different methods to calculate the effective parameters.
+   The effective parameters can be calculated as the difference between the posterior
+   mean deviance and the deviance of the model parameterized with inferred parameters.
+   These parameters can be inferred by the median, mean or mode of the model.
+   An alternative approach is to use Gelman's extenstion to the DIC [202]_, which uses
+   the deviance variance to estimate the effective parameters independent of the
+   parameterization.
+
+   :param variograms: List of variograms to calculate the DIC for.
+   :type variograms: List[Variogram]
+   :param method: Method to calculate the effective parameters.
+                  Can be 'mean', 'median', 'mode' or 'gelman'.
+                  Default is 'mean'.
+   :type method: str
+
+   .. rubric:: References
+
+   [201]   Spiegelhalter, D. J., Best, N. G., Carlin, B. P., & Van Der Linde, A. (2002).
+           Bayesian measures of model complexity and fit. Journal of the royal statistical
+           society: Series b (statistical methodology), 64(4), 583-639.
+   [202]   Gelman, Andrew; Carlin, John B.; Stern, Hal S.; Rubin, Donald B. (2004).
+           Bayesian Data Analysis: Second Edition. Texts in Statistical Science.
+           CRC Press. ISBN 978-1-58488-388-3.
+
+
+.. py:function:: deviance(vario: skgstat.Variogram, C: float = None) -> float
+
+   Calculate the information deviance for the used parameters of the given
+   model. This deviance is used for the deviance information criterion, which
+   compares the likelihood of different models, given the effective parameters.
+   If many models are compared (like with DIC), then C does not have to be
+   specified, because it cancels out. If the deviance will be used directly,
+   you need to specify C.
+
+
+.. py:function:: posterior_mean_deviance(variograms: List[skgstat.Variogram]) -> float
+
+   Posterior mean deviance.
+
+
+
+
+.. py:function:: effective_parameters(variograms: List[skgstat.Variogram], method='mean') -> float
+
+   Effective parameters
+   Calculate the effective parameters for the given list of models. Following
+   Spiegelhalter (2002), this can be calculated by the posterior mean, median
+   or mode of the model parameters or substituted by the extenstion of
+   Gelman et al. (2004), who suggest deriving it from the deviance variance.
+
+
+
+.. py:function:: _effective_spiegelhalter(variograms: List[skgstat.Variogram], method='mean') -> float
+
+
+.. py:function:: _effective_gelman(variograms: List[skgstat.Variogram]) -> float
+
+

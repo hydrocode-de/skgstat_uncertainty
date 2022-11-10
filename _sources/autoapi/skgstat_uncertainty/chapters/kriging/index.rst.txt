@@ -1,0 +1,121 @@
+:py:mod:`skgstat_uncertainty.chapters.kriging`
+==============================================
+
+.. py:module:: skgstat_uncertainty.chapters.kriging
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.kriging.model_table
+   skgstat_uncertainty.chapters.kriging.check_for_auxiliary_data
+   skgstat_uncertainty.chapters.kriging.choose_algorithm
+   skgstat_uncertainty.chapters.kriging.apply_kriging
+   skgstat_uncertainty.chapters.kriging.main_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.kriging.api
+
+
+.. py:function:: model_table(models: List[skgstat_uncertainty.models.VarioModel]) -> None
+
+   Helper function to create a streamlit table of all passed
+   Variogram models
+
+   :param models: List of models to be displayed in the table
+   :type models: List[VarioModel]
+
+
+.. py:function:: check_for_auxiliary_data(dataset: skgstat_uncertainty.models.DataUpload, api: skgstat_uncertainty.api.API, container=st) -> Union[List[skgstat_uncertainty.models.DataUpload], None]
+
+   Helper function to check for auxiliary data present for the
+   given dataset. Returns None if no data found
+
+   :param dataset: Dataset for which auxiliary data is required.
+   :type dataset: DataUpload
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+
+.. py:function:: choose_algorithm(aux: Union[List[skgstat_uncertainty.models.DataUpload], None], vario: skgstat_uncertainty.models.VarioParams, container=st) -> dict
+
+   Component to render a Kriging algorithm selection interface to the user.
+   The user can select Ordinary, Simple, Universal or External drift kriging.
+   Based on the selection, different parameterization dialogs are rendered.
+
+   :param aux: List of auxiliary datasets used for kriging. Can be None,
+               if no auxiliary data is present, External drift kriging will be disabled.
+   :type aux: List[DatUpload], optional
+   :param vario: Variogram parameterization used to apply the selected kriging algorithm.
+                 Note, that this component only renders the dialog and does not apply the
+                 algorithm.
+   :type vario: VarioParams
+
+   :returns: **opt** -- Agrument dictionary to be passed to :class:`Krige <gstools.Krige>`
+   :rtype: dict
+
+   .. rubric:: Example
+
+   The return of this component can directly be passed to a Kriging instance
+   created by the variogram:
+
+   >> # Get the variogram and kriging instances
+   >> vario = varioParams.variogram
+   >> krige = vario.to_gs_krige(**opt)
+
+
+.. py:function:: apply_kriging(models: List[skgstat_uncertainty.models.VarioModel], dataset: skgstat_uncertainty.models.DataUpload, vario: skgstat_uncertainty.models.VarioParams, opts: dict, api: skgstat_uncertainty.api.API) -> List[skgstat_uncertainty.models.VarioModelResult]
+
+   Main component to apply kriging algorithm. The component renders all needed dialogs
+   and filters. The same kriging algorithm can be applied to a list of models and their
+   parameterizations at once. The progress will be displayed by a number of progress bars.
+
+   :param models: List of parameterized theoretical model instances. Each will be used for a kriging
+                  application.
+   :type models: List[VarioModel]
+   :param dataset: Base dataset, which will be used as the conditional grid points for the kriging.
+   :type dataset: DataUpload
+   :param vario: Basic empirical Variogram representation, which is shared by all parameterized
+                 model instances.
+   :type vario: VarioParams
+   :param opts: Kriging parameters
+   :type opts: dict
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+   .. note:: This component restarts and stops the streamlit application on user interaction.
+
+
+.. py:function:: main_app(api: skgstat_uncertainty.api.API) -> None
+
+   Kriging chapter.
+   This streamlit application can be run on its own or embedded into another
+   application. The application displays a datasets selection dialog to load
+   the base dataset. Before the user is able to apply kriging algorithms to
+   the dataset, an empirical variogram has to be estimated and at least one
+   theoretical variogram model has to be parameterized.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+
+.. py:data:: api
+   
+
+   
+

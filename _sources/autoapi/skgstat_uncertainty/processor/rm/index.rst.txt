@@ -1,0 +1,107 @@
+:py:mod:`skgstat_uncertainty.processor.rm`
+==========================================
+
+.. py:module:: skgstat_uncertainty.processor.rm
+
+.. autoapi-nested-parse::
+
+   Risk minimization
+   -----------------
+   Risk minimization is a inductive principle from machine learning.
+   It balances the model complexity and the fitting performance.
+   Risk refers to the the unkown performance of a trained model on a test set.
+   Model complexity is expressed as capacity, usually expressed as the VC-dimension.
+   This does only apply to classification problems and thus in this context
+   the variogram has to be expressed in terms of classification, or another
+   metric has to be utilized to express the model complexity.
+
+   This module implements the empirical risk as a metric, that the user is
+   seeking to minimize. The empirical risk does take different loss functions, but is
+   generally similar to the RMSE metric as used here.
+
+   The second approach is structural risk minimization, which balances the empirical risk
+   of the model with its complexity.
+
+   We made several adaptions to the principles of risk minimization to use it in
+   the context of uncertainty-driven variogram fitting:
+
+   The MAE is defining the squared error in terms of uncertainty bounds. As soon as
+   the empirical semi-variance associated to a bin falls into the uncertainty bound,
+   the MAE will be zero. That means, the MAE can be 0, even if there is a deviation
+   from the prediction and experimental semi-variance value.
+
+   Additionally, we define a *binary* loss function for empirical risk. This will
+   return a 0 (False) if the prediction is outside of the uncertainty bounds and
+   1 (True) elsewise. The metric aggregated by empirical risk is then the mean
+   value of the binary loss, which is a number between 0 and 1. This can be interpreted
+   as the  percentage of bins predicted outside the uncertainty bounds.
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.processor.rm.loss_d
+   skgstat_uncertainty.processor.rm.loss_zero
+   skgstat_uncertainty.processor.rm.empirical_risk
+   skgstat_uncertainty.processor.rm.structural_risk
+
+
+
+.. py:function:: loss_d(y: float, interval: Tuple[float, float]) -> float
+
+
+.. py:function:: loss_zero(y: float, interval: Tuple[float, float]) -> int
+
+
+.. py:function:: empirical_risk(vario: skgstat.Variogram, conf_interval: skgstat_uncertainty.models.VarioConfInterval, method: str = 'mae') -> float
+
+   Calculate the empirical risk of the fit using a loss function for
+   the given predictions and ground truth.
+   There are different methods implemented:
+
+     - MAE (mean absolute error)
+     - binary
+
+   Both return 0 if the variogram is entirely within the confidence interval.
+   If any of the bins is outside of the confidence interval, the loss of 'binary' is
+   the percent of bins outside. The mse method returns the mean absoulte deviation
+   from the confidence interval.
+
+
+
+.. py:function:: structural_risk(vario: skgstat.Variogram, conf_interval: skgstat_uncertainty.models.VarioConfInterval, others: List[skgstat.Variogram], weight: float = 1, method: str = 'mae', pD_method='mean') -> float
+
+   Structural risk minimization adapted after original publication by Vapnik et al. (1974).
+   The structural risk minimization is a metric that balances the empirical risk of all passed
+   parameterization and the complexitiy of the associated variogram model into a combined
+   metric.
+   One can interpret the empirical risk part as the fitting error. Model complexity is
+   assessed by the *effective parameters* as used in the DIC metric (Spiegelhalter et al. 2002)
+
+   :param variogram: Main variogram instance to be assessed. The empirical risk is calculated
+                     for this instance.
+   :type variogram: skgstat.Variogram
+   :param conf_interval: Uncertainty bounds instance
+   :type conf_interval: VarioConfInterval
+   :param others: List of :class:`Variograms <skgstat.Variogram>` representing all parameterizations for
+                  the current model.
+   :type others: list
+   :param weight: Factor weighting empirical risk and model complexity
+   :type weight: float
+   :param method: Can be either 'mae' or 'binary' for calculating the empirical risk
+   :type method: str
+
+   .. seealso:: :obj:`empirical_risk`
+
+   :returns: **srm** -- The calcualted structural risk of the parameters, in the context of
+             all parameterizations of the same model.
+   :rtype: float
+
+

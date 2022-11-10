@@ -1,0 +1,265 @@
+:py:mod:`skgstat_uncertainty.chapters.variogram`
+================================================
+
+.. py:module:: skgstat_uncertainty.chapters.variogram
+
+.. autoapi-nested-parse::
+
+   The empirical variogram estimation chapter is used to create an empirical variogram
+   instance for a specified sample dataset in the database.
+   It is the main foundation to propagate observation uncertainties into a geostatistical
+   analysis workflow.
+
+   .. youtube:: azfgDmPST2U
+
+   This should not be confused with a theoretical model parameterization. The empirical
+   variogram config is deterministic for the sample in the context of the specified
+   hyper-parameters, like the semi-variance estimator or number distance lag classes.
+   Theoretical models are parameterized in the context of uncertainty bounds associated to
+   the empirical variogram for this application. This implicitly defines a 1:n cardinality
+   between empirical variograms and the parameters of a variogram function.
+
+   .. note::
+       This chapter can be run standalone, or as a part of another streamlit application.
+       Note that the chapter may terminte or restart the current run on user interaction.
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation
+   skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds
+   skgstat_uncertainty.chapters.variogram.kfold_params_interface
+   skgstat_uncertainty.chapters.variogram.std_params_interface
+   skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface
+   skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram
+   skgstat_uncertainty.chapters.variogram.plot_variogram_params
+   skgstat_uncertainty.chapters.variogram.save_handler
+   skgstat_uncertainty.chapters.variogram.main_app
+   skgstat_uncertainty.chapters.variogram.run
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.variogram.CONF_INTRO
+
+
+.. py:data:: CONF_INTRO
+   :annotation: = Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: text
+        :linenos:
+
+        ### Calculate confidence interval
+
+        You can now estimate a confidence interval for your empirical variogram. Keep in mind that
+        an empirical variogram is sample statistics and therefore you need a confidence interval
+        to use parameterize a theoretical variogram function and apply the model.
+
+        Do you want to activate the confidence interval estimation or just save the empirical variogram
+        without confidence interval?
+
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:function:: empirical_variogram_estimation(dataset: skgstat_uncertainty.models.DataUpload, container=st.sidebar) -> skgstat.Variogram
+
+   Renders controls to estimate an empirical variogram for a given dataset.
+   The component returns an instance of :class:`Variogram <skgstat.Variogram>`,
+   which represents the empirical variogram.
+
+   :param dataset: Dataset to use for estimating an empirical variogram. The dataset has to
+                   be of 'sample' data type. You may need to subsample for data before you can
+                   use it here.
+   :type dataset: DataUpload
+
+   :returns: **variogram** -- Variogram instance. The empirical components can be accessed by ``variogram.bins``
+             and ``variogram.experimental``.
+   :rtype: skgstat.Variogram
+
+
+.. py:function:: calculate_uncertainty_bounds(variogram: skgstat.Variogram, expander_container: streamlit.sidebar) -> Tuple[Tuple[Tuple[float, float]], dict]
+
+   Calculate the uncertainty bounds for a given :class:`Variogram <skgstat.Variogram>` instance.
+   The uncertainty bounds can be calculated with different methods. The component renders
+   a selectbox component to select the method and then loads a special component for the
+   respective method, which in turn will render settings controls.
+   Once finished, the component will merge general with method specific settings and return the
+   interval along with its settings.
+
+   :param variogram: Variogram instance representing the empirical variogram to be used.
+                     Any properties of the variogram, which are not associated with an
+                     empirical variogram will be ignored.
+   :type variogram: skgstat.Variogram
+
+   :returns: * **interval** (*numpy.ndarray*) -- Array of tuples for the lower and upper limit of the uncertainty bounds.
+             * **conf_method_params** (*dict*) -- Dictionary containing all settings and their values used to calculate
+               or estimate the uncertainty bounds.
+
+
+.. py:function:: kfold_params_interface(variogram: skgstat.Variogram, quartiles: Tuple[int, int], container=st.sidebar) -> Tuple[Tuple[Tuple[float, float]], dict]
+
+   Calculate a confidence interval using a k-fold statistical robustness test.
+   This will break down the residuals in each lag class into k random chunks
+   and calculate the semi-variance n-times with k - 1 chunks. The specified
+   percentiles of the n * k repetitions are then used as confidence interval.
+
+   :param variogram: The variogram to calculate the confidence interval for.
+   :type variogram: Variogram
+   :param quartiles: The two percentiles bounds which should be used.
+   :type quartiles: Tuple[int, int]
+   :param container: The container to place the controls to. Any valid container-like
+                     streamlit object is accepted. Defaults to the sidebar.
+   :type container: st.sidebar
+
+   .. note::
+
+      This procedure is quite sensitive for small sample sizes and small repetitions.
+      It should be used when the source of observation uncertainty is epistemic.
+
+
+.. py:function:: std_params_interface(variogram: skgstat.Variogram, quartiles: Tuple[int, int]) -> Tuple[Tuple[Tuple[float, float]], dict]
+
+   Calculate a confidence interval using the standard deviation of the residuals.
+   This method is implicitly assuming normal distribution for the residuals and
+   uses the Z-score of a normal distribution fitting the residuals to calculate
+   a confidence interval for this distribution.
+
+   :param variogram: The variogram to calculate the confidence interval for.
+   :type variogram: Variogram
+   :param quartiles: The two percentiles bounds which should be used.
+   :type quartiles: Tuple[int, int]
+
+   .. note::
+
+      This procedure is fast and can be used for smaller sample sizes.
+      But it makes strong assumptions about the residuals. They need to be normal
+      distributed and their statistical dispersion actually has to correlate with
+      variogram parameter uncertainty.
+      It should be used when the source of observation uncertainty is epistemic.
+
+
+.. py:function:: monte_carlo_params_interface(variogram: skgstat.Variogram, quartiles: Tuple[int, int], container=st.sidebar) -> Tuple[Tuple[Tuple[float, float]], dict]
+
+   Calculate confidence interval using a Monte-Carlo based uncertainty propagation.
+   This will calculate the semi-variance of the residuals n-times, using the full
+   observation array, but substituted with a random sample of the same size.
+   The statistical properties of the newly created sample can be controled by the chosen method.
+
+   :param variogram: The variogram to calculate the confidence interval for.
+   :type variogram: Variogram
+   :param quartiles: The two percentiles bounds which should be used.
+   :type quartiles: Tuple[int, int]
+   :param container: The container to place the controls to. Any valid container-like
+                     streamlit object is accepted. Defaults to the sidebar.
+   :type container: st.sidebar
+
+   .. note::
+
+      This method is an actual uncertainty propagation and not a approximation of the
+      the confidence interval. Thus, this is the preferred method. Note that it only
+      handles aleatory uncertainty and, thus can only be applied if the observation
+      uncertainty can be quantified.
+
+
+.. py:function:: load_or_estimate_variogram(dataset: skgstat_uncertainty.models.DataUpload, api: skgstat_uncertainty.api.API, expander_container=st.sidebar) -> skgstat.Variogram
+
+   This component gives the user the ability to load an existing estimated
+   empirical variogram for the selected dataset. If no empirical variogram
+   can be found in the database, the component will render the components needed
+   to estimate a new empirical variogram.
+
+   :param dataset: The datset the user requested an empirical variogram for. Has to be
+                   of 'sample' data type
+   :type dataset: DataUpload
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+   :returns: **variogram** -- Variogram instance, which the user requested or newly created.
+   :rtype: skgstat.Variogram
+
+   .. rubric:: Notes
+
+   This component may restart or terminate the streamlit application on user interaction.
+
+
+.. py:function:: plot_variogram_params(variogram: skgstat.Variogram, interval: Tuple[Tuple[float, float]] = None, interval_params: dict = {}, container=st.sidebar) -> plotly.graph_objects.Figure
+
+   Create a plotly figure for the current empirical variogram and its associated
+   uncertainty bounds if there are any.
+
+   :param variogram: Variogram instance defining the empirical variogram parameters.
+   :type variogram: skgstat.Variogram
+   :param interval: List/Tuple of tuples of lower and upper bounds for the uncertainty bounds.
+   :type interval: tuple
+   :param inteval_params: Dictionary containing the settings used to estimate/calculate the
+                          uncertainty bounds
+   :type inteval_params: dict
+
+   :returns: **fig** -- Plotly figure of the variogram with optional uncertainty bounds.
+   :rtype: go.Figure
+
+
+.. py:function:: save_handler(dataset: skgstat_uncertainty.models.DataUpload, variogram: skgstat.Variogram, api: skgstat_uncertainty.api.API, interval: Tuple[Tuple[float, float]] = None, interval_params: dict = {}) -> None
+
+   Component to save a new empirical variogram instance, optionally along with its
+   uncertainty bounds to the database. The user needs to describe and title
+   both instances to make a later indentification easier.
+
+   :param dataset: Dataset used to estimate the empirical variogram.
+   :type dataset: DataUpload
+   :param variogram: Variogram isnstance containing the empirical variogram
+                     parameters and settings.
+   :type variogram: skgstat.Variogram
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param interval: List/Tuple of tuples of lower and upper bounds for the uncertainty bounds.
+   :type interval: tuple
+   :param inteval_params: Dictionary containing the settings used to estimate/calculate the
+                          uncertainty bounds
+   :type inteval_params: dict
+
+   .. rubric:: Notes
+
+   The component may reload or terminate the streamlit application on user interaction.
+
+
+.. py:function:: main_app(api: skgstat_uncertainty.api.API) -> None
+
+   Empirical variogram and uncertainty estimation chapter.
+   This streamlit application can be run on its own or embedded into another
+   application. This chapter is the main chapter, which combines the estimation
+   of an empirical variogram for a given dataset with the estimation of an
+   uncertainty bound for the variogram. In the following, this empirical variogram
+   will be represented by the uncertainty bounds instead of the main semi-variance
+   values.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+
+.. py:function:: run(data_path=None, db_name='data.db')
+
+

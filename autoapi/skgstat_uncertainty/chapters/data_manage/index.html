@@ -1,0 +1,907 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>skgstat_uncertainty.chapters.data_manage &#8212; Scikit-GStat Uncertainty 1.8.0 documentation</title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+
+  
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/skgstat_uncertainty/chapters/data_manage/index';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">Scikit-GStat Uncertainty 1.8.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
+    <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.data_manage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kriging/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.kriging</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../learn_geostatistics/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.main</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_compare/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_compare</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fitting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_fitting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_simulation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../variogram/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.variogram</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../components/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../components/data_edit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_edit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/data_selects/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_selects</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/filters/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.filters</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/plotting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.plotting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tables/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.tables</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../processor/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/dic/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.dic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/fit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.fit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/propagation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.propagation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/rm/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.rm</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/sampling/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.sampling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/vario_tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils.vario_tools</span></code></a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.api</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../db/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.db</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.models</span></code></a></li>
+</ul>
+
+  </div>
+</nav>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <section id="module-skgstat_uncertainty.chapters.data_manage">
+<span id="skgstat-uncertainty-chapters-data-manage"></span><h1><a class="reference internal" href="#module-skgstat_uncertainty.chapters.data_manage" title="skgstat_uncertainty.chapters.data_manage"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.data_manage</span></code></a><a class="headerlink" href="#module-skgstat_uncertainty.chapters.data_manage" title="Permalink to this heading">#</a></h1>
+<p>The data manager chapter can be used to manage the data in the connected database.
+It includes a sub-application, that can sample existing datasets marked as <em>‘field’</em>, to derive
+new <em>‘sample’</em> datasets.
+SciKit-GStat Uncertainty defines a number of dataset types:</p>
+<ul class="simple">
+<li><p>‘field’ - this is considered to be an exhaustive (random) field, with covering quantities.</p></li>
+<li><p>‘sample’ - a sample of a field. This is used throughout the application for geostatistics.</p></li>
+<li><p>‘auxiliary’ - covering, additional information associated to a ‘sample’; used for external drift kriging.</p></li>
+</ul>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This chapter can be run standalone, or as a part of another streamlit application.
+Note that the chapter may terminte or restart the current run on user interaction.</p>
+</div>
+<div class="video_wrapper" style="">
+<iframe allowfullscreen="true" src="https://www.youtube.com/embed/z4X0ZQem4UU" style="border: 0; height: 345px; width: 560px">
+</iframe></div><p>In the demo application
+<em>Uncertain geostatistics</em> (<a class="reference external" href="https://geostat.hydrocode.de/uncertain">https://geostat.hydrocode.de/uncertain</a>) it is used to let registered users
+upload new data and mutate existing. In the standalone chapter <em>Learning Geostatistics</em>
+(<a class="reference external" href="https://geostat.hydrocode.de/learn">https://geostat.hydrocode.de/learn</a>) you can see several rendering functions in action to provide a nice
+data selection experience for the user, without the ability to upload or change data.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Any user entering the Data Manager with all action (including edit, upload and sample)
+are able to mutate the data in the connected database.</p>
+</div>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.dataset_grid" title="skgstat_uncertainty.chapters.data_manage.dataset_grid"><code class="xref py py-obj docutils literal notranslate"><span class="pre">dataset_grid</span></code></a>(→ None)</p></td>
+<td><p>Create a grid of all existing datasets. When clicked, the dataset is loaded</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.button_panel" title="skgstat_uncertainty.chapters.data_manage.button_panel"><code class="xref py py-obj docutils literal notranslate"><span class="pre">button_panel</span></code></a>(→ None)</p></td>
+<td><p>Creates a panel for various buttons to manage datasets. Actions are not</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.action_view" title="skgstat_uncertainty.chapters.data_manage.action_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">action_view</span></code></a>(→ None)</p></td>
+<td><p>Page for viewing all details about a dataset. This page is based on streamlit</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.upload_view" title="skgstat_uncertainty.chapters.data_manage.upload_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">upload_view</span></code></a>(→ None)</p></td>
+<td><p>Page for uploading new datasets. The page uses the upload handler component.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.edit_view" title="skgstat_uncertainty.chapters.data_manage.edit_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_view</span></code></a>(→ None)</p></td>
+<td><p>Page for editing an existing dataset. This page relies on the streamlit session</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.delete_view" title="skgstat_uncertainty.chapters.data_manage.delete_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">delete_view</span></code></a>(→ None)</p></td>
+<td><p>Page for handling dataset deletions. This page relies on the streamlit session</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.sample_view" title="skgstat_uncertainty.chapters.data_manage.sample_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_view</span></code></a>(→ None)</p></td>
+<td><p>Page for resample field data. This page relies on the streamlit session state,</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view" title="skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view"><code class="xref py py-obj docutils literal notranslate"><span class="pre">auxiliary_upload_view</span></code></a>(→ None)</p></td>
+<td><p>Page view to upload auxiliary data for exsiting field or sample data.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.sample_dense_data" title="skgstat_uncertainty.chapters.data_manage.sample_dense_data"><code class="xref py py-obj docutils literal notranslate"><span class="pre">sample_dense_data</span></code></a>(dataset, api)</p></td>
+<td><p>Streamlit component for re-sampling field data and store the result as a new</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.list_datasets" title="skgstat_uncertainty.chapters.data_manage.list_datasets"><code class="xref py py-obj docutils literal notranslate"><span class="pre">list_datasets</span></code></a>(api[, container])</p></td>
+<td><p>Dropdown component for all datasets found in the database. On selection,</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.edit_dataset" title="skgstat_uncertainty.chapters.data_manage.edit_dataset"><code class="xref py py-obj docutils literal notranslate"><span class="pre">edit_dataset</span></code></a>(→ None)</p></td>
+<td><p>Wrapper to integrate the <code class="docutils literal notranslate"><span class="pre">edit_dataset</span></code> component. This wrapper adds controls</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.main_app" title="skgstat_uncertainty.chapters.data_manage.main_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_app</span></code></a>(api)</p></td>
+<td><p>Data management chapter.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.run" title="skgstat_uncertainty.chapters.data_manage.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([data_path, db_name])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.data_manage.ACT" title="skgstat_uncertainty.chapters.data_manage.ACT"><code class="xref py py-obj docutils literal notranslate"><span class="pre">ACT</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.ACT">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">ACT</span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.ACT" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.dataset_grid">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">dataset_grid</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.dataset_grid" title="Permalink to this definition">#</a></dt>
+<dd><p>Create a grid of all existing datasets. When clicked, the dataset is loaded
+for viewing. In viewing mode, the dataset can be edited or deleted. The grid
+does also include a button for creating new datasets</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This comonent terminates the streamlit application until the user has
+selected a dataset. State manangement is done using a state variable called
+<code class="docutils literal notranslate"><span class="pre">action</span></code>, which is set to view. Then a <code class="docutils literal notranslate"><span class="pre">data_id</span></code> is available for the
+selected dataset.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.button_panel">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">button_panel</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">can_resample</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">can_upload</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.button_panel" title="Permalink to this definition">#</a></dt>
+<dd><p>Creates a panel for various buttons to manage datasets. Actions are not
+applied, but indicated in the streamlit session. This compnent does
+restart the streamlit application, in case the user took action. The selected
+action is stored in the <code class="docutils literal notranslate"><span class="pre">action</span></code> state variable.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>can_resample</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If <code class="docutils literal notranslate"><span class="pre">False</span></code> (default), the resampling tool for field data types is
+disabled and the user can’t resample datasets.</p></li>
+<li><p><strong>can_upload</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If <a href="#id1"><span class="problematic" id="id2">``</span></a>False``(default), the upload dialog is disabled. This will prevent
+users from uploading new datasets into the database.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.action_view">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">action_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.action_view" title="Permalink to this definition">#</a></dt>
+<dd><p>Page for viewing all details about a dataset. This page is based on streamlit
+session state as the <code class="docutils literal notranslate"><span class="pre">data_id</span></code> has to be present in the state in order
+to load the corresponding dataset from the database.
+The view page includes a button panel for manipulating the dataset, along
+with license, origin information, a description and a preview of the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.upload_view">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">upload_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.upload_view" title="Permalink to this definition">#</a></dt>
+<dd><p>Page for uploading new datasets. The page uses the upload handler component.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This component uses the streamlit session state to refer to the newly uploaded
+dataset and restarts the streamlit application on user interaction</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.edit_view">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">edit_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.edit_view" title="Permalink to this definition">#</a></dt>
+<dd><p>Page for editing an existing dataset. This page relies on the streamlit session
+state, as the <code class="docutils literal notranslate"><span class="pre">data_id</span></code> has to be present in order to load the corresponding
+dataset from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.delete_view">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">delete_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.delete_view" title="Permalink to this definition">#</a></dt>
+<dd><p>Page for handling dataset deletions. This page relies on the streamlit session
+state, as the <code class="docutils literal notranslate"><span class="pre">data_id</span></code> has to be present in oder to laod the corresponding
+dataset from the database.
+The deletion process has to be acknowlegded by the user at least once.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.sample_view">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">sample_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.sample_view" title="Permalink to this definition">#</a></dt>
+<dd><p>Page for resample field data. This page relies on the streamlit session state,
+as it needs the <code class="docutils literal notranslate"><span class="pre">data_id</span></code> to be present in order to load the corresponding
+field from the database. It uses the <code class="docutils literal notranslate"><span class="pre">sample_dense_data</span></code> component to
+load the actual user interactions.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">auxiliary_upload_view</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view" title="Permalink to this definition">#</a></dt>
+<dd><p>Page view to upload auxiliary data for exsiting field or sample data.
+Auxiliary data has to be of field type and can be used for external drift
+kriging.
+This page relies on the streamlit session state, as a <code class="docutils literal notranslate"><span class="pre">data_id</span></code> has to be
+present in order to load the corresponding dataset from the database.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.sample_dense_data">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">sample_dense_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.sample_dense_data" title="Permalink to this definition">#</a></dt>
+<dd><p>Streamlit component for re-sampling field data and store the result as a new
+sample data type to the database. The component can terminate or restart the
+the streamlit application due to user interaction.
+The component can re-sample the field on a regular grid by specifying the
+grid resolution, grid cell size or the number of desired sampling points.
+Alternatively, a specified number of sampling points can be selected randomly
+from the domain. The component also includes a preview and a dataset creation
+dialog.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The base dataset, which should be used for resampling</p></li>
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.list_datasets">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">list_datasets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.list_datasets" title="Permalink to this definition">#</a></dt>
+<dd><p>Dropdown component for all datasets found in the database. On selection,
+the component will preview some basic information about the dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.edit_dataset">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">edit_dataset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.edit_dataset" title="Permalink to this definition">#</a></dt>
+<dd><p>Wrapper to integrate the <code class="docutils literal notranslate"><span class="pre">edit_dataset</span></code> component. This wrapper adds controls
+and manages the state management to indicate the user interaction to other
+components of the application.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The dataset, which will be edited.</p></li>
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This wrapper terminates and restarts the streamlit application on user interaction.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.main_app">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">main_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.main_app" title="Permalink to this definition">#</a></dt>
+<dd><p>Data management chapter.
+This streamlit application can be run on its own or embedded into another
+application. It will preview all datasets in the connected database as a
+default action and then manage all operations like view, edit or delete on
+user interaction.
+Please note that this application does not include access management. If
+the application is loaded, the user will be allowed to operate the underlying
+database.
+To manage user interactions, the application shares several streamlit session
+state variables with all child components. <code class="docutils literal notranslate"><span class="pre">action</span></code> is used to indicate the
+user interaction and <code class="docutils literal notranslate"><span class="pre">data_id</span></code> the affected dataset.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.data_manage.run">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.data_manage.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data.db'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.data_manage.run" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-contents">
+   Module Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.ACT">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         ACT
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.dataset_grid">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         dataset_grid()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.button_panel">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         button_panel()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.action_view">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         action_view()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.upload_view">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         upload_view()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.edit_view">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         edit_view()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.delete_view">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         delete_view()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.sample_view">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         sample_view()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         auxiliary_upload_view()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.sample_dense_data">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         sample_dense_data()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.list_datasets">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         list_datasets()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.edit_dataset">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         edit_dataset()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.main_app">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         main_app()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.run">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         run()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.ACT">
+       ACT
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.dataset_grid">
+       dataset_grid
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.button_panel">
+       button_panel
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.action_view">
+       action_view
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.upload_view">
+       upload_view
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.edit_view">
+       edit_view
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.delete_view">
+       delete_view
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.sample_view">
+       sample_view
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view">
+       auxiliary_upload_view
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.sample_dense_data">
+       sample_dense_data
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.list_datasets">
+       list_datasets
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.edit_dataset">
+       edit_dataset
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.main_app">
+       main_app
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.data_manage.run">
+       run
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../../../../_sources/autoapi/skgstat_uncertainty/chapters/data_manage/index.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, Mirko Mälicke.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>

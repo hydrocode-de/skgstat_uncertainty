@@ -1,0 +1,97 @@
+:py:mod:`skgstat_uncertainty.components.utils`
+==============================================
+
+.. py:module:: skgstat_uncertainty.components.utils
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.utils.variomodel_to_dict
+   skgstat_uncertainty.components.utils.card_options_from_dataset_names
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.utils.ADD_BTN
+   skgstat_uncertainty.components.utils.FIT_METHODS
+   skgstat_uncertainty.components.utils.MODELS
+   skgstat_uncertainty.components.utils.BIN_FUNC
+   skgstat_uncertainty.components.utils.ESTIMATORS
+   skgstat_uncertainty.components.utils.MAXLAG
+   skgstat_uncertainty.components.utils.KRIGING_METHODS
+   skgstat_uncertainty.components.utils.CONF_METHODS
+   skgstat_uncertainty.components.utils.LICENSES
+   skgstat_uncertainty.components.utils.PERFORMANCE_MEASURES
+
+
+.. py:data:: ADD_BTN
+   :annotation: = data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMgAAACMCAYAAAA5kebkAAANG0lEQVR4Xu2d+VOV1xnHH4ULKCi...
+
+   
+
+.. py:function:: variomodel_to_dict(models: List[skgstat_uncertainty.models.VarioModel], add_measures=False) -> List[dict]
+
+
+.. py:function:: card_options_from_dataset_names(_api: skgstat_uncertainty.api.API, datasets: dict, add_button: bool = True) -> List[dict]
+
+   Transform the dataset names into a list of options, which can be consumed by the
+   streamlit_card_select component.
+
+
+
+.. py:data:: FIT_METHODS
+   
+
+   
+
+.. py:data:: MODELS
+   
+
+   
+
+.. py:data:: BIN_FUNC
+   
+
+   
+
+.. py:data:: ESTIMATORS
+   
+
+   
+
+.. py:data:: MAXLAG
+   
+
+   
+
+.. py:data:: KRIGING_METHODS
+   
+
+   
+
+.. py:data:: CONF_METHODS
+   
+
+   
+
+.. py:data:: LICENSES
+   
+
+   
+
+.. py:data:: PERFORMANCE_MEASURES
+   
+
+   
+

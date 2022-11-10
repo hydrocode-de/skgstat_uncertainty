@@ -1,0 +1,82 @@
+:py:mod:`skgstat_uncertainty.components.data_selects`
+=====================================================
+
+.. py:module:: skgstat_uncertainty.components.data_selects
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.data_selects.upload_handler
+   skgstat_uncertainty.components.data_selects.data_selector
+   skgstat_uncertainty.components.data_selects.upload_auxiliary_data
+   skgstat_uncertainty.components.data_selects.data_select_page
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.data_selects.__data_intro
+   skgstat_uncertainty.components.data_selects.SELECTED
+
+
+.. py:data:: __data_intro
+   :annotation: = Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: text
+        :linenos:
+
+        
+        First of all, you need to select one of the pre-definded data uploads. If you have access to the 
+        full Uncertain Geostatistics app by [hydrocode](https://hydrocode.de) (LINK HERE), you can use the data-manage
+        chapter to upload datasets and fields and create new ones.
+        Use the dropdown to inspect the datasets
+
+        Once you found an exciting dataset, click on *continue* to get started with geostatistics!
+
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:function:: upload_handler(api: skgstat_uncertainty.api.API, can_select=True, upload_mime=['csv', 'asc', 'txt', 'json'], container=st) -> skgstat_uncertainty.models.DataUpload
+
+
+.. py:data:: SELECTED
+   
+
+   
+
+.. py:function:: data_selector(api: skgstat_uncertainty.api.API, stop_with: str = '', data_type='sample', container=st, add_expander: bool = True) -> SELECTED
+
+
+.. py:function:: upload_auxiliary_data(dataset: skgstat_uncertainty.models.DataUpload, api: skgstat_uncertainty.api.API) -> None
+
+
+.. py:function:: data_select_page(api: skgstat_uncertainty.api.API, container=st.sidebar) -> skgstat_uncertainty.models.DataUpload
+
+   Full page data selector.
+   This component will populate the sidebar with a select card component to let the user
+   select a dataset. The dataset is presented on a full page including preview and
+   data tables. Once a dataset was selected, the component will collapse into a
+   dropdown in the sidebar (or any other container).
+   The component is controlled via session_state:
+
+     * ``story_mode`` can be set to False to always force component collapse
+
+

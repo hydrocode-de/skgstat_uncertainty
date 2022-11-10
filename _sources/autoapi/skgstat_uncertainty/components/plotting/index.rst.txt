@@ -1,0 +1,46 @@
+:py:mod:`skgstat_uncertainty.components.plotting`
+=================================================
+
+.. py:module:: skgstat_uncertainty.components.plotting
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.plotting.single_result_plot
+   skgstat_uncertainty.components.plotting.figure_download_link
+   skgstat_uncertainty.components.plotting.dataset_plot
+   skgstat_uncertainty.components.plotting.base_conf_graph
+   skgstat_uncertainty.components.plotting.metric_parcats
+
+
+
+.. py:function:: single_result_plot(kriging_fields: List[skgstat_uncertainty.models.VarioModelResult], excluded_models: List[int] = [], container=st, key='', disable_download=True)
+
+
+.. py:function:: figure_download_link(figure: plotly.graph_objects.Figure, filename: str = None, template: str = 'plotly_white') -> str
+
+
+.. py:function:: dataset_plot(dataset: skgstat_uncertainty.models.DataUpload, disable_download=True, key='', add_controls: bool = False, container=st) -> None
+
+
+.. py:function:: base_conf_graph(vario: skgstat_uncertainty.models.VarioParams, interval: skgstat_uncertainty.models.VarioConfInterval, fig: plotly.graph_objects.Figure = None) -> plotly.graph_objects.Figure
+
+
+.. py:function:: metric_parcats(models: List[skgstat_uncertainty.models.VarioModel], metrics: List[str] = ['rmse', 'cv'], colors: List[str] = 'all', colorscale=None, percentiles: List[int] = [25, 50, 75], fig=None, col: int = 1, row: int = 1) -> plotly.graph_objects.Figure
+
+   Parallel category plot for parameterization performance measures.
+   For any given list of parameterized VarioModels, a ranking for every given
+   metric is created. Each metric is repesented by a cateogry dimension in the plot.
+   The ranking is then categoriezed into percentiles (4 quartiles by default) and the
+   parameterizations are ordered into dimension values to show patterns.
+   The first dimension is always the model type and the parameterizations will be colored
+   accordingly.
+
+

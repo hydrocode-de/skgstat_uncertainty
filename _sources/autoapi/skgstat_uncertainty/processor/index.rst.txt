@@ -1,0 +1,20 @@
+:py:mod:`skgstat_uncertainty.processor`
+=======================================
+
+.. py:module:: skgstat_uncertainty.processor
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   dic/index.rst
+   fit/index.rst
+   propagation/index.rst
+   rm/index.rst
+   sampling/index.rst
+   utils/index.rst
+
+

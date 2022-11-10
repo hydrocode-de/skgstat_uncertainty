@@ -1,0 +1,26 @@
+:py:mod:`skgstat_uncertainty.components.data_edit`
+==================================================
+
+.. py:module:: skgstat_uncertainty.components.data_edit
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.data_edit.edit_dataset
+
+
+
+.. py:function:: edit_dataset(dataset: skgstat_uncertainty.models.DataUpload, api: skgstat_uncertainty.api.API, edit: bool = True, add_preview: bool = False, container=st) -> Union[None, skgstat_uncertainty.models.DataUpload]
+
+   Create a edit form for the given dataset. It returns True, as
+   the editing is finished (Save button clicked) and False otherwise.
+   If you the form is used
+
+

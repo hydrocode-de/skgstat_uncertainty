@@ -1,0 +1,42 @@
+:py:mod:`skgstat_uncertainty`
+=============================
+
+.. py:module:: skgstat_uncertainty
+
+
+Subpackages
+-----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 3
+
+   chapters/index.rst
+   components/index.rst
+   processor/index.rst
+   utils/index.rst
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   api/index.rst
+   db/index.rst
+   models/index.rst
+
+
+Package Contents
+----------------
+
+.. py:data:: __version__
+   :annotation: = 1.8.0
+
+   
+
+.. py:data:: __author__
+   :annotation: = Mirko Mälicke <mirko@hydrocode.de>
+
+   
+

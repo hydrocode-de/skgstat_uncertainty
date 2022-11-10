@@ -1,0 +1,863 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>skgstat_uncertainty.chapters.variogram &#8212; Scikit-GStat Uncertainty 1.8.0 documentation</title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+
+  
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/skgstat_uncertainty/chapters/variogram/index';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">Scikit-GStat Uncertainty 1.8.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
+    <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../data_manage/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.data_manage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kriging/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.kriging</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../learn_geostatistics/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.main</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_compare/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_compare</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fitting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_fitting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_simulation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_simulation</span></code></a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.variogram</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../components/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../components/data_edit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_edit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/data_selects/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_selects</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/filters/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.filters</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/plotting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.plotting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tables/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.tables</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../processor/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/dic/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.dic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/fit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.fit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/propagation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.propagation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/rm/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.rm</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/sampling/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.sampling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/vario_tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils.vario_tools</span></code></a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.api</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../db/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.db</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.models</span></code></a></li>
+</ul>
+
+  </div>
+</nav>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <section id="module-skgstat_uncertainty.chapters.variogram">
+<span id="skgstat-uncertainty-chapters-variogram"></span><h1><a class="reference internal" href="#module-skgstat_uncertainty.chapters.variogram" title="skgstat_uncertainty.chapters.variogram"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.variogram</span></code></a><a class="headerlink" href="#module-skgstat_uncertainty.chapters.variogram" title="Permalink to this heading">#</a></h1>
+<p>The empirical variogram estimation chapter is used to create an empirical variogram
+instance for a specified sample dataset in the database.
+It is the main foundation to propagate observation uncertainties into a geostatistical
+analysis workflow.</p>
+<div class="video_wrapper" style="">
+<iframe allowfullscreen="true" src="https://www.youtube.com/embed/azfgDmPST2U" style="border: 0; height: 345px; width: 560px">
+</iframe></div><p>This should not be confused with a theoretical model parameterization. The empirical
+variogram config is deterministic for the sample in the context of the specified
+hyper-parameters, like the semi-variance estimator or number distance lag classes.
+Theoretical models are parameterized in the context of uncertainty bounds associated to
+the empirical variogram for this application. This implicitly defines a 1:n cardinality
+between empirical variograms and the parameters of a variogram function.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This chapter can be run standalone, or as a part of another streamlit application.
+Note that the chapter may terminte or restart the current run on user interaction.</p>
+</div>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation" title="skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation"><code class="xref py py-obj docutils literal notranslate"><span class="pre">empirical_variogram_estimation</span></code></a>(→ skgstat.Variogram)</p></td>
+<td><p>Renders controls to estimate an empirical variogram for a given dataset.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds" title="skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds"><code class="xref py py-obj docutils literal notranslate"><span class="pre">calculate_uncertainty_bounds</span></code></a>(...)</p></td>
+<td><p>Calculate the uncertainty bounds for a given <a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variogram</span></code></a> instance.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.kfold_params_interface" title="skgstat_uncertainty.chapters.variogram.kfold_params_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kfold_params_interface</span></code></a>(→ Tuple[Tuple[Tuple[float, ...)</p></td>
+<td><p>Calculate a confidence interval using a k-fold statistical robustness test.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.std_params_interface" title="skgstat_uncertainty.chapters.variogram.std_params_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">std_params_interface</span></code></a>(→ Tuple[Tuple[Tuple[float, ...)</p></td>
+<td><p>Calculate a confidence interval using the standard deviation of the residuals.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface" title="skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface"><code class="xref py py-obj docutils literal notranslate"><span class="pre">monte_carlo_params_interface</span></code></a>(...)</p></td>
+<td><p>Calculate confidence interval using a Monte-Carlo based uncertainty propagation.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram" title="skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">load_or_estimate_variogram</span></code></a>(→ skgstat.Variogram)</p></td>
+<td><p>This component gives the user the ability to load an existing estimated</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.plot_variogram_params" title="skgstat_uncertainty.chapters.variogram.plot_variogram_params"><code class="xref py py-obj docutils literal notranslate"><span class="pre">plot_variogram_params</span></code></a>(→ plotly.graph_objects.Figure)</p></td>
+<td><p>Create a plotly figure for the current empirical variogram and its associated</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.save_handler" title="skgstat_uncertainty.chapters.variogram.save_handler"><code class="xref py py-obj docutils literal notranslate"><span class="pre">save_handler</span></code></a>(→ None)</p></td>
+<td><p>Component to save a new empirical variogram instance, optionally along with its</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.main_app" title="skgstat_uncertainty.chapters.variogram.main_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_app</span></code></a>(→ None)</p></td>
+<td><p>Empirical variogram and uncertainty estimation chapter.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.run" title="skgstat_uncertainty.chapters.variogram.run"><code class="xref py py-obj docutils literal notranslate"><span class="pre">run</span></code></a>([data_path, db_name])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.variogram.CONF_INTRO" title="skgstat_uncertainty.chapters.variogram.CONF_INTRO"><code class="xref py py-obj docutils literal notranslate"><span class="pre">CONF_INTRO</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.CONF_INTRO">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">CONF_INTRO</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Multiline-String</span></em><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.CONF_INTRO" title="Permalink to this definition">#</a></dt>
+<dd><blockquote>
+<div><details><summary>Show Value</summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>### Calculate confidence interval
+<span class="linenos">2</span>
+<span class="linenos">3</span>You can now estimate a confidence interval for your empirical variogram. Keep in mind that
+<span class="linenos">4</span>an empirical variogram is sample statistics and therefore you need a confidence interval
+<span class="linenos">5</span>to use parameterize a theoretical variogram function and apply the model.
+<span class="linenos">6</span>
+<span class="linenos">7</span>Do you want to activate the confidence interval estimation or just save the empirical variogram
+<span class="linenos">8</span>without confidence interval?
+</pre></div>
+</div>
+</details></div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">empirical_variogram_estimation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation" title="Permalink to this definition">#</a></dt>
+<dd><p>Renders controls to estimate an empirical variogram for a given dataset.
+The component returns an instance of <a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variogram</span></code></a>,
+which represents the empirical variogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – Dataset to use for estimating an empirical variogram. The dataset has to
+be of ‘sample’ data type. You may need to subsample for data before you can
+use it here.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>variogram</strong> – Variogram instance. The empirical components can be accessed by <code class="docutils literal notranslate"><span class="pre">variogram.bins</span></code>
+and <code class="docutils literal notranslate"><span class="pre">variogram.experimental</span></code>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)">skgstat.Variogram</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">calculate_uncertainty_bounds</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander_container</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">streamlit.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate the uncertainty bounds for a given <a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variogram</span></code></a> instance.
+The uncertainty bounds can be calculated with different methods. The component renders
+a selectbox component to select the method and then loads a special component for the
+respective method, which in turn will render settings controls.
+Once finished, the component will merge general with method specific settings and return the
+interval along with its settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>variogram</strong> (<a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><em>skgstat.Variogram</em></a>) – Variogram instance representing the empirical variogram to be used.
+Any properties of the variogram, which are not associated with an
+empirical variogram will be ignored.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>interval</strong> (<em>numpy.ndarray</em>) – Array of tuples for the lower and upper limit of the uncertainty bounds.</p></li>
+<li><p><strong>conf_method_params</strong> (<em>dict</em>) – Dictionary containing all settings and their values used to calculate
+or estimate the uncertainty bounds.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.kfold_params_interface">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">kfold_params_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quartiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.kfold_params_interface" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate a confidence interval using a k-fold statistical robustness test.
+This will break down the residuals in each lag class into k random chunks
+and calculate the semi-variance n-times with k - 1 chunks. The specified
+percentiles of the n * k repetitions are then used as confidence interval.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variogram</strong> (<em>Variogram</em>) – The variogram to calculate the confidence interval for.</p></li>
+<li><p><strong>quartiles</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – The two percentiles bounds which should be used.</p></li>
+<li><p><strong>container</strong> (<em>st.sidebar</em>) – The container to place the controls to. Any valid container-like
+streamlit object is accepted. Defaults to the sidebar.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This procedure is quite sensitive for small sample sizes and small repetitions.
+It should be used when the source of observation uncertainty is epistemic.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.std_params_interface">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">std_params_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quartiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.std_params_interface" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate a confidence interval using the standard deviation of the residuals.
+This method is implicitly assuming normal distribution for the residuals and
+uses the Z-score of a normal distribution fitting the residuals to calculate
+a confidence interval for this distribution.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variogram</strong> (<em>Variogram</em>) – The variogram to calculate the confidence interval for.</p></li>
+<li><p><strong>quartiles</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – The two percentiles bounds which should be used.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This procedure is fast and can be used for smaller sample sizes.
+But it makes strong assumptions about the residuals. They need to be normal
+distributed and their statistical dispersion actually has to correlate with
+variogram parameter uncertainty.
+It should be used when the source of observation uncertainty is epistemic.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">monte_carlo_params_interface</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">quartiles</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface" title="Permalink to this definition">#</a></dt>
+<dd><p>Calculate confidence interval using a Monte-Carlo based uncertainty propagation.
+This will calculate the semi-variance of the residuals n-times, using the full
+observation array, but substituted with a random sample of the same size.
+The statistical properties of the newly created sample can be controled by the chosen method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variogram</strong> (<em>Variogram</em>) – The variogram to calculate the confidence interval for.</p></li>
+<li><p><strong>quartiles</strong> (<em>Tuple</em><em>[</em><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>, </em><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><em>int</em></a><em>]</em>) – The two percentiles bounds which should be used.</p></li>
+<li><p><strong>container</strong> (<em>st.sidebar</em>) – The container to place the controls to. Any valid container-like
+streamlit object is accepted. Defaults to the sidebar.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method is an actual uncertainty propagation and not a approximation of the
+the confidence interval. Thus, this is the preferred method. Note that it only
+handles aleatory uncertainty and, thus can only be applied if the observation
+uncertainty can be quantified.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">load_or_estimate_variogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander_container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram" title="Permalink to this definition">#</a></dt>
+<dd><p>This component gives the user the ability to load an existing estimated
+empirical variogram for the selected dataset. If no empirical variogram
+can be found in the database, the component will render the components needed
+to estimate a new empirical variogram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The datset the user requested an empirical variogram for. Has to be
+of ‘sample’ data type</p></li>
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>variogram</strong> – Variogram instance, which the user requested or newly created.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)">skgstat.Variogram</a></p>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>This component may restart or terminate the streamlit application on user interaction.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.plot_variogram_params">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">plot_variogram_params</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">variogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">container</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.plot_variogram_params" title="Permalink to this definition">#</a></dt>
+<dd><p>Create a plotly figure for the current empirical variogram and its associated
+uncertainty bounds if there are any.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>variogram</strong> (<a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><em>skgstat.Variogram</em></a>) – Variogram instance defining the empirical variogram parameters.</p></li>
+<li><p><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – List/Tuple of tuples of lower and upper bounds for the uncertainty bounds.</p></li>
+<li><p><strong>inteval_params</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – Dictionary containing the settings used to estimate/calculate the
+uncertainty bounds</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fig</strong> – Plotly figure of the variogram with optional uncertainty bounds.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>go.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.save_handler">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">save_handler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">variogram</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#float" title="(in Python v3.10)"><span class="pre">float</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">interval_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">{}</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.save_handler" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to save a new empirical variogram instance, optionally along with its
+uncertainty bounds to the database. The user needs to describe and title
+both instances to make a later indentification easier.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – Dataset used to estimate the empirical variogram.</p></li>
+<li><p><strong>variogram</strong> (<a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><em>skgstat.Variogram</em></a>) – Variogram isnstance containing the empirical variogram
+parameters and settings.</p></li>
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>interval</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#tuple" title="(in Python v3.10)"><em>tuple</em></a>) – List/Tuple of tuples of lower and upper bounds for the uncertainty bounds.</p></li>
+<li><p><strong>inteval_params</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><em>dict</em></a>) – Dictionary containing the settings used to estimate/calculate the
+uncertainty bounds</p></li>
+</ul>
+</dd>
+</dl>
+<p class="rubric">Notes</p>
+<p>The component may reload or terminate the streamlit application on user interaction.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.main_app">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">main_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.main_app" title="Permalink to this definition">#</a></dt>
+<dd><p>Empirical variogram and uncertainty estimation chapter.
+This streamlit application can be run on its own or embedded into another
+application. This chapter is the main chapter, which combines the estimation
+of an empirical variogram for a given dataset with the estimation of an
+uncertainty bound for the variogram. In the following, this empirical variogram
+will be represented by the uncertainty bounds instead of the main semi-variance
+values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.variogram.run">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.variogram.</span></span><span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data_path</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">db_name</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'data.db'</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.variogram.run" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-contents">
+   Module Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.CONF_INTRO">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         CONF_INTRO
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         empirical_variogram_estimation()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         calculate_uncertainty_bounds()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.kfold_params_interface">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         kfold_params_interface()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.std_params_interface">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         std_params_interface()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         monte_carlo_params_interface()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         load_or_estimate_variogram()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.plot_variogram_params">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         plot_variogram_params()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.save_handler">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         save_handler()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.main_app">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         main_app()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.run">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         run()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.CONF_INTRO">
+       CONF_INTRO
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation">
+       empirical_variogram_estimation
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds">
+       calculate_uncertainty_bounds
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.kfold_params_interface">
+       kfold_params_interface
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.std_params_interface">
+       std_params_interface
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface">
+       monte_carlo_params_interface
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram">
+       load_or_estimate_variogram
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.plot_variogram_params">
+       plot_variogram_params
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.save_handler">
+       save_handler
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.main_app">
+       main_app
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.variogram.run">
+       run
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../../../../_sources/autoapi/skgstat_uncertainty/chapters/variogram/index.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, Mirko Mälicke.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>

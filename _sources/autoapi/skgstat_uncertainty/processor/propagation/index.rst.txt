@@ -1,0 +1,82 @@
+:py:mod:`skgstat_uncertainty.processor.propagation`
+===================================================
+
+.. py:module:: skgstat_uncertainty.processor.propagation
+
+.. autoapi-nested-parse::
+
+   Uncertainty Estimation
+   ~~~~~~~~~~~~~~~~~~~~~~
+   The `propagation` module implements all relevant methods to propagate
+   *observation uncertainty* into the experimental variogram. The *observation uncertainty*
+   is considered to include all kinds of uncertainty, that affect the values passed
+   to :class:`Variogram.values <skgstat.Variogram.values>`. We consider any aleatory and
+   epistemic source, originating from the act of observation, the description of the sampled
+   medium, the context of measurement and the transmission to any kind of data file to
+   collectively be termed *observation uncertainty*.
+   To learn more about the different metrics refer to the publication:
+
+     Mälicke M., Guadagnini A., Zehe E.: SciKit-GStat: SciKit-GStat Uncertainty: A software
+     extension to cope with uncertain geostatistical estimates. Environmental Modelling &
+     Software, Elsevier, 2022. *submitted*.
+
+   .. rubric:: Example
+
+   >> import skgstat as skg
+   >> c, v = skg.data.pancake(N=150).get('sample')
+   >> vario = skg.Variogram(c, v, maxlag=0.65, n_lags=15, model='exponential')
+   >> interv = kfold_residual_bootstrap(vario, k=7, repititions = 50, seed=42)
+   >> for (lo, up), mu in zip(interv, vario.experimental):
+   >>     print(f"{lo} <- {mu} -> {up}")
+
+   Usage
+   ~~~~~
+   Following the example above, each of the propagation methods returns a list of tuples, with
+   two elements each. These two numbers represent the lower and upper limits of the uncertainty
+   bounds for each :class:`bins <skgstat.Variogram.bins>`. In the following, the SciKit-GSTat
+   Uncertainty software will substitute the experimental values of the empirical variogram with
+   this uncertainty bounds. This allows to interpret an empirical variogram in a multi-model
+   context.
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.processor.propagation.residual_uncertainty
+   skgstat_uncertainty.processor.propagation.kfold_residual_bootstrap
+   skgstat_uncertainty.processor.propagation.conf_interval_from_sample_std
+   skgstat_uncertainty.processor.propagation._std_input_generator
+   skgstat_uncertainty.processor.propagation._sem_input_generator
+   skgstat_uncertainty.processor.propagation._uniform_input_generator
+   skgstat_uncertainty.processor.propagation.mc_absolute_observation_uncertainty
+
+
+
+.. py:function:: residual_uncertainty(variogram: skgstat.Variogram, q: List[int] = [5, 95]) -> List[Tuple[float, float]]
+
+
+.. py:function:: kfold_residual_bootstrap(variogram: skgstat.Variogram, k: int = 5, repititions: int = 100, q: List[int] = [5, 95], seed: int = None) -> List[Tuple[float, float]]
+
+
+.. py:function:: conf_interval_from_sample_std(variogram: skgstat.Variogram, conf_level: float = 0.95) -> List[Tuple[float, float]]
+
+
+.. py:function:: _std_input_generator(values: numpy.ndarray, std: float, length: int, seed: int = None) -> numpy.ndarray
+
+
+.. py:function:: _sem_input_generator(values: numpy.ndarray, sem: float, length: int, seed: int = None) -> numpy.ndarray
+
+
+.. py:function:: _uniform_input_generator(values: numpy.ndarray, precision: float, length: int, seed: int = None) -> numpy.ndarray
+
+
+.. py:function:: mc_absolute_observation_uncertainty(variogram: skgstat.Variogram, sigma: float, iterations: int = 500, seed: int = None, return_type='result', sigma_type='sem')
+
+

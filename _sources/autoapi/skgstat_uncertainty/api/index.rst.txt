@@ -1,0 +1,218 @@
+:py:mod:`skgstat_uncertainty.api`
+=================================
+
+.. py:module:: skgstat_uncertainty.api
+
+.. autoapi-nested-parse::
+
+   Main data management API
+   ------------------------
+   The datasets in the backend database of *SKGstat-Uncertainty* can be accessed and managed
+   using this API. On creation, you can pass the path or connection string to the backend database,
+   which defaults to the standard SQLite database distributed with the package.
+
+   .. note::
+       Before you can connect a backend database other than the default SQLite options, like a
+       PostgreSQL or MySQL backend, you need to run the
+       :func:`install function <skgstat_uncertainty.db.install>` for this backend.
+
+   If there is anything the API can't do for you, the underlying database session pool and
+   database object models can easily be accessed. Refer to SQLAlchemy for more details.
+
+   Example:
+
+   .. code-block:: python
+       api = API()
+
+       session = api.session  # sqlalchemy.orm.Session
+
+       # now you can execute SQL queries
+       with session.connect() as con:
+           res = con.execute('SELECT count(*) FROM uploads;')
+
+       # you can also access all models
+       from skgstat_uncertainty.models import DataUpload
+
+       datasets = session.query(DataUpload).limit(5).all()
+
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.api.API
+   skgstat_uncertainty.api.Cli
+
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.api.cli_formatter
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.api.api
+
+
+.. py:class:: API(**kwargs)
+
+   .. py:method:: get_upload_names(data_type: Union[List[str], str] = ['sample', 'field']) -> Dict[int, str]
+
+      Load all IDs and names for all datasets in the database.
+      Can be used to let the user select a dataset from a dropdown, before loading
+      all data into memory.
+
+      :param data_type: List of DataUpload.data_types that should be considered. By omitting
+                        'auxiliary' and 'simulation_field' (default) you can skip these kind of
+                        intermediate datasets.
+      :type data_type: list
+
+      :returns: **names** -- Dictionary of {id: name} for all filtered datasets.
+      :rtype: dict
+
+
+   .. py:method:: filter_auxiliary_data(parent_id: int) -> List[skgstat_uncertainty.models.DataUpload]
+
+      Load auxiliary data from the dataset for a given parent DataUpload.id.
+
+      .. note::
+          To filter for the parent id, the API needs to extract JSON metadata
+          for all 'auxiliary' instances in the database and thus load all
+          dataset into memory. If there are many and large auxiliary datasets,
+          this function might take some time.
+
+      :param parent_id: The id of the parent dataset, the auxiliary dataset is belonging to.
+      :type parent_id: int
+
+      :returns: **datasets** -- List of DataUpload instances.
+      :rtype: list
+
+
+   .. py:method:: get_upload_data(id=None, name=None) -> skgstat_uncertainty.models.DataUpload
+
+      Load a DataUpload of given id or name from the database.
+
+      :param id: ID of the DataUpload to be loaded.
+      :type id: int, optional
+      :param name: title of the DataUpload to be loaded
+      :type name: str, optional
+
+
+   .. py:method:: set_upload_data(name, data_type, **data) -> skgstat_uncertainty.models.DataUpload
+
+      Upload a new or edit an existing DataUpload in the database and
+      return the new instance after mutation. The data-model is very
+      flexible and will store anything passed as keyword argument into
+      a JSON field. You have to use specific keywords and formats,
+      otherwise the processors can't make any sense of the data.
+
+      :param name: A unique title for the dataset
+      :type name: str
+      :param data_type: Has to be one of 'field', 'sample', 'auxiliary' or 'simulation_field'
+      :type data_type: str
+
+
+   .. py:method:: update_upload_data(id, name: str = None, data_type: str = None, **data) -> skgstat_uncertainty.models.DataUpload
+
+
+   .. py:method:: delete_upload_data(id=None, name=None) -> None
+
+      Delete the DataUpload of given ID or name.
+
+      :param id: ID of the DataUpload to be loaded.
+      :type id: int, optional
+      :param name: title of the DataUpload to be loaded
+      :type name: str, optional
+
+
+   .. py:method:: filter_vario_params(data_id=None, name=None) -> List[skgstat_uncertainty.models.VarioParams]
+
+      Filter the empirical variogram estimations stored in the
+      databse.
+
+      :param data_id: Filter VarioParams for the parenting DataUpload.id
+      :type data_id: int, optional
+      :param name: Filter VarioParams for title.
+      :type name: str, optional
+
+
+   .. py:method:: get_vario_params(id=None, name=None) -> skgstat_uncertainty.models.VarioParams
+
+
+   .. py:method:: set_vario_params(name, params, data_id, description=None) -> skgstat_uncertainty.models.VarioParams
+
+
+   .. py:method:: delete_vario_params(id=None, name=None) -> None
+
+
+   .. py:method:: get_conf_interval(id=None, name=None) -> skgstat_uncertainty.models.VarioConfInterval
+
+
+   .. py:method:: set_conf_interval(name, vario_id, interval: List[Tuple[float, float]], **extra) -> skgstat_uncertainty.models.VarioConfInterval
+
+
+   .. py:method:: delete_conf_interval(id=None, name=None) -> None
+
+
+   .. py:method:: filter_vario_model(conf_id=None, model_type=None) -> List[skgstat_uncertainty.models.VarioModel]
+
+
+   .. py:method:: get_vario_model(id: int) -> skgstat_uncertainty.models.VarioModel
+
+
+   .. py:method:: set_vario_model(conf_id: int, model_type: str, **params) -> skgstat_uncertainty.models.VarioModel
+
+
+   .. py:method:: delete_vario_model(id) -> None
+
+
+   .. py:method:: filter_results(model_id=None, conf_id=None, content_type=None) -> List[skgstat_uncertainty.models.VarioModelResult]
+
+
+   .. py:method:: get_result_content_types() -> List[str]
+
+
+   .. py:method:: get_result(id=None, name=None) -> skgstat_uncertainty.models.VarioModelResult
+
+
+   .. py:method:: set_result(model_id: int, content_type: str, name=None, **content) -> skgstat_uncertainty.models.VarioModelResult
+
+
+   .. py:method:: delete_result(id=None, name=None) -> None
+
+
+
+.. py:function:: cli_formatter(f)
+
+
+.. py:class:: Cli
+
+   .. py:attribute:: api
+      
+
+      
+
+   .. py:method:: __getattribute__(method_name)
+
+      Return getattr(self, name).
+
+
+
+.. py:data:: api
+   
+
+   
+

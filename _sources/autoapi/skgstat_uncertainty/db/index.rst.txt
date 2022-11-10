@@ -1,0 +1,49 @@
+:py:mod:`skgstat_uncertainty.db`
+================================
+
+.. py:module:: skgstat_uncertainty.db
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.db._get_sqlite_engine
+   skgstat_uncertainty.db.get_session
+   skgstat_uncertainty.db.install
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.db.DATAPATH
+   skgstat_uncertainty.db.DBNAME
+
+
+.. py:data:: DATAPATH
+   
+
+   
+
+.. py:data:: DBNAME
+   :annotation: = data.db
+
+   
+
+.. py:function:: _get_sqlite_engine(**kwargs)
+
+
+.. py:function:: get_session(uri: str = None, mode: str = 'session', **kwargs) -> sqlalchemy.orm.Session
+
+
+.. py:function:: install(drop=False)
+
+

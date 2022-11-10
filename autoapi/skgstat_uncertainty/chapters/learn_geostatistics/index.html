@@ -1,0 +1,1021 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>skgstat_uncertainty.chapters.learn_geostatistics &#8212; Scikit-GStat Uncertainty 1.8.0 documentation</title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+<link href="../../../../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+
+  
+  <link rel="stylesheet"
+    href="../../../../_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../../_static/graphviz.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+
+    <script data-url_root="../../../../" id="documentation_options" src="../../../../_static/documentation_options.js"></script>
+    <script src="../../../../_static/jquery.js"></script>
+    <script src="../../../../_static/underscore.js"></script>
+    <script src="../../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../../_static/doctools.js"></script>
+    <script src="../../../../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index';</script>
+    <link rel="index" title="Index" href="../../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">Scikit-GStat Uncertainty 1.8.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
+    <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active has-children"><a class="reference internal" href="../index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters</span></code></a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul class="current">
+<li class="toctree-l2"><a class="reference internal" href="../data_manage/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.data_manage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../kriging/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.kriging</span></code></a></li>
+<li class="toctree-l2 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.main</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_compare/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_compare</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_fitting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_fitting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../model_simulation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../variogram/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.variogram</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../components/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../components/data_edit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_edit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/data_selects/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_selects</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/filters/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.filters</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/plotting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.plotting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/tables/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.tables</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../components/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../processor/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/dic/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.dic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/fit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.fit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/propagation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.propagation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/rm/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.rm</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/sampling/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.sampling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../processor/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../utils/vario_tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils.vario_tools</span></code></a></li>
+</ul>
+</li>
+</ul>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../api/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.api</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../db/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.db</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.models</span></code></a></li>
+</ul>
+
+  </div>
+</nav>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <section id="module-skgstat_uncertainty.chapters.learn_geostatistics">
+<span id="skgstat-uncertainty-chapters-learn-geostatistics"></span><h1><a class="reference internal" href="#module-skgstat_uncertainty.chapters.learn_geostatistics" title="skgstat_uncertainty.chapters.learn_geostatistics"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics</span></code></a><a class="headerlink" href="#module-skgstat_uncertainty.chapters.learn_geostatistics" title="Permalink to this heading">#</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat" title="skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_arr_to_dat</span></code></a>(→ bytes)</p></td>
+<td><p>Converts an array to a string representation in .DAT format</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics._code_sample" title="skgstat_uncertainty.chapters.learn_geostatistics._code_sample"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_code_sample</span></code></a>(**kwargs)</p></td>
+<td><p>Helper function to build the code sample for the user.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode" title="skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode"><code class="xref py py-obj docutils literal notranslate"><span class="pre">check_story_mode</span></code></a>(api)</p></td>
+<td><p>Check if the user wants to be guided through the variogram fit</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.binning" title="skgstat_uncertainty.chapters.learn_geostatistics.binning"><code class="xref py py-obj docutils literal notranslate"><span class="pre">binning</span></code></a>(→ None)</p></td>
+<td><p>Component to change the binning settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.estimator" title="skgstat_uncertainty.chapters.learn_geostatistics.estimator"><code class="xref py py-obj docutils literal notranslate"><span class="pre">estimator</span></code></a>(→ None)</p></td>
+<td><p>Component to change the estimator settings.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.fit_method" title="skgstat_uncertainty.chapters.learn_geostatistics.fit_method"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fit_method</span></code></a>(→ None)</p></td>
+<td><p>Component to change the fitting method settings.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.fitting" title="skgstat_uncertainty.chapters.learn_geostatistics.fitting"><code class="xref py py-obj docutils literal notranslate"><span class="pre">fitting</span></code></a>(→ None)</p></td>
+<td><p>Component to change the fitting parameters.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram" title="skgstat_uncertainty.chapters.learn_geostatistics.variogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variogram</span></code></a>(→ None)</p></td>
+<td><p>Component to guide the user through the parameterization and application of</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging" title="skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_apply_kriging</span></code></a>(→ Tuple[numpy.ndarray, numpy.ndarray])</p></td>
+<td><p>Helper function to actually run kriging.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.kriging" title="skgstat_uncertainty.chapters.learn_geostatistics.kriging"><code class="xref py py-obj docutils literal notranslate"><span class="pre">kriging</span></code></a>(→ None)</p></td>
+<td><p>Component to guide the user through the Kriging interface.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.base_variogram" title="skgstat_uncertainty.chapters.learn_geostatistics.base_variogram"><code class="xref py py-obj docutils literal notranslate"><span class="pre">base_variogram</span></code></a>(→ skgstat.Variogram)</p></td>
+<td><p>Helper function to parameterize a theoretical variogram model on the fly.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot" title="skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot"><code class="xref py py-obj docutils literal notranslate"><span class="pre">variogram_plot</span></code></a>(→ plotly.graph_objects.Figure)</p></td>
+<td><p>Component to build a plotly Figure of the current variogram. Depending</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.main_app" title="skgstat_uncertainty.chapters.learn_geostatistics.main_app"><code class="xref py py-obj docutils literal notranslate"><span class="pre">main_app</span></code></a>(api, **kwargs)</p></td>
+<td><p>Tutorial chapter about geostatistics.</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.__story_intro" title="skgstat_uncertainty.chapters.learn_geostatistics.__story_intro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__story_intro</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro" title="skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__bin_intro</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.__est_intro" title="skgstat_uncertainty.chapters.learn_geostatistics.__est_intro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__est_intro</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro" title="skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro"><code class="xref py py-obj docutils literal notranslate"><span class="pre">__fit_method_intro</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.chapters.learn_geostatistics.api" title="skgstat_uncertainty.chapters.learn_geostatistics.api"><code class="xref py py-obj docutils literal notranslate"><span class="pre">api</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.__story_intro">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">__story_intro</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Multiline-String</span></em><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.__story_intro" title="Permalink to this definition">#</a></dt>
+<dd><blockquote>
+<div><details><summary>Show Value</summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>This application will guide you through the estimation of an empirical variogram.
+<span class="linenos">2</span>You will learn about the parameters step by step and learn how to fit a model function.
+<span class="linenos">3</span>If you are already familiar with variogram fitting, you can directly jump into the full fitting interface.
+</pre></div>
+</div>
+</details></div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">__bin_intro</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Multiline-String</span></em><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro" title="Permalink to this definition">#</a></dt>
+<dd><blockquote>
+<div><details><summary>Show Value</summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>To learn about spatial correlation in the dataset, that is not dependent on the location, we
+<span class="linenos"> 2</span>need to calculate separating distances between observations. This way, we can correlate observation similarity
+<span class="linenos"> 3</span>to the distance between them.
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>A variogram being a statistical property of the sample (2nd moment), we need to aggregate the similarity
+<span class="linenos"> 6</span>in observations at different separating distance lag classes. Therefore, for all combinations of point pairs,
+<span class="linenos"> 7</span>their distance is calculated and saved as a distance matrix.
+<span class="linenos"> 8</span>This enables us to inspect increasing variablity with increasing distance as a general pattern.
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>Using Python&#39;s `skgstat` library, we can choose between many different methods that will do the binning for us.
+<span class="linenos">11</span>Some of them need the number of lag classes as a parameter, others will estimate this automatically.
+</pre></div>
+</div>
+</details></div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.__est_intro">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">__est_intro</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Multiline-String</span></em><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.__est_intro" title="Permalink to this definition">#</a></dt>
+<dd><blockquote>
+<div><details><summary>Show Value</summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span>After aggreagting all pairs of observations into distinct lag classes, we need an estimator to express (dis-)similarity
+<span class="linenos">2</span>between the members in each group. We use so called semi-variance estimators, which are all largely built on the
+<span class="linenos">3</span>univariante variance.
+<span class="linenos">4</span>Thus, we are comparing how the varaince in observation residuals changes with increasing distance.
+<span class="linenos">5</span>
+<span class="linenos">6</span>Choose one of the pre-defined estimators and inspect the changes to the overall structure of the empirical variogram.
+</pre></div>
+</div>
+</details></div></blockquote>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">__fit_method_intro</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">Multiline-String</span></em><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro" title="Permalink to this definition">#</a></dt>
+<dd><blockquote>
+<div><details><summary>Show Value</summary><div class="highlight-text notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span>As of now, the empirical variogram is finished. You can already learn a lot from this figure.
+<span class="linenos"> 2</span>The most important question is if the data actually bears a spatial auto-correlation. Does the semi-variance
+<span class="linenos"> 3</span>increase with distance?
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>If not, it&#39;s not really worth to continue using geostatistics, as anything from here on, will rely on the empirical
+<span class="linenos"> 6</span>variogram and how well it captures the spatial structure of the data.
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>The empirical variogram is characterized by three different parameters:
+<span class="linenos"> 9</span>
+<span class="linenos">10</span>  * **sill** is the maximium semi-variance, which is approached asymtotically by the variogram
+<span class="linenos">11</span>  * **range** is the distance at which the sill is reached. Beyond this distance, the sample is spatially uncorrelated
+<span class="linenos">12</span>  * **nugget** is the y-axis intercept. It&#39;s ratio to sill describes the un-explainable share of the sample variance which is nugget + sill
+<span class="linenos">13</span>
+<span class="linenos">14</span>It is generally possible in `skgstat` to turn the use of a nugget effect completely off, by setting the `use_nugget` parameter.
+<span class="linenos">15</span>You can estimate the parameters by eye, or capture them more systematically by fitting a theoretical variogram function
+<span class="linenos">16</span>to the empirical variogram. This will also let you use the model parameterization in more sophisticated geostatistical applications.
+<span class="linenos">17</span>Using `skgstat` you can choose between different methods for fitting.
+</pre></div>
+</div>
+</details></div></blockquote>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">_arr_to_dat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.array</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#bytes" title="(in Python v3.10)"><span class="pre">bytes</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts an array to a string representation in .DAT format</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics._code_sample">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">_code_sample</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics._code_sample" title="Permalink to this definition">#</a></dt>
+<dd><p>Helper function to build the code sample for the user.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">check_story_mode</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode" title="Permalink to this definition">#</a></dt>
+<dd><p>Check if the user wants to be guided through the variogram fit</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.binning">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">binning</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_story</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.binning" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to change the binning settings.
+The current settings will be stored into the streamlit session state.
+Additionally, the component can be run in story mode, which will load
+an distance - value residuals scatterplot into the application and terminate
+it, until the user made a decision on the needed binning settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+<li><p><strong>no_story</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, the component will suppress the story mode.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.estimator">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">estimator</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_story</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.estimator" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to change the estimator settings.
+The current settings will be stored into the streamlit session state.
+Additionally, the component can be run in story mode, which will load
+an empirical variogram preview into the application and terminate
+it, until the user made a decision on the needed estimator settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+<li><p><strong>no_story</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, the component will suppress the story mode.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.fit_method">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">fit_method</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">no_story</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.fit_method" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to change the fitting method settings.
+The current settings will be stored into the streamlit session state.
+Additionally, the component can be run in story mode, which will display
+help texts for each method and terminate it, until the user made a
+decision on the used method.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+<li><p><strong>no_story</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, the component will suppress the story mode.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.fitting">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">fitting</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.fitting" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to change the fitting parameters.
+The current settings will be stored into the streamlit session state.
+Additionally, the component can be run in story mode, which will load
+an preview of the selected model into the application and terminate
+it, until the user made a decision on the needed settings.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+<li><p><strong>no_story</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True, the component will suppress the story mode.
+Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.variogram">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">variogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">always_plot</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to guide the user through the parameterization and application of
+a variogram. The component will return if it is not in story mode, as no
+additional interface are present to the user. The story mode adds additional
+informations and a set of performance metrics to the user to aid variogram
+estimation and fitting</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+<li><p><strong>always_plot</strong> (<a class="reference external" href="https://docs.python.org/3.10/library/functions.html#bool" title="(in Python v3.10)"><em>bool</em></a>) – If True (default) the main variogram plot will be displayed in any case,
+even if the story mode is disabled.</p></li>
+</ul>
+</dd>
+</dl>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This component will terminate or restart the streamlit application on user
+interaction.</p>
+</div>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">_apply_kriging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">_dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">vario_params</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#dict" title="(in Python v3.10)"><span class="pre">dict</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">grid_resolution</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/functions.html#int" title="(in Python v3.10)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">100</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.ndarray.html#numpy.ndarray" title="(in NumPy v1.23)"><span class="pre">numpy.ndarray</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging" title="Permalink to this definition">#</a></dt>
+<dd><p>Helper function to actually run kriging.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.kriging">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">kriging</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">expander</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">st.sidebar</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3.10/library/constants.html#None" title="(in Python v3.10)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.kriging" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to guide the user through the Kriging interface.
+This component calls all necesary interfaces and will terminate or
+restart the streamlit application on user interaction</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.base_variogram">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">base_variogram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><span class="pre">skgstat.Variogram</span></a></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.base_variogram" title="Permalink to this definition">#</a></dt>
+<dd><p>Helper function to parameterize a theoretical variogram model on the fly.
+The function will collect settings and parameter values from the user session
+state or the passed kwargs. Note that the session state is overwritten by
+passed arguments.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>vario</strong> – The parameterized <a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)"><code class="xref py py-class docutils literal notranslate"><span class="pre">Variogram</span></code></a>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p><a class="reference external" href="https://scikit-gstat.readthedocs.io/en/latest/reference/variogram.html#skgstat.Variogram" title="(in SciKit GStat)">skgstat.Variogram</a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">variogram_plot</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">dataset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><span class="pre">skgstat_uncertainty.models.DataUpload</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">plotly.graph_objects.Figure</span></span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot" title="Permalink to this definition">#</a></dt>
+<dd><p>Component to build a plotly Figure of the current variogram. Depending
+on the current state of the user session, which reflects the progress made
+in story mode, the plot is adjusted to only plot what the user has already
+learned about.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p></li>
+<li><p><strong>dataset</strong> (<a class="reference internal" href="../../models/index.html#skgstat_uncertainty.models.DataUpload" title="skgstat_uncertainty.models.DataUpload"><em>DataUpload</em></a>) – The basic dataset used to estimate an empirical variogram.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>fig</strong> – The plotly Figure objecet containting the variogram plot</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>go.Figure</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.main_app">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">main_app</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">api</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><span class="pre">skgstat_uncertainty.api.API</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.main_app" title="Permalink to this definition">#</a></dt>
+<dd><p>Tutorial chapter about geostatistics.
+This streamlit application can be run on its own or embedded into another
+application. This application is the main entrypoint into the SciKit-GStat
+Uncertainty geostatistical applications and a generic introduction and tutorial
+about geostatistics. There are no uncertainty considerations embedded into this
+application. The user is guided from the selection of a pre-defined spatial dataset
+through all steps necessary to estimate an empirical variogram, then select and
+parameterize a theoretical variogram model and finally apply this model using
+one of the implemented kriging algorithms.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>api</strong> (<a class="reference internal" href="../../api/index.html#skgstat_uncertainty.api.API" title="skgstat_uncertainty.api.API"><em>skgstat_uncertainty.api.API</em></a>) – Connected instance of the SciKit-GStat Python API to interact with
+the backend.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.chapters.learn_geostatistics.api">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics.</span></span><span class="sig-name descname"><span class="pre">api</span></span><a class="headerlink" href="#skgstat_uncertainty.chapters.learn_geostatistics.api" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-contents">
+   Module Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__story_intro">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         __story_intro
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         __bin_intro
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__est_intro">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         __est_intro
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         __fit_method_intro
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         _arr_to_dat()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics._code_sample">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         _code_sample()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         check_story_mode()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.binning">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         binning()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.estimator">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         estimator()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.fit_method">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         fit_method()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.fitting">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         fitting()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         variogram()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         _apply_kriging()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.kriging">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         kriging()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.base_variogram">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         base_variogram()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         variogram_plot()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.main_app">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         main_app()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.api">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         api
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__story_intro">
+       __story_intro
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro">
+       __bin_intro
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__est_intro">
+       __est_intro
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro">
+       __fit_method_intro
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat">
+       _arr_to_dat
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics._code_sample">
+       _code_sample
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode">
+       check_story_mode
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.binning">
+       binning
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.estimator">
+       estimator
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.fit_method">
+       fit_method
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.fitting">
+       fitting
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram">
+       variogram
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging">
+       _apply_kriging
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.kriging">
+       kriging
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.base_variogram">
+       base_variogram
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot">
+       variogram_plot
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.main_app">
+       main_app
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.chapters.learn_geostatistics.api">
+       api
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../../../../_sources/autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, Mirko Mälicke.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>

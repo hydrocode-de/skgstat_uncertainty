@@ -1,0 +1,118 @@
+:py:mod:`skgstat_uncertainty.chapters.model_fitting`
+====================================================
+
+.. py:module:: skgstat_uncertainty.chapters.model_fitting
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.model_fitting.apply_model
+   skgstat_uncertainty.chapters.model_fitting.parameterization_evaluation
+   skgstat_uncertainty.chapters.model_fitting.evaluation_metric_badges
+   skgstat_uncertainty.chapters.model_fitting.save_handler
+   skgstat_uncertainty.chapters.model_fitting.main_app
+   skgstat_uncertainty.chapters.model_fitting.run
+
+
+
+.. py:function:: apply_model(vario: skgstat_uncertainty.models.VarioParams, interval: skgstat_uncertainty.models.VarioConfInterval, figure: plotly.graph_objects.Figure, other_models: List[skgstat_uncertainty.models.VarioModel] = [], expander_container=st.sidebar) -> Tuple[plotly.graph_objects.Figure, dict]
+
+   Main component to render variogram parameter selection widgets and apply the parameterization
+   for the selected theoretical variogram model. This is the core components for applications,
+   that are built around manual variogram parameterization. The compontent will return a plotly
+   figure of the parameterized model and parameters themself.
+
+   :param vario: Estimated empirical variogram instance to use as a basis to create a model
+                 parameterization.
+   :type vario: VarioParams
+   :param interval: Empirical variogram confidence interval to be used for parameterization.
+   :type interval: VarioConfInterval
+   :param figure: Plotly Figure instance to be used for plotting.
+   :type figure: go.Figure
+   :param other_models: Optional list of other parameter sets for the same empirical variogram
+                        instance. This can be used to compare the current parameter to already
+                        exisiting parameter sets.
+   :type other_models: List[VarioModel]
+
+   :returns: * **figure** (*go.Figure*) -- Plotly figure adjusted to depict the parameterized model, as well.
+             * **params** (*dict*) -- Variogram model parameterization created by the user.
+
+
+.. py:function:: parameterization_evaluation(vario: skgstat_uncertainty.models.VarioParams, interval: List[Tuple[float, float]], params: dict, other_models: List[skgstat_uncertainty.models.VarioModel] = []) -> Tuple[Dict[str, float], dict]
+
+   Component for evaluating the current parameterization of a theoretical
+   variogram model. It can be compared to other parameterizations of the
+   same empirical variogram instance.
+   The component will return two dictionaries containing the performance
+   measures for evaluation and the measue parameters.
+
+   :param vario: Estimated empirical variogram instance to use as a basis to create a model
+                 parameterization.
+   :type vario: VarioParams
+   :param interval: Empirical variogram confidence interval to be used for parameterization.
+   :type interval: VarioConfInterval
+   :param params: Variogram model parameterization created by the user.
+   :type params: dict
+   :param other_models: Optional list of other parameter sets for the same empirical variogram
+                        instance. This can be used to compare the current parameter to already
+                        exisiting parameter sets.
+   :type other_models: List[VarioModel]
+
+   :returns: * **measures** (*dict*) -- Dictionary of all selected performance metrics for the current
+               parameterization.
+             * **measure_params** (*dict*) -- Dictionary of parameters needed to calculate the performance metrics.
+               These should be stored along with the metrics into the database.
+
+
+.. py:function:: evaluation_metric_badges(measures: Dict[str, float], container=st) -> None
+
+   Helper function to render visual badges for each passed metric.
+
+
+.. py:function:: save_handler(api: skgstat_uncertainty.api.API, interval: skgstat_uncertainty.models.VarioConfInterval, params: dict, measures: Dict[str, float], measure_params: Dict[str, Dict[str, float]]) -> skgstat_uncertainty.models.VarioModel
+
+   Helper function for saving a new parameterization into the database, along with all
+   calculated performance and the associated parameters for calculation.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param interval: Empirical variogram confidence interval to be used for parameterization.
+   :type interval: VarioConfInterval
+   :param measures: Dictionary of all selected performance metrics for the current
+                    parameterization.
+   :type measures: dict
+   :param measure_params: Dictionary of parameters needed to calculate the performance metrics.
+                          These should be stored along with the metrics into the database.
+   :type measure_params: dict
+
+
+.. py:function:: main_app(api: skgstat_uncertainty.api.API) -> None
+
+   Variogram model parameterization chapter.
+   This streamlit application can be run on its own or embedded into another
+   application. This chapter is build around manual variogram model parameterization.
+   The user can interact with a number of widgets to change parameterization manually
+   on the fly. Different performance metrics aid the user in optimizing the
+   parameterization.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+   .. rubric:: Notes
+
+   This chapter requires an estimated empirical variogram instance to be present in the
+   database.
+
+
+.. py:function:: run(data_path=None, db_name='data.db')
+
+

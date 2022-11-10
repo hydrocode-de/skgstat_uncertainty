@@ -1,0 +1,532 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+
+    <title>skgstat_uncertainty.db &#8212; Scikit-GStat Uncertainty 1.8.0 documentation</title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+
+  
+  <link rel="stylesheet"
+    href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/graphviz.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/jquery.js"></script>
+    <script src="../../../_static/underscore.js"></script>
+    <script src="../../../_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'autoapi/skgstat_uncertainty/db/index';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="../../../search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="../../../index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">Scikit-GStat Uncertainty 1.8.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="../../index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+  <div class="sidebar-start-items sidebar-primary__section">
+    <div class="sidebar-start-items__item"><nav class="bd-links" id="bd-docs-nav" aria-label="Section navigation">
+  <p class="bd-links__title" role="heading" aria-level="1">
+    Section Navigation
+  </p>
+  <div class="bd-toc-item navbar-nav">
+    <ul class="nav bd-sidenav">
+<li class="toctree-l1 has-children"><a class="reference internal" href="../chapters/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/data_manage/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.data_manage</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/kriging/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.kriging</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/learn_geostatistics/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.learn_geostatistics</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/main/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.main</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/model_compare/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_compare</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/model_fitting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_fitting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/model_simulation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.model_simulation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../chapters/variogram/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.chapters.variogram</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../components/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../components/data_edit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_edit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/data_selects/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.data_selects</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/filters/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.filters</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/plotting/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.plotting</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/tables/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.tables</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../components/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.components.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../processor/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-3" name="toctree-checkbox-3" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-3"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../processor/dic/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.dic</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../processor/fit/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.fit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../processor/propagation/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.propagation</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../processor/rm/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.rm</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../processor/sampling/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.sampling</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="../processor/utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.processor.utils</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../utils/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils</span></code></a><input class="toctree-checkbox" id="toctree-checkbox-4" name="toctree-checkbox-4" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-4"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../utils/vario_tools/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.utils.vario_tools</span></code></a></li>
+</ul>
+</li>
+</ul>
+<ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../api/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.api</span></code></a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.db</span></code></a></li>
+<li class="toctree-l1"><a class="reference internal" href="../models/index.html"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.models</span></code></a></li>
+</ul>
+
+  </div>
+</nav>
+    </div>
+  </div>
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+  <section id="module-skgstat_uncertainty.db">
+<span id="skgstat-uncertainty-db"></span><h1><a class="reference internal" href="#module-skgstat_uncertainty.db" title="skgstat_uncertainty.db"><code class="xref py py-mod docutils literal notranslate"><span class="pre">skgstat_uncertainty.db</span></code></a><a class="headerlink" href="#module-skgstat_uncertainty.db" title="Permalink to this heading">#</a></h1>
+<section id="module-contents">
+<h2>Module Contents<a class="headerlink" href="#module-contents" title="Permalink to this heading">#</a></h2>
+<section id="functions">
+<h3>Functions<a class="headerlink" href="#functions" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.db._get_sqlite_engine" title="skgstat_uncertainty.db._get_sqlite_engine"><code class="xref py py-obj docutils literal notranslate"><span class="pre">_get_sqlite_engine</span></code></a>(**kwargs)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.db.get_session" title="skgstat_uncertainty.db.get_session"><code class="xref py py-obj docutils literal notranslate"><span class="pre">get_session</span></code></a>(→ sqlalchemy.orm.Session)</p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.db.install" title="skgstat_uncertainty.db.install"><code class="xref py py-obj docutils literal notranslate"><span class="pre">install</span></code></a>([drop])</p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="attributes">
+<h3>Attributes<a class="headerlink" href="#attributes" title="Permalink to this heading">#</a></h3>
+<table class="autosummary longtable table autosummary">
+<tbody>
+<tr class="row-odd"><td><p><a class="reference internal" href="#skgstat_uncertainty.db.DATAPATH" title="skgstat_uncertainty.db.DATAPATH"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DATAPATH</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference internal" href="#skgstat_uncertainty.db.DBNAME" title="skgstat_uncertainty.db.DBNAME"><code class="xref py py-obj docutils literal notranslate"><span class="pre">DBNAME</span></code></a></p></td>
+<td><p></p></td>
+</tr>
+</tbody>
+</table>
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.db.DATAPATH">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.db.</span></span><span class="sig-name descname"><span class="pre">DATAPATH</span></span><a class="headerlink" href="#skgstat_uncertainty.db.DATAPATH" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py data">
+<dt class="sig sig-object py" id="skgstat_uncertainty.db.DBNAME">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.db.</span></span><span class="sig-name descname"><span class="pre">DBNAME</span></span><em class="property"><span class="w"> </span><span class="pre">=</span> <span class="pre">data.db</span></em><a class="headerlink" href="#skgstat_uncertainty.db.DBNAME" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.db._get_sqlite_engine">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.db.</span></span><span class="sig-name descname"><span class="pre">_get_sqlite_engine</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.db._get_sqlite_engine" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.db.get_session">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.db.</span></span><span class="sig-name descname"><span class="pre">get_session</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">uri</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">mode</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3.10/library/stdtypes.html#str" title="(in Python v3.10)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'session'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">sqlalchemy.orm.Session</span></span></span><a class="headerlink" href="#skgstat_uncertainty.db.get_session" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="skgstat_uncertainty.db.install">
+<span class="sig-prename descclassname"><span class="pre">skgstat_uncertainty.db.</span></span><span class="sig-name descname"><span class="pre">install</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">drop</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#skgstat_uncertainty.db.install" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</section>
+</section>
+</section>
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div class="tocsection onthispage">
+    <i class="fa-solid fa-list"></i> On this page
+</div>
+<nav id="bd-toc-nav" class="page-toc">
+    <ul class="visible nav section-nav flex-column">
+ <li class="toc-h2 nav-item toc-entry">
+  <a class="reference internal nav-link" href="#module-contents">
+   Module Contents
+  </a>
+  <ul class="nav section-nav flex-column">
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#functions">
+     Functions
+    </a>
+   </li>
+   <li class="toc-h3 nav-item toc-entry">
+    <a class="reference internal nav-link" href="#attributes">
+     Attributes
+    </a>
+    <ul class="nav section-nav flex-column">
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.DATAPATH">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         DATAPATH
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.DBNAME">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         DBNAME
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db._get_sqlite_engine">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         _get_sqlite_engine()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.get_session">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         get_session()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.install">
+       <code class="docutils literal notranslate">
+        <span class="pre">
+         install()
+        </span>
+       </code>
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.DATAPATH">
+       DATAPATH
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.DBNAME">
+       DBNAME
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db._get_sqlite_engine">
+       _get_sqlite_engine
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.get_session">
+       get_session
+      </a>
+     </li>
+     <li class="toc-h4 nav-item toc-entry">
+      <a class="reference internal nav-link" href="#skgstat_uncertainty.db.install">
+       install
+      </a>
+     </li>
+    </ul>
+   </li>
+  </ul>
+ </li>
+</ul>
+
+</nav>
+</div>
+
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+<div class="tocsection sourcelink">
+    <a href="../../../_sources/autoapi/skgstat_uncertainty/db/index.rst.txt">
+        <i class="fa-solid fa-file-lines"></i> Show Source
+    </a>
+</div>
+
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, Mirko Mälicke.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>

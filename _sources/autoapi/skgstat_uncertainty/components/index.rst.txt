@@ -1,0 +1,89 @@
+:py:mod:`skgstat_uncertainty.components`
+========================================
+
+.. py:module:: skgstat_uncertainty.components
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   data_edit/index.rst
+   data_selects/index.rst
+   filters/index.rst
+   plotting/index.rst
+   tables/index.rst
+   utils/index.rst
+
+
+Package Contents
+----------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.upload_handler
+   skgstat_uncertainty.components.upload_auxiliary_data
+   skgstat_uncertainty.components.data_selector
+   skgstat_uncertainty.components.data_select_page
+   skgstat_uncertainty.components.single_result_plot
+   skgstat_uncertainty.components.dataset_plot
+   skgstat_uncertainty.components.base_conf_graph
+   skgstat_uncertainty.components.figure_download_link
+   skgstat_uncertainty.components.model_table
+   skgstat_uncertainty.components.model_selection
+   skgstat_uncertainty.components.edit_dataset
+
+
+
+.. py:function:: upload_handler(api: skgstat_uncertainty.api.API, can_select=True, upload_mime=['csv', 'asc', 'txt', 'json'], container=st) -> skgstat_uncertainty.models.DataUpload
+
+
+.. py:function:: upload_auxiliary_data(dataset: skgstat_uncertainty.models.DataUpload, api: skgstat_uncertainty.api.API) -> None
+
+
+.. py:function:: data_selector(api: skgstat_uncertainty.api.API, stop_with: str = '', data_type='sample', container=st, add_expander: bool = True) -> SELECTED
+
+
+.. py:function:: data_select_page(api: skgstat_uncertainty.api.API, container=st.sidebar) -> skgstat_uncertainty.models.DataUpload
+
+   Full page data selector.
+   This component will populate the sidebar with a select card component to let the user
+   select a dataset. The dataset is presented on a full page including preview and
+   data tables. Once a dataset was selected, the component will collapse into a
+   dropdown in the sidebar (or any other container).
+   The component is controlled via session_state:
+
+     * ``story_mode`` can be set to False to always force component collapse
+
+
+.. py:function:: single_result_plot(kriging_fields: List[skgstat_uncertainty.models.VarioModelResult], excluded_models: List[int] = [], container=st, key='', disable_download=True)
+
+
+.. py:function:: dataset_plot(dataset: skgstat_uncertainty.models.DataUpload, disable_download=True, key='', add_controls: bool = False, container=st) -> None
+
+
+.. py:function:: base_conf_graph(vario: skgstat_uncertainty.models.VarioParams, interval: skgstat_uncertainty.models.VarioConfInterval, fig: plotly.graph_objects.Figure = None) -> plotly.graph_objects.Figure
+
+
+.. py:function:: figure_download_link(figure: plotly.graph_objects.Figure, filename: str = None, template: str = 'plotly_white') -> str
+
+
+.. py:function:: model_table(models: List[skgstat_uncertainty.models.VarioModel], variant='table', excluded_models=[], container=st, table_anchor=None)
+
+
+.. py:function:: model_selection(measure: str, models: List[skgstat_uncertainty.models.VarioModel], container=st.sidebar) -> List[int]
+
+
+.. py:function:: edit_dataset(dataset: skgstat_uncertainty.models.DataUpload, api: skgstat_uncertainty.api.API, edit: bool = True, add_preview: bool = False, container=st) -> Union[None, skgstat_uncertainty.models.DataUpload]
+
+   Create a edit form for the given dataset. It returns True, as
+   the editing is finished (Save button clicked) and False otherwise.
+   If you the form is used
+
+

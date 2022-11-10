@@ -1,0 +1,337 @@
+:py:mod:`skgstat_uncertainty.chapters.learn_geostatistics`
+==========================================================
+
+.. py:module:: skgstat_uncertainty.chapters.learn_geostatistics
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat
+   skgstat_uncertainty.chapters.learn_geostatistics._code_sample
+   skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode
+   skgstat_uncertainty.chapters.learn_geostatistics.binning
+   skgstat_uncertainty.chapters.learn_geostatistics.estimator
+   skgstat_uncertainty.chapters.learn_geostatistics.fit_method
+   skgstat_uncertainty.chapters.learn_geostatistics.fitting
+   skgstat_uncertainty.chapters.learn_geostatistics.variogram
+   skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging
+   skgstat_uncertainty.chapters.learn_geostatistics.kriging
+   skgstat_uncertainty.chapters.learn_geostatistics.base_variogram
+   skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot
+   skgstat_uncertainty.chapters.learn_geostatistics.main_app
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.learn_geostatistics.__story_intro
+   skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro
+   skgstat_uncertainty.chapters.learn_geostatistics.__est_intro
+   skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro
+   skgstat_uncertainty.chapters.learn_geostatistics.api
+
+
+.. py:data:: __story_intro
+   :annotation: = Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: text
+        :linenos:
+
+        
+        This application will guide you through the estimation of an empirical variogram. 
+        You will learn about the parameters step by step and learn how to fit a model function. 
+        If you are already familiar with variogram fitting, you can directly jump into the full fitting interface.
+
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: __bin_intro
+   :annotation: = Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: text
+        :linenos:
+
+        
+        To learn about spatial correlation in the dataset, that is not dependent on the location, we
+        need to calculate separating distances between observations. This way, we can correlate observation similarity
+        to the distance between them.
+
+        A variogram being a statistical property of the sample (2nd moment), we need to aggregate the similarity
+        in observations at different separating distance lag classes. Therefore, for all combinations of point pairs, 
+        their distance is calculated and saved as a distance matrix.
+        This enables us to inspect increasing variablity with increasing distance as a general pattern.
+
+        Using Python's `skgstat` library, we can choose between many different methods that will do the binning for us.
+        Some of them need the number of lag classes as a parameter, others will estimate this automatically.
+
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: __est_intro
+   :annotation: = Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: text
+        :linenos:
+
+        
+        After aggreagting all pairs of observations into distinct lag classes, we need an estimator to express (dis-)similarity
+        between the members in each group. We use so called semi-variance estimators, which are all largely built on the
+        univariante variance.
+        Thus, we are comparing how the varaince in observation residuals changes with increasing distance.
+
+        Choose one of the pre-defined estimators and inspect the changes to the overall structure of the empirical variogram.
+
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:data:: __fit_method_intro
+   :annotation: = Multiline-String
+
+    .. raw:: html
+
+        <details><summary>Show Value</summary>
+
+    .. code-block:: text
+        :linenos:
+
+        
+        As of now, the empirical variogram is finished. You can already learn a lot from this figure. 
+        The most important question is if the data actually bears a spatial auto-correlation. Does the semi-variance
+        increase with distance?
+
+        If not, it's not really worth to continue using geostatistics, as anything from here on, will rely on the empirical
+        variogram and how well it captures the spatial structure of the data.
+
+        The empirical variogram is characterized by three different parameters:
+
+          * **sill** is the maximium semi-variance, which is approached asymtotically by the variogram
+          * **range** is the distance at which the sill is reached. Beyond this distance, the sample is spatially uncorrelated
+          * **nugget** is the y-axis intercept. It's ratio to sill describes the un-explainable share of the sample variance which is nugget + sill
+
+        It is generally possible in `skgstat` to turn the use of a nugget effect completely off, by setting the `use_nugget` parameter.
+        You can estimate the parameters by eye, or capture them more systematically by fitting a theoretical variogram function
+        to the empirical variogram. This will also let you use the model parameterization in more sophisticated geostatistical applications.
+        Using `skgstat` you can choose between different methods for fitting.
+
+
+    .. raw:: html
+
+        </details>
+
+   
+
+.. py:function:: _arr_to_dat(arr: numpy.array) -> bytes
+
+   Converts an array to a string representation in .DAT format
+
+
+.. py:function:: _code_sample(**kwargs)
+
+   Helper function to build the code sample for the user.
+
+
+.. py:function:: check_story_mode(api: skgstat_uncertainty.api.API)
+
+   Check if the user wants to be guided through the variogram fit
+
+
+.. py:function:: binning(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, expander=st.sidebar, no_story: bool = False) -> None
+
+   Component to change the binning settings.
+   The current settings will be stored into the streamlit session state.
+   Additionally, the component can be run in story mode, which will load
+   an distance - value residuals scatterplot into the application and terminate
+   it, until the user made a decision on the needed binning settings.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+   :param no_story: If True, the component will suppress the story mode.
+                    Defaults to ``False``
+   :type no_story: bool
+
+
+.. py:function:: estimator(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, expander=st.sidebar, no_story: bool = False) -> None
+
+   Component to change the estimator settings.
+   The current settings will be stored into the streamlit session state.
+   Additionally, the component can be run in story mode, which will load
+   an empirical variogram preview into the application and terminate
+   it, until the user made a decision on the needed estimator settings.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+   :param no_story: If True, the component will suppress the story mode.
+                    Defaults to ``False``
+   :type no_story: bool
+
+
+.. py:function:: fit_method(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, expander=st.sidebar, no_story: bool = False) -> None
+
+   Component to change the fitting method settings.
+   The current settings will be stored into the streamlit session state.
+   Additionally, the component can be run in story mode, which will display
+   help texts for each method and terminate it, until the user made a
+   decision on the used method.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+   :param no_story: If True, the component will suppress the story mode.
+                    Defaults to ``False``
+   :type no_story: bool
+
+
+.. py:function:: fitting(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, expander=st.sidebar) -> None
+
+   Component to change the fitting parameters.
+   The current settings will be stored into the streamlit session state.
+   Additionally, the component can be run in story mode, which will load
+   an preview of the selected model into the application and terminate
+   it, until the user made a decision on the needed settings.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+   :param no_story: If True, the component will suppress the story mode.
+                    Defaults to ``False``
+   :type no_story: bool
+
+
+.. py:function:: variogram(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, always_plot: bool = True) -> None
+
+   Component to guide the user through the parameterization and application of
+   a variogram. The component will return if it is not in story mode, as no
+   additional interface are present to the user. The story mode adds additional
+   informations and a set of performance metrics to the user to aid variogram
+   estimation and fitting
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+   :param always_plot: If True (default) the main variogram plot will be displayed in any case,
+                       even if the story mode is disabled.
+   :type always_plot: bool
+
+   .. note::
+
+      This component will terminate or restart the streamlit application on user
+      interaction.
+
+
+.. py:function:: _apply_kriging(_dataset: skgstat_uncertainty.models.DataUpload, vario_params: dict, grid_resolution: int = 100, **kwargs) -> Tuple[numpy.ndarray, numpy.ndarray]
+
+   Helper function to actually run kriging.
+
+
+.. py:function:: kriging(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, expander=st.sidebar) -> None
+
+   Component to guide the user through the Kriging interface.
+   This component calls all necesary interfaces and will terminate or
+   restart the streamlit application on user interaction
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+
+
+.. py:function:: base_variogram(dataset: skgstat_uncertainty.models.DataUpload, **kwargs) -> skgstat.Variogram
+
+   Helper function to parameterize a theoretical variogram model on the fly.
+   The function will collect settings and parameter values from the user session
+   state or the passed kwargs. Note that the session state is overwritten by
+   passed arguments.
+
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+
+   :returns: **vario** -- The parameterized :class:`Variogram <skgstat.Variogram>`.
+   :rtype: skgstat.Variogram
+
+
+.. py:function:: variogram_plot(api: skgstat_uncertainty.api.API, dataset: skgstat_uncertainty.models.DataUpload, **kwargs) -> plotly.graph_objects.Figure
+
+   Component to build a plotly Figure of the current variogram. Depending
+   on the current state of the user session, which reflects the progress made
+   in story mode, the plot is adjusted to only plot what the user has already
+   learned about.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+   :param dataset: The basic dataset used to estimate an empirical variogram.
+   :type dataset: DataUpload
+
+   :returns: **fig** -- The plotly Figure objecet containting the variogram plot
+   :rtype: go.Figure
+
+
+.. py:function:: main_app(api: skgstat_uncertainty.api.API, **kwargs)
+
+   Tutorial chapter about geostatistics.
+   This streamlit application can be run on its own or embedded into another
+   application. This application is the main entrypoint into the SciKit-GStat
+   Uncertainty geostatistical applications and a generic introduction and tutorial
+   about geostatistics. There are no uncertainty considerations embedded into this
+   application. The user is guided from the selection of a pre-defined spatial dataset
+   through all steps necessary to estimate an empirical variogram, then select and
+   parameterize a theoretical variogram model and finally apply this model using
+   one of the implemented kriging algorithms.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+
+.. py:data:: api
+   
+
+   
+

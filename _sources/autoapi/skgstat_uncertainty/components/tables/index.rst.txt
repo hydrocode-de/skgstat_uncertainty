@@ -1,0 +1,22 @@
+:py:mod:`skgstat_uncertainty.components.tables`
+===============================================
+
+.. py:module:: skgstat_uncertainty.components.tables
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.tables.model_table
+
+
+
+.. py:function:: model_table(models: List[skgstat_uncertainty.models.VarioModel], variant='table', excluded_models=[], container=st, table_anchor=None)
+
+

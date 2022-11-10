@@ -1,0 +1,298 @@
+:py:mod:`skgstat_uncertainty.models`
+====================================
+
+.. py:module:: skgstat_uncertainty.models
+
+
+Module Contents
+---------------
+
+Classes
+~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.models.DataUpload
+   skgstat_uncertainty.models.VarioParams
+   skgstat_uncertainty.models.VarioConfInterval
+   skgstat_uncertainty.models.VarioModel
+   skgstat_uncertainty.models.VarioModelResult
+
+
+
+
+Attributes
+~~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.models.Base
+
+
+.. py:data:: Base
+   
+
+   
+
+.. py:class:: DataUpload
+
+   Bases: :py:obj:`Base`
+
+   .. py:attribute:: __tablename__
+      :annotation: = uploads
+
+      
+
+   .. py:attribute:: id
+      
+
+      
+
+   .. py:attribute:: upload_name
+      
+
+      
+
+   .. py:attribute:: data_type
+      
+
+      
+
+   .. py:attribute:: data
+      
+
+      
+
+   .. py:attribute:: variograms
+      
+
+      
+
+   .. py:method:: to_dict()
+
+
+   .. py:method:: base_variogram(**kwargs) -> skgstat.Variogram
+
+      Return a baseic skg.Variogram from the given kwargs.
+
+
+   .. py:method:: update_thumbnail(height: int = 200, width: int = 200, **kwargs)
+
+      Adds a preview of the data as thumbnail to the the specs
+
+
+
+.. py:class:: VarioParams
+
+   Bases: :py:obj:`Base`
+
+   .. py:property:: variogram
+      :type: skgstat.Variogram
+
+
+   .. py:attribute:: __tablename__
+      :annotation: = variograms
+
+      
+
+   .. py:attribute:: id
+      
+
+      
+
+   .. py:attribute:: data_id
+      
+
+      
+
+   .. py:attribute:: name
+      
+
+      
+
+   .. py:attribute:: description
+      
+
+      
+
+   .. py:attribute:: params
+      
+
+      
+
+   .. py:attribute:: data
+      
+
+      
+
+   .. py:attribute:: conf_intervals
+      
+
+      
+
+   .. py:method:: to_dict()
+
+
+
+.. py:class:: VarioConfInterval
+
+   Bases: :py:obj:`Base`
+
+   .. py:property:: interval
+
+
+   .. py:property:: kriging_fields
+
+
+   .. py:property:: simulation_fields
+
+
+   .. py:attribute:: __tablename__
+      :annotation: = variogram_conf_intervals
+
+      
+
+   .. py:attribute:: id
+      
+
+      
+
+   .. py:attribute:: vario_id
+      
+
+      
+
+   .. py:attribute:: name
+      
+
+      
+
+   .. py:attribute:: spec
+      
+
+      
+
+   .. py:attribute:: variogram
+      
+
+      
+
+   .. py:attribute:: models
+      
+
+      
+
+   .. py:method:: to_dict()
+
+
+   .. py:method:: get_result_type(type_name: str) -> List[VarioModelResult]
+
+
+
+.. py:class:: VarioModel
+
+   Bases: :py:obj:`Base`
+
+   .. py:property:: variogram
+      :type: skgstat.Variogram
+
+
+   .. py:property:: model_func
+
+
+   .. py:attribute:: __tablename__
+      :annotation: = variogram_models
+
+      
+
+   .. py:attribute:: id
+      
+
+      
+
+   .. py:attribute:: conf_id
+      
+
+      
+
+   .. py:attribute:: model_type
+      
+
+      
+
+   .. py:attribute:: parameters
+      
+
+      
+
+   .. py:attribute:: confidence_interval
+      
+
+      
+
+   .. py:attribute:: results
+      
+
+      
+
+   .. py:method:: apply_model(x: list) -> list
+
+
+   .. py:method:: to_dict()
+
+
+   .. py:method:: get_base_grid() -> Tuple[int, int]
+
+      
+
+
+   .. py:method:: save()
+
+
+
+.. py:class:: VarioModelResult
+
+   Bases: :py:obj:`Base`
+
+   .. py:attribute:: __tablename__
+      :annotation: = variogram_model_results
+
+      
+
+   .. py:attribute:: id
+      
+
+      
+
+   .. py:attribute:: model_id
+      
+
+      
+
+   .. py:attribute:: content_type
+      
+
+      
+
+   .. py:attribute:: name
+      
+
+      
+
+   .. py:attribute:: content
+      
+
+      
+
+   .. py:attribute:: model
+      
+
+      
+
+   .. py:method:: variogram() -> skgstat.Variogram
+
+
+   .. py:method:: to_dict()
+
+
+

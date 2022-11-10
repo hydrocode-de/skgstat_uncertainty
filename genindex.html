@@ -1,0 +1,1271 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Index &#8212; Scikit-GStat Uncertainty 1.8.0 documentation</title>
+  <script>
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1e1de1a1873e13ef5536" rel="stylesheet">
+
+  
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/6.1.2/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'genindex';</script>
+    <link rel="index" title="Index" href="#" />
+    <link rel="search" title="Search" href="search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="docsearch:language" content="en">
+  </head>
+  
+  
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="180" data-default-mode="">
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__primary" id="__primary">
+  <label class="overlay overlay-primary" for="__primary"></label>
+
+  
+  <input type="checkbox" class="sidebar-toggle" name="__secondary" id="__secondary">
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+      
+<form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form>
+    </div>
+  </div>
+
+  
+  <nav class="bd-header navbar navbar-expand-lg bd-navbar" id="navbar-main"><div class="bd-header__inner bd-page-width">
+  <label class="sidebar-toggle primary-toggle" for="__primary">
+      <span class="fa-solid fa-bars"></span>
+  </label>
+  <div id="navbar-start">
+    
+    
+  
+
+
+<a class="navbar-brand logo" href="index.html">
+
+  
+  
+  
+  
+  
+  
+  
+
+  
+  
+    <p class="title logo__title">Scikit-GStat Uncertainty 1.8.0 documentation</p>
+  
+</a>
+    
+  </div>
+
+  
+  <div class="col-lg-9 navbar-header-items">
+    <div id="navbar-center" class="mr-auto">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="autoapi/index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+    </div>
+
+    <div id="navbar-end">
+      <div class="navbar-end-item navbar-end__search-button-container">
+        
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+      </div>
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+  </div>
+
+
+  
+  <div class="search-button-container--mobile">
+<button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" data-toggle="tooltip">
+  <i class="fa-solid fa-magnifying-glass"></i>
+</button>
+  </div>
+
+  
+  <label class="sidebar-toggle secondary-toggle" for="__secondary">
+      <span class="fa-solid fa-outdent"></span>
+  </label>
+  
+
+</div>
+  </nav>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar hide-on-wide">
+        
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+      <div class="sidebar-header-items__center">
+      
+      <div class="navbar-center-item">
+        <nav class="navbar-nav">
+    <p class="sidebar-header-items__title" role="heading" aria-level="1" aria-label="Site Navigation">
+        Site Navigation
+    </p>
+    <ul id="navbar-main-elements" class="navbar-nav">
+        
+                <li class="nav-item">
+                    <a class="nav-link" href="autoapi/index.html">
+                        API Reference
+                    </a>
+                </li>
+                
+    </ul>
+</nav>
+      </div>
+      
+      </div>
+    
+
+    
+    
+    <div class="sidebar-header-items__end">
+      
+      <div class="navbar-end-item">
+        <span class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" data-toggle="tooltip">
+    <a class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></a>
+    <a class="theme-switch" data-mode="dark"><i class="fa-regular fa-moon"></i></a>
+    <a class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></a>
+</span>
+      </div>
+      
+      <div class="navbar-end-item">
+        <ul id="navbar-icon-links" class="navbar-nav" aria-label="Icon Links">
+      </ul>
+      </div>
+      
+    </div>
+    
+  </div>
+
+  
+
+  
+  <div class="sidebar-end-items sidebar-primary__section">
+    <div class="sidebar-end-items__item">
+    </div>
+  </div>
+
+      </div>
+      <main class="bd-main">
+        
+        
+        <div class="bd-content">
+          <div class="bd-article-container">
+            
+            <div class="bd-header-article">
+                
+            </div>
+            
+            
+            <article class="bd-article" role="main">
+              
+
+<h1 id="index">Index</h1>
+
+<div class="genindex-jumpbox">
+ <a href="#_"><strong>_</strong></a>
+ | <a href="#A"><strong>A</strong></a>
+ | <a href="#B"><strong>B</strong></a>
+ | <a href="#C"><strong>C</strong></a>
+ | <a href="#D"><strong>D</strong></a>
+ | <a href="#E"><strong>E</strong></a>
+ | <a href="#F"><strong>F</strong></a>
+ | <a href="#G"><strong>G</strong></a>
+ | <a href="#I"><strong>I</strong></a>
+ | <a href="#K"><strong>K</strong></a>
+ | <a href="#L"><strong>L</strong></a>
+ | <a href="#M"><strong>M</strong></a>
+ | <a href="#N"><strong>N</strong></a>
+ | <a href="#P"><strong>P</strong></a>
+ | <a href="#R"><strong>R</strong></a>
+ | <a href="#S"><strong>S</strong></a>
+ | <a href="#T"><strong>T</strong></a>
+ | <a href="#U"><strong>U</strong></a>
+ | <a href="#V"><strong>V</strong></a>
+ 
+</div>
+<h2 id="_">_</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/index.html#skgstat_uncertainty.__author__">__author__ (in module skgstat_uncertainty)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.__bin_intro">__bin_intro (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#skgstat_uncertainty.components.data_selects.__data_intro">__data_intro (in module skgstat_uncertainty.components.data_selects)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.__est_intro">__est_intro (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.__fit_method_intro">__fit_method_intro (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.Cli.__getattribute__">__getattribute__() (skgstat_uncertainty.api.Cli method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.__story_intro">__story_intro (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.__tablename__">__tablename__ (skgstat_uncertainty.models.DataUpload attribute)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.__tablename__">(skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.__tablename__">(skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.__tablename__">(skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.__tablename__">(skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/index.html#skgstat_uncertainty.__version__">__version__ (in module skgstat_uncertainty)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics._apply_kriging">_apply_kriging() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics._arr_to_dat">_arr_to_dat() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics._code_sample">_code_sample() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#skgstat_uncertainty.processor.dic._effective_gelman">_effective_gelman() (in module skgstat_uncertainty.processor.dic)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#skgstat_uncertainty.processor.dic._effective_spiegelhalter">_effective_spiegelhalter() (in module skgstat_uncertainty.processor.dic)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/db/index.html#skgstat_uncertainty.db._get_sqlite_engine">_get_sqlite_engine() (in module skgstat_uncertainty.db)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation._sem_input_generator">_sem_input_generator() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation._std_input_generator">_std_input_generator() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation._uniform_input_generator">_uniform_input_generator() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="A">A</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.ACT">ACT (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.action_view">action_view() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.ADD_BTN">ADD_BTN (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.aic">aic() (in module skgstat_uncertainty.processor.fit)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API">API (class in skgstat_uncertainty.api)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.api">api (in module skgstat_uncertainty.api)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#skgstat_uncertainty.chapters.kriging.api">(in module skgstat_uncertainty.chapters.kriging)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.api">(in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.Cli.api">(skgstat_uncertainty.api.Cli attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#skgstat_uncertainty.chapters.kriging.apply_kriging">apply_kriging() (in module skgstat_uncertainty.chapters.kriging)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#skgstat_uncertainty.chapters.model_fitting.apply_model">apply_model() (in module skgstat_uncertainty.chapters.model_fitting)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.apply_model">(skgstat_uncertainty.models.VarioModel method)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.auxiliary_upload_view">auxiliary_upload_view() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="B">B</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.Base">Base (in module skgstat_uncertainty.models)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.base_conf_graph">base_conf_graph() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#skgstat_uncertainty.components.plotting.base_conf_graph">(in module skgstat_uncertainty.components.plotting)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.base_variogram">base_variogram() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.base_variogram">(skgstat_uncertainty.models.DataUpload method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.bic">bic() (in module skgstat_uncertainty.processor.fit)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.BIN_FUNC">BIN_FUNC (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.binning">binning() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.button_panel">button_panel() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="C">C</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.calculate_uncertainty_bounds">calculate_uncertainty_bounds() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.card_options_from_dataset_names">card_options_from_dataset_names() (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#skgstat_uncertainty.chapters.kriging.check_for_auxiliary_data">check_for_auxiliary_data() (in module skgstat_uncertainty.chapters.kriging)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.check_story_mode">check_story_mode() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#skgstat_uncertainty.chapters.kriging.choose_algorithm">choose_algorithm() (in module skgstat_uncertainty.chapters.kriging)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.Cli">Cli (class in skgstat_uncertainty.api)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.cli_formatter">cli_formatter() (in module skgstat_uncertainty.api)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.conf_id">conf_id (skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation.conf_interval_from_sample_std">conf_interval_from_sample_std() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.conf_intervals">conf_intervals (skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.CONF_INTRO">CONF_INTRO (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.CONF_METHODS">CONF_METHODS (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.confidence_interval">confidence_interval (skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.content">content (skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.content_type">content_type (skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/utils/index.html#skgstat_uncertainty.processor.utils.create_thumbnail">create_thumbnail() (in module skgstat_uncertainty.processor.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.cv">cv() (in module skgstat_uncertainty.processor.fit)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="D">D</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.data">data (skgstat_uncertainty.models.DataUpload attribute)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.data">(skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.data_id">data_id (skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.data_select_page">data_select_page() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#skgstat_uncertainty.components.data_selects.data_select_page">(in module skgstat_uncertainty.components.data_selects)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.data_selector">data_selector() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#skgstat_uncertainty.components.data_selects.data_selector">(in module skgstat_uncertainty.components.data_selects)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.data_type">data_type (skgstat_uncertainty.models.DataUpload attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/db/index.html#skgstat_uncertainty.db.DATAPATH">DATAPATH (in module skgstat_uncertainty.db)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.dataset_grid">dataset_grid() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.dataset_plot">dataset_plot() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#skgstat_uncertainty.components.plotting.dataset_plot">(in module skgstat_uncertainty.components.plotting)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload">DataUpload (class in skgstat_uncertainty.models)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/db/index.html#skgstat_uncertainty.db.DBNAME">DBNAME (in module skgstat_uncertainty.db)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.delete_conf_interval">delete_conf_interval() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.delete_result">delete_result() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.delete_upload_data">delete_upload_data() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.delete_vario_model">delete_vario_model() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.delete_vario_params">delete_vario_params() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.delete_view">delete_view() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.description">description (skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#skgstat_uncertainty.processor.dic.deviance">deviance() (in module skgstat_uncertainty.processor.dic)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.deviance">(in module skgstat_uncertainty.processor.fit)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#skgstat_uncertainty.processor.dic.DIC">DIC() (in module skgstat_uncertainty.processor.dic)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.dic">dic() (in module skgstat_uncertainty.processor.fit)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="E">E</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.edit_dataset">edit_dataset() (in module skgstat_uncertainty.chapters.data_manage)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.edit_dataset">(in module skgstat_uncertainty.components)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_edit/index.html#skgstat_uncertainty.components.data_edit.edit_dataset">(in module skgstat_uncertainty.components.data_edit)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.edit_view">edit_view() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#skgstat_uncertainty.processor.dic.effective_parameters">effective_parameters() (in module skgstat_uncertainty.processor.dic)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.empirical_risk">empirical_risk() (in module skgstat_uncertainty.processor.fit)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/rm/index.html#skgstat_uncertainty.processor.rm.empirical_risk">(in module skgstat_uncertainty.processor.rm)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.empirical_variogram_estimation">empirical_variogram_estimation() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.estimator">estimator() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.ESTIMATORS">ESTIMATORS (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#skgstat_uncertainty.chapters.model_fitting.evaluation_metric_badges">evaluation_metric_badges() (in module skgstat_uncertainty.chapters.model_fitting)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="F">F</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#skgstat_uncertainty.chapters.model_compare.feature_enabler">feature_enabler() (in module skgstat_uncertainty.chapters.model_compare)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.figure_download_link">figure_download_link() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#skgstat_uncertainty.components.plotting.figure_download_link">(in module skgstat_uncertainty.components.plotting)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.filter_auxiliary_data">filter_auxiliary_data() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.filter_results">filter_results() (skgstat_uncertainty.api.API method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.filter_vario_model">filter_vario_model() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.filter_vario_params">filter_vario_params() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.fit_method">fit_method() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.FIT_METHODS">FIT_METHODS (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.fitting">fitting() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="G">G</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.get_base_grid">get_base_grid() (skgstat_uncertainty.models.VarioModel method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_conf_interval">get_conf_interval() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_result">get_result() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_result_content_types">get_result_content_types() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.get_result_type">get_result_type() (skgstat_uncertainty.models.VarioConfInterval method)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/db/index.html#skgstat_uncertainty.db.get_session">get_session() (in module skgstat_uncertainty.db)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_upload_data">get_upload_data() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_upload_names">get_upload_names() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_vario_model">get_vario_model() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.get_vario_params">get_vario_params() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/sampling/index.html#skgstat_uncertainty.processor.sampling.grid">grid() (in module skgstat_uncertainty.processor.sampling)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="I">I</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.id">id (skgstat_uncertainty.models.DataUpload attribute)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.id">(skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.id">(skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.id">(skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.id">(skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.idic">idic() (in module skgstat_uncertainty.processor.fit)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/db/index.html#skgstat_uncertainty.db.install">install() (in module skgstat_uncertainty.db)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.interval">interval (skgstat_uncertainty.models.VarioConfInterval property)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="K">K</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.kfold_params_interface">kfold_params_interface() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation.kfold_residual_bootstrap">kfold_residual_bootstrap() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.kriging">kriging() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.kriging_fields">kriging_fields (skgstat_uncertainty.models.VarioConfInterval property)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.KRIGING_METHODS">KRIGING_METHODS (in module skgstat_uncertainty.components.utils)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="L">L</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.LICENSES">LICENSES (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.list_datasets">list_datasets() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.load_or_estimate_variogram">load_or_estimate_variogram() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/rm/index.html#skgstat_uncertainty.processor.rm.loss_d">loss_d() (in module skgstat_uncertainty.processor.rm)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/rm/index.html#skgstat_uncertainty.processor.rm.loss_zero">loss_zero() (in module skgstat_uncertainty.processor.rm)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="M">M</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.main_app">main_app() (in module skgstat_uncertainty.chapters.data_manage)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#skgstat_uncertainty.chapters.kriging.main_app">(in module skgstat_uncertainty.chapters.kriging)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.main_app">(in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/main/index.html#skgstat_uncertainty.chapters.main.main_app">(in module skgstat_uncertainty.chapters.main)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#skgstat_uncertainty.chapters.model_compare.main_app">(in module skgstat_uncertainty.chapters.model_compare)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#skgstat_uncertainty.chapters.model_fitting.main_app">(in module skgstat_uncertainty.chapters.model_fitting)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#skgstat_uncertainty.chapters.model_simulation.main_app">(in module skgstat_uncertainty.chapters.model_simulation)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.main_app">(in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.MAXLAG">MAXLAG (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation.mc_absolute_observation_uncertainty">mc_absolute_observation_uncertainty() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#skgstat_uncertainty.chapters.model_compare.measure_plot">measure_plot() (in module skgstat_uncertainty.chapters.model_compare)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#skgstat_uncertainty.components.plotting.metric_parcats">metric_parcats() (in module skgstat_uncertainty.components.plotting)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#skgstat_uncertainty.chapters.model_compare.metric_plot">metric_plot() (in module skgstat_uncertainty.chapters.model_compare)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.model">model (skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.model_func">model_func (skgstat_uncertainty.models.VarioModel property)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.model_id">model_id (skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.model_selection">model_selection() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/filters/index.html#skgstat_uncertainty.components.filters.model_selection">(in module skgstat_uncertainty.components.filters)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#skgstat_uncertainty.chapters.kriging.model_table">model_table() (in module skgstat_uncertainty.chapters.kriging)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.model_table">(in module skgstat_uncertainty.components)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/tables/index.html#skgstat_uncertainty.components.tables.model_table">(in module skgstat_uncertainty.components.tables)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.model_type">model_type (skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.MODELS">MODELS (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.models">models (skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+</li>
+      <li>
+    module
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/index.html#module-skgstat_uncertainty">skgstat_uncertainty</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/api/index.html#module-skgstat_uncertainty.api">skgstat_uncertainty.api</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/index.html#module-skgstat_uncertainty.chapters">skgstat_uncertainty.chapters</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#module-skgstat_uncertainty.chapters.data_manage">skgstat_uncertainty.chapters.data_manage</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#module-skgstat_uncertainty.chapters.kriging">skgstat_uncertainty.chapters.kriging</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#module-skgstat_uncertainty.chapters.learn_geostatistics">skgstat_uncertainty.chapters.learn_geostatistics</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/main/index.html#module-skgstat_uncertainty.chapters.main">skgstat_uncertainty.chapters.main</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#module-skgstat_uncertainty.chapters.model_compare">skgstat_uncertainty.chapters.model_compare</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#module-skgstat_uncertainty.chapters.model_fitting">skgstat_uncertainty.chapters.model_fitting</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#module-skgstat_uncertainty.chapters.model_simulation">skgstat_uncertainty.chapters.model_simulation</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#module-skgstat_uncertainty.chapters.variogram">skgstat_uncertainty.chapters.variogram</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/index.html#module-skgstat_uncertainty.components">skgstat_uncertainty.components</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_edit/index.html#module-skgstat_uncertainty.components.data_edit">skgstat_uncertainty.components.data_edit</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#module-skgstat_uncertainty.components.data_selects">skgstat_uncertainty.components.data_selects</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/filters/index.html#module-skgstat_uncertainty.components.filters">skgstat_uncertainty.components.filters</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#module-skgstat_uncertainty.components.plotting">skgstat_uncertainty.components.plotting</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/tables/index.html#module-skgstat_uncertainty.components.tables">skgstat_uncertainty.components.tables</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#module-skgstat_uncertainty.components.utils">skgstat_uncertainty.components.utils</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/db/index.html#module-skgstat_uncertainty.db">skgstat_uncertainty.db</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#module-skgstat_uncertainty.models">skgstat_uncertainty.models</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/index.html#module-skgstat_uncertainty.processor">skgstat_uncertainty.processor</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#module-skgstat_uncertainty.processor.dic">skgstat_uncertainty.processor.dic</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#module-skgstat_uncertainty.processor.fit">skgstat_uncertainty.processor.fit</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#module-skgstat_uncertainty.processor.propagation">skgstat_uncertainty.processor.propagation</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/rm/index.html#module-skgstat_uncertainty.processor.rm">skgstat_uncertainty.processor.rm</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/sampling/index.html#module-skgstat_uncertainty.processor.sampling">skgstat_uncertainty.processor.sampling</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/processor/utils/index.html#module-skgstat_uncertainty.processor.utils">skgstat_uncertainty.processor.utils</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/utils/index.html#module-skgstat_uncertainty.utils">skgstat_uncertainty.utils</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/utils/vario_tools/index.html#module-skgstat_uncertainty.utils.vario_tools">skgstat_uncertainty.utils.vario_tools</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.monte_carlo_params_interface">monte_carlo_params_interface() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="N">N</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.name">name (skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.name">(skgstat_uncertainty.models.VarioModelResult attribute)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.name">(skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/main/index.html#skgstat_uncertainty.chapters.main.NAV_NAMES">NAV_NAMES (in module skgstat_uncertainty.chapters.main)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/main/index.html#skgstat_uncertainty.chapters.main.navigation">navigation() (in module skgstat_uncertainty.chapters.main)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="P">P</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#skgstat_uncertainty.chapters.model_fitting.parameterization_evaluation">parameterization_evaluation() (in module skgstat_uncertainty.chapters.model_fitting)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/utils/vario_tools/index.html#skgstat_uncertainty.utils.vario_tools.parameterized_clone">parameterized_clone() (in module skgstat_uncertainty.utils.vario_tools)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.parameters">parameters (skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.params">params (skgstat_uncertainty.models.VarioParams attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.PERFORMANCE_MEASURES">PERFORMANCE_MEASURES (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.plot_variogram_params">plot_variogram_params() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#skgstat_uncertainty.processor.dic.posterior_mean_deviance">posterior_mean_deviance() (in module skgstat_uncertainty.processor.dic)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="R">R</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/processor/sampling/index.html#skgstat_uncertainty.processor.sampling.random">random() (in module skgstat_uncertainty.processor.sampling)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/utils/vario_tools/index.html#skgstat_uncertainty.utils.vario_tools.rebuild_variogram">rebuild_variogram() (in module skgstat_uncertainty.utils.vario_tools)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#skgstat_uncertainty.processor.propagation.residual_uncertainty">residual_uncertainty() (in module skgstat_uncertainty.processor.propagation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.results">results (skgstat_uncertainty.models.VarioModel attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.rmse">rmse() (in module skgstat_uncertainty.processor.fit)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.run">run() (in module skgstat_uncertainty.chapters.data_manage)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#skgstat_uncertainty.chapters.model_compare.run">(in module skgstat_uncertainty.chapters.model_compare)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#skgstat_uncertainty.chapters.model_fitting.run">(in module skgstat_uncertainty.chapters.model_fitting)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#skgstat_uncertainty.chapters.model_simulation.run">(in module skgstat_uncertainty.chapters.model_simulation)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.run">(in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#skgstat_uncertainty.chapters.model_simulation.run_simulations">run_simulations() (in module skgstat_uncertainty.chapters.model_simulation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#skgstat_uncertainty.chapters.model_simulation.run_single_simulation">run_single_simulation() (in module skgstat_uncertainty.chapters.model_simulation)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="S">S</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.sample_dense_data">sample_dense_data() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.sample_view">sample_view() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.save">save() (skgstat_uncertainty.models.VarioModel method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#skgstat_uncertainty.chapters.model_fitting.save_handler">save_handler() (in module skgstat_uncertainty.chapters.model_fitting)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.save_handler">(in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#skgstat_uncertainty.chapters.model_simulation.save_results">save_results() (in module skgstat_uncertainty.chapters.model_simulation)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#skgstat_uncertainty.components.data_selects.SELECTED">SELECTED (in module skgstat_uncertainty.components.data_selects)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.set_conf_interval">set_conf_interval() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.set_result">set_result() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.set_upload_data">set_upload_data() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.set_vario_model">set_vario_model() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.set_vario_params">set_vario_params() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.simulation_fields">simulation_fields (skgstat_uncertainty.models.VarioConfInterval property)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.single_result_plot">single_result_plot() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#skgstat_uncertainty.components.plotting.single_result_plot">(in module skgstat_uncertainty.components.plotting)</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/index.html#module-skgstat_uncertainty">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.api
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/api/index.html#module-skgstat_uncertainty.api">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/index.html#module-skgstat_uncertainty.chapters">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.data_manage
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#module-skgstat_uncertainty.chapters.data_manage">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.kriging
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/kriging/index.html#module-skgstat_uncertainty.chapters.kriging">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.learn_geostatistics
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#module-skgstat_uncertainty.chapters.learn_geostatistics">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.main
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/main/index.html#module-skgstat_uncertainty.chapters.main">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.model_compare
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_compare/index.html#module-skgstat_uncertainty.chapters.model_compare">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.model_fitting
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_fitting/index.html#module-skgstat_uncertainty.chapters.model_fitting">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.model_simulation
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/model_simulation/index.html#module-skgstat_uncertainty.chapters.model_simulation">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.chapters.variogram
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#module-skgstat_uncertainty.chapters.variogram">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.components
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/index.html#module-skgstat_uncertainty.components">module</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li>
+    skgstat_uncertainty.components.data_edit
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_edit/index.html#module-skgstat_uncertainty.components.data_edit">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.components.data_selects
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#module-skgstat_uncertainty.components.data_selects">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.components.filters
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/filters/index.html#module-skgstat_uncertainty.components.filters">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.components.plotting
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/plotting/index.html#module-skgstat_uncertainty.components.plotting">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.components.tables
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/tables/index.html#module-skgstat_uncertainty.components.tables">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.components.utils
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#module-skgstat_uncertainty.components.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.db
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/db/index.html#module-skgstat_uncertainty.db">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.models
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#module-skgstat_uncertainty.models">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/index.html#module-skgstat_uncertainty.processor">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor.dic
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/dic/index.html#module-skgstat_uncertainty.processor.dic">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor.fit
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#module-skgstat_uncertainty.processor.fit">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor.propagation
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/propagation/index.html#module-skgstat_uncertainty.processor.propagation">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor.rm
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/rm/index.html#module-skgstat_uncertainty.processor.rm">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor.sampling
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/sampling/index.html#module-skgstat_uncertainty.processor.sampling">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.processor.utils
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/utils/index.html#module-skgstat_uncertainty.processor.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.utils
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/utils/index.html#module-skgstat_uncertainty.utils">module</a>
+</li>
+      </ul></li>
+      <li>
+    skgstat_uncertainty.utils.vario_tools
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/utils/vario_tools/index.html#module-skgstat_uncertainty.utils.vario_tools">module</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.spec">spec (skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/variogram/index.html#skgstat_uncertainty.chapters.variogram.std_params_interface">std_params_interface() (in module skgstat_uncertainty.chapters.variogram)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/processor/fit/index.html#skgstat_uncertainty.processor.fit.structural_risk">structural_risk() (in module skgstat_uncertainty.processor.fit)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/processor/rm/index.html#skgstat_uncertainty.processor.rm.structural_risk">(in module skgstat_uncertainty.processor.rm)</a>
+</li>
+      </ul></li>
+  </ul></td>
+</tr></table>
+
+<h2 id="T">T</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.to_dict">to_dict() (skgstat_uncertainty.models.DataUpload method)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.to_dict">(skgstat_uncertainty.models.VarioConfInterval method)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.to_dict">(skgstat_uncertainty.models.VarioModel method)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.to_dict">(skgstat_uncertainty.models.VarioModelResult method)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.to_dict">(skgstat_uncertainty.models.VarioParams method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/processor/sampling/index.html#skgstat_uncertainty.processor.sampling.transect">transect() (in module skgstat_uncertainty.processor.sampling)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="U">U</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.update_thumbnail">update_thumbnail() (skgstat_uncertainty.models.DataUpload method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/api/index.html#skgstat_uncertainty.api.API.update_upload_data">update_upload_data() (skgstat_uncertainty.api.API method)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.upload_auxiliary_data">upload_auxiliary_data() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#skgstat_uncertainty.components.data_selects.upload_auxiliary_data">(in module skgstat_uncertainty.components.data_selects)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/components/index.html#skgstat_uncertainty.components.upload_handler">upload_handler() (in module skgstat_uncertainty.components)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/components/data_selects/index.html#skgstat_uncertainty.components.data_selects.upload_handler">(in module skgstat_uncertainty.components.data_selects)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.upload_name">upload_name (skgstat_uncertainty.models.DataUpload attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/data_manage/index.html#skgstat_uncertainty.chapters.data_manage.upload_view">upload_view() (in module skgstat_uncertainty.chapters.data_manage)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+<h2 id="V">V</h2>
+<table style="width: 100%" class="indextable genindextable"><tr>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.vario_id">vario_id (skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval">VarioConfInterval (class in skgstat_uncertainty.models)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioConfInterval.variogram">variogram (skgstat_uncertainty.models.VarioConfInterval attribute)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel.variogram">(skgstat_uncertainty.models.VarioModel property)</a>
+</li>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams.variogram">(skgstat_uncertainty.models.VarioParams property)</a>
+</li>
+      </ul></li>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.variogram">variogram() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+
+      <ul>
+        <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult.variogram">(skgstat_uncertainty.models.VarioModelResult method)</a>
+</li>
+      </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="autoapi/skgstat_uncertainty/chapters/learn_geostatistics/index.html#skgstat_uncertainty.chapters.learn_geostatistics.variogram_plot">variogram_plot() (in module skgstat_uncertainty.chapters.learn_geostatistics)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.DataUpload.variograms">variograms (skgstat_uncertainty.models.DataUpload attribute)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModel">VarioModel (class in skgstat_uncertainty.models)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/components/utils/index.html#skgstat_uncertainty.components.utils.variomodel_to_dict">variomodel_to_dict() (in module skgstat_uncertainty.components.utils)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioModelResult">VarioModelResult (class in skgstat_uncertainty.models)</a>
+</li>
+      <li><a href="autoapi/skgstat_uncertainty/models/index.html#skgstat_uncertainty.models.VarioParams">VarioParams (class in skgstat_uncertainty.models)</a>
+</li>
+  </ul></td>
+</tr></table>
+
+
+
+            </article>
+            
+            
+            
+            <footer class="bd-footer-article">
+                <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+</div>
+            </footer>
+            
+          </div>
+          
+          
+          
+            <div class="bd-sidebar-secondary bd-toc">
+              
+<div class="toc-item">
+  
+<div id="searchbox"></div>
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+<div class="toc-item">
+  
+</div>
+
+            </div>
+          
+          
+        </div>
+        <footer class="bd-footer-content">
+          <div class="bd-footer-content__inner">
+            
+          </div>
+        </footer>
+        
+      </main>
+    </div>
+  </div>
+
+  
+    
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1e1de1a1873e13ef5536"></script>
+
+  <footer class="bd-footer"><div class="bd-footer__inner container">
+  
+  <div class="footer-item">
+    
+<p class="copyright">
+
+    &copy; Copyright 2022, Mirko Mälicke.<br>
+
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+<p class="sphinx-version">
+Created using <a href="http://sphinx-doc.org/">Sphinx</a> 5.3.0.<br>
+</p>
+
+  </div>
+  
+</div>
+  </footer>
+  </body>
+</html>

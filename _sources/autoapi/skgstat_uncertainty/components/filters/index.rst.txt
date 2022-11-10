@@ -1,0 +1,22 @@
+:py:mod:`skgstat_uncertainty.components.filters`
+================================================
+
+.. py:module:: skgstat_uncertainty.components.filters
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.components.filters.model_selection
+
+
+
+.. py:function:: model_selection(measure: str, models: List[skgstat_uncertainty.models.VarioModel], container=st.sidebar) -> List[int]
+
+

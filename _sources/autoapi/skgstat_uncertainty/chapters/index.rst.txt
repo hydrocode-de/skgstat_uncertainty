@@ -1,0 +1,22 @@
+:py:mod:`skgstat_uncertainty.chapters`
+======================================
+
+.. py:module:: skgstat_uncertainty.chapters
+
+
+Submodules
+----------
+.. toctree::
+   :titlesonly:
+   :maxdepth: 1
+
+   data_manage/index.rst
+   kriging/index.rst
+   learn_geostatistics/index.rst
+   main/index.rst
+   model_compare/index.rst
+   model_fitting/index.rst
+   model_simulation/index.rst
+   variogram/index.rst
+
+

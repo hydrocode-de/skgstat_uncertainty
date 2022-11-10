@@ -1,0 +1,34 @@
+:py:mod:`skgstat_uncertainty.processor.utils`
+=============================================
+
+.. py:module:: skgstat_uncertainty.processor.utils
+
+.. autoapi-nested-parse::
+
+   Utility function for handling toolbox data in the scope of a
+   streamlit application.
+
+   The only function so far can consume 'field' and 'sample' DataUpload from
+   the database and create a plotly figure of the data. This figure can be
+   returned or exported into a png, which is base64 encoded and injected
+   into a data-url. This is saved to the DataUpload as 'thumbnail' and can
+   be loaded in streamlit as a preview of the dataset.
+
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.processor.utils.create_thumbnail
+
+
+
+.. py:function:: create_thumbnail(data: DataUpload, return_type: str = 'base64', **kwargs) -> Union[str, plotly.graph_objects.Figure]
+
+

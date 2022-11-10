@@ -1,0 +1,85 @@
+:py:mod:`skgstat_uncertainty.chapters.model_compare`
+====================================================
+
+.. py:module:: skgstat_uncertainty.chapters.model_compare
+
+
+Module Contents
+---------------
+
+
+Functions
+~~~~~~~~~
+
+.. autoapisummary::
+
+   skgstat_uncertainty.chapters.model_compare.measure_plot
+   skgstat_uncertainty.chapters.model_compare.metric_plot
+   skgstat_uncertainty.chapters.model_compare.feature_enabler
+   skgstat_uncertainty.chapters.model_compare.main_app
+   skgstat_uncertainty.chapters.model_compare.run
+
+
+
+.. py:function:: measure_plot(models: List[skgstat_uncertainty.models.VarioModel], container=st) -> None
+
+   Plot component to inspect variogram model parameter sets in a scatter- or
+   boxplot. This component takes a list of model parameterizations and renders
+   a number of controls to let the user create a plot of the the selected
+   model fit performance metric in dependence of variogram parameters.
+
+   :param models: List of variogram model parameterizations.
+   :type models: List[VarioModel]
+
+   .. note::
+
+      This component renders controls along with the plot area.
+      It does not return the plotly figure.
+
+
+.. py:function:: metric_plot(models: List[skgstat_uncertainty.models.VarioModel], container=st) -> None
+
+   Parallel coordinates plot of variogram model parameterizations.
+   Each parameter set is categorized by each selected performance metric,
+   by splitting all values into quartiles. Colors are associcated to
+   the underlying model used in the corresponding parameterization.
+
+   Parameters
+       ----------
+   models : List[VarioModel]
+       List of variogram model parameterizations.
+
+
+
+.. py:function:: feature_enabler(container=st.sidebar)
+
+   Helper component to enable or disable different other components as
+   used in the main application of the model_compare chapter.
+
+   Note that this component uses the user session state to keep track
+   of activated and deactivated components.
+
+
+
+.. py:function:: main_app(api: skgstat_uncertainty.api.API) -> None
+
+   Model and model parameterization comparison chapter.
+   This streamlit application can be run on its own or embedded into another
+   application. This chapter needs a list of parameterized theoretical
+   variogram models to be present in the database. The user can choose
+   between several options to assess and compare the different parameterizations.
+
+   :param api: Connected instance of the SciKit-GStat Python API to interact with
+               the backend.
+   :type api: skgstat_uncertainty.api.API
+
+   .. rubric:: Notes
+
+   This chapter requires a number of variogram model parameterizations saved to the
+   database. Thus, the user has to run the variogram estimation and the model
+   parameterization first.
+
+
+.. py:function:: run(data_path=None, db_name='data.db')
+
+
